@@ -1,4 +1,4 @@
-#TP2: Batalla Digital
+# TP2: Batalla Digital
 ___
 GitHub de un grupo de alumnos para el desarrollo de un trabajo practico
 
