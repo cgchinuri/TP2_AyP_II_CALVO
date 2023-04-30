@@ -4,18 +4,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../src/TP2.cpp \
 ../src/casillero.cpp \
+../src/main.cpp \
 ../src/tablero.cpp 
 
 OBJS += \
-./src/TP2.o \
 ./src/casillero.o \
+./src/main.o \
 ./src/tablero.o 
 
 CPP_DEPS += \
-./src/TP2.d \
 ./src/casillero.d \
+./src/main.d \
 ./src/tablero.d 
 
 

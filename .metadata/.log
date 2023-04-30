@@ -152,3 +152,59 @@ Command-line arguments:  -os linux -ws gtk -arch x86
 
 !ENTRY org.eclipse.cdt.core.native 4 0 2023-04-30 08:51:32.550
 !MESSAGE no spawner in java.library.path
+!SESSION 2023-04-30 14:58:18.425 -----------------------------------------------
+eclipse.buildId=debbuild
+java.version=1.8.0_121
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=es_AR
+Command-line arguments:  -os linux -ws gtk -arch x86
+
+!ENTRY org.eclipse.mylyn.tasks.ui 2 0 2023-04-30 14:58:23.129
+!MESSAGE No search provider was registed. Tasks search is not available.
+
+!ENTRY org.eclipse.ui 4 4 2023-04-30 14:58:27.442
+!MESSAGE Could not create view: 'org.eclipse.ui.internal.introview'.
+
+!ENTRY org.eclipse.ui 4 0 2023-04-30 14:58:32.202
+!MESSAGE Problems occurred restoring workbench.
+!SUBENTRY 1 unknown 0 0 2023-04-30 14:58:32.202
+!MESSAGE OK
+!SUBENTRY 1 unknown 0 0 2023-04-30 14:58:32.202
+!MESSAGE OK
+!SUBENTRY 1 unknown 0 0 2023-04-30 14:58:32.202
+!MESSAGE OK
+!SUBENTRY 1 unknown 0 0 2023-04-30 14:58:32.202
+!MESSAGE OK
+!SUBENTRY 1 org.eclipse.ui 4 0 2023-04-30 14:58:32.202
+!MESSAGE Unable to restore perspective: Workspace - C/C++.
+!SUBENTRY 2 org.eclipse.ui 0 0 2023-04-30 14:58:32.202
+!MESSAGE Problems occurred restoring perspective.
+!SUBENTRY 3 org.eclipse.ui 0 0 2023-04-30 14:58:32.202
+!MESSAGE 
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+!SUBENTRY 2 org.eclipse.ui 4 0 2023-04-30 14:58:32.203
+!MESSAGE Could not find view: org.eclipse.ui.internal.introview
+!SUBENTRY 1 unknown 0 0 2023-04-30 14:58:32.203
+!MESSAGE OK
+
+!ENTRY org.eclipse.cdt.core.native 4 0 2023-04-30 14:59:02.423
+!MESSAGE no spawner in java.library.path
