@@ -1,0 +1,83 @@
+#include <iostream>
+
+#include "tablero.h"
+
+Tablero::Tablero(int dimX, int dimY, int dimZ)
+{
+	this->dimX = dimX;
+	this->dimY = dimY;
+	this->dimZ = dimZ;
+
+	Casillero * casilleroNuevo = NULL;
+	Casillero * casilleroAnterior = NULL;
+
+	this->listaCasillerosInactivos = NULL;
+
+	tipoCasillero_t tipoCasillero = tierra;
+
+
+	for(int z = 1 ; z <= dimZ ; z++)
+	{
+		if(z>5)
+		{
+			tipoCasillero = aire;
+		}
+
+		for(int y = 1 ; y <= dimY ; y++)
+		{
+
+			for(int x = 1 ; x <= dimX ; x++)
+			{
+				casilleroNuevo = new Casillero(x,y,z,tipoCasillero);
+				casilleroNuevo->setAntX(casilleroAnterior);
+				if(casilleroAnterior)
+				{
+					casilleroAnterior->setSigX(casilleroNuevo);
+				}
+
+				casilleroAnterior=casilleroNuevo;
+
+				if(x==1 && y== 1 && z == 1)
+				{
+					this->casilleroInicial = casilleroNuevo;
+				}
+			}
+		}
+	}
+	// En este punto tengo todos los casilleros uno atrás del otro en X
+	this->separarY();
+}
+
+void Tablero::separarY()
+{
+	Casillero * casilleroInicioFilaAnterior;
+	Casillero * casilleroInicioFilaPosterior;
+	Casillero * casilleroAux;
+
+	casilleroInicioFilaAnterior = this->casilleroInicial;
+	casilleroAux = casilleroInicioFilaAnterior;
+
+	for(int i = 1 ; i <= this->dimX ; i ++)
+	{
+		casilleroAux = casilleroAux->getSigX();
+
+	}
+
+}
+
+
+
+void Tablero::imprimirTablero()
+{
+	Casillero * casilleroAux = this->casilleroInicial;
+
+	std::cout << "Paso previo al while" << std::endl;
+
+	while(casilleroAux->getSigX())
+	{
+		std::cout << "Casillero: ";
+		std::cout << casilleroAux->getPosX() << ", " << casilleroAux->getPosY() << ", " << casilleroAux->getPosZ() << ", " << casilleroAux->getTipoCasillero() << std::endl;
+
+		casilleroAux =casilleroAux->getSigX();
+	}
+}
