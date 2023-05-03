@@ -22,7 +22,7 @@ Carta::Carta()
     if (probabilidad >= 0.6 && probabilidad < 0.7) this->nombre = SUBMARINO;
     if (probabilidad >= 0.7 && probabilidad < 0.8) this->nombre = ATAQUE_AEREO;
     if (probabilidad >= 0.8 && probabilidad < 0.9) this->nombre = INVESTIGACION_BOMBA_NUCLEAR;
-    if (probabilidad >= 0.9) this->nombre = SOLDADO_EXTRA;
+    else this->nombre = SOLDADO_EXTRA;
 }
 
 nombreCarta_t Carta::getNombreCarta()
