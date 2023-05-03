@@ -46,10 +46,12 @@ class ListaEnlazada  {
 private:
     Nodo<T> * primero;
     Nodo<T> * ultimo;
+    unsigned int cantidad;
 public:
     ListaEnlazada(void) {
         this->primero=NULL;
         this->ultimo=NULL;
+        this->cantidad=0;
     }
     ~ListaEnlazada(){
         std::cout<<"Se llamó al destructor de la lista enlazada"<<std::endl;
@@ -69,6 +71,7 @@ public:
         aux=this->primero;
         this->primero=nuevoNodo;
         this->primero->CambiarSiguiente(aux);
+        this->cantidad++;
         return;
 
     }
@@ -82,7 +85,9 @@ public:
         return this->primero->ObtenerDato();
     }
     //VerUltimo()
-
+    unsigned int Cantidad(void) {
+        return this->cantidad;
+    }
 
 };
 #endif

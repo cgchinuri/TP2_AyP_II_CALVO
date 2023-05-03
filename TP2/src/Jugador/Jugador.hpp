@@ -12,6 +12,7 @@
 
 class Jugador {
 private:
+    std::string * nombre;
     int identificador;
     ListaEnlazada<Mina> * Minas;
     ListaEnlazada<Soldado> * Soldados;    
@@ -24,8 +25,9 @@ private:
 public:
     Jugador(int identificador);
     int ObtenerIdentificador();
-    void MoverSoldado();
-    void PonerMina();
+    void MoverSoldado( pos origen, pos destino);//Si no hay un soldado en la pos origen arrojará error
+    void PonerMina(int, int, int);
+
     
     
 
