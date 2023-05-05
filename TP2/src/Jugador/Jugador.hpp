@@ -9,15 +9,17 @@
 #define JUGADOR__H
 
 #include "Utils/Lista/LinkedList_T.hpp"
+#include "Soldado/Soldado.hpp"
 
 class Jugador {
 private:
     std::string * nombre;
     int identificador;
-    ListaEnlazada<Mina> * Minas;
     ListaEnlazada<Soldado> * Soldados;    
     ListaEnlazada<Barco> * Barcos;
     ListaEnlazada<Avion> * Aviones;    
+    ListaEnlazada<Mina> * Minas;
+
 
 
    
