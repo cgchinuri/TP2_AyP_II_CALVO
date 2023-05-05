@@ -13,22 +13,22 @@ Carta::Carta()
 {
     double probabilidad = generarNumeroAleatorio(LAMBDA);
 
-    if (probabilidad < 0.2) this->nombre = REFUERZOS;
-    if (probabilidad >= 0.2 && probabilidad < 0.4) this->nombre = AVION_RADAR;
-    if (probabilidad >= 0.4 && probabilidad < 0.6) this->nombre = TRINCHERA;
-    if (probabilidad >= 0.6 && probabilidad < 0.8) this->nombre = BARCO;
-    else this->nombre = SUBMARINO;
+    if (probabilidad < 0.2) this->tipo = REFUERZOS;
+    if (probabilidad >= 0.2 && probabilidad < 0.4) this->tipo = AVION_RADAR;
+    if (probabilidad >= 0.4 && probabilidad < 0.6) this->tipo = TRINCHERA;
+    if (probabilidad >= 0.6 && probabilidad < 0.8) this->tipo = BARCO;
+    else this->tipo = SUBMARINO;
 }
 
-nombreCarta_t Carta::getNombreCarta()
+tipoCarta_t Carta::getTipoCarta()
 {
-    return this->nombre;
+    return this->tipo;
 }
 
 
 std::string Carta::cartaToString()
 {
-    switch (this->nombre)
+    switch (this->tipo)
     {
     case SUBMARINO:
         return "Submarino";

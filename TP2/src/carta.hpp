@@ -5,15 +5,15 @@
 
 #define LAMBDA 3 // Este es el parametro de la distribucion exponencial del generador de azar
 
-typedef enum Nombre
+typedef enum tipo
 {
-        SUBMARINO, AVION_RADAR, TRINCHERA, BARCO, ATAQUE_QUIMICO, REFUERZOS
-} nombreCarta_t;
+    SUBMARINO, AVION_RADAR, TRINCHERA, BARCO, ATAQUE_QUIMICO, REFUERZOS
+} tipoCarta_t;
 
 class Carta
 {
     private:
-    nombreCarta_t nombre;
+    tipoCarta_t tipo;
     double generarNumeroAleatorioExponencial(double parametroLambda);
 
     public:
@@ -25,10 +25,10 @@ class Carta
     ~Carta() {};
     //Pre: -
     //Pos: Devuelve el nombre de la carta en formato nombreCarta_t (enum)
-    nombreCarta_t getNombreCarta();
+    tipoCarta_t getTipoCarta();
     //Pre: -
     //Pos: Devuelve el nombre de la carta en forma de string, DESCONOCIDO
-    // si nombreCarta_t es invalido
+    // si es una carta inválida
     std::string cartaToString();
 };
 
