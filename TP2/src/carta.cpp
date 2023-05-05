@@ -18,7 +18,7 @@ Carta::Carta()
     if (probabilidad >= 0.4 && probabilidad < 0.6) this->nombre = TRINCHERA;
     if (probabilidad >= 0.6 && probabilidad < 0.8) this->nombre = BARCO;
     else this->nombre = SUBMARINO;
-
+}
 
 nombreCarta_t Carta::getNombreCarta()
 {
