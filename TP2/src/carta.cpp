@@ -14,9 +14,10 @@ Carta::Carta()
     double probabilidad = generarNumeroAleatorio(LAMBDA);
 
     if (probabilidad < 0.2) this->tipo = REFUERZOS;
-    if (probabilidad >= 0.2 && probabilidad < 0.4) this->tipo = AVION_RADAR;
-    if (probabilidad >= 0.4 && probabilidad < 0.6) this->tipo = TRINCHERA;
-    if (probabilidad >= 0.6 && probabilidad < 0.8) this->tipo = BARCO;
+    if (probabilidad >= 0.2 && probabilidad < 0.3) this->tipo = TRINCHERA;
+    if (probabilidad >= 0.3 && probabilidad < 0.6) this->tipo = BARCO;
+    if (probabilidad >= 0.6 && probabilidad < 0.7) this->tipo = AVION_RADAR;
+    if (probabilidad >= 0.7 && probabilidad < 0.8) this->tipo = ATAQUE_QUIMICO;
     else this->tipo = SUBMARINO;
 }
 
