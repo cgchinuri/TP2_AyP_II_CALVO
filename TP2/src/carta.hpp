@@ -2,19 +2,39 @@
 #define CARTA_H
 
 #include <string>
-
-#define LAMBDA 3 // Este es el parametro de la distribucion exponencial del generador de azar
+#include <map>
 
 typedef enum tipo
 {
-    SUBMARINO, AVION_RADAR, TRINCHERA, BARCO, ATAQUE_QUIMICO, REFUERZOS
+    SUBMARINO, AVION_RADAR, TRINCHERA, BARCO, ATAQUE_QUIMICO, REFUERZOS,
 } tipoCarta_t;
+
+
+std::map<tipoCarta_t, std::string> cadenasCartas =
+{
+{SUBMARINO, "Submarino"},
+{AVION_RADAR, "Avion Radar"},
+{TRINCHERA, "Trinchera"},
+{BARCO, "Barco"},
+{ATAQUE_QUIMICO, "Ataque Quimico"},
+{REFUERZOS, "Refuerzos"}
+};
+
+std::map<tipoCarta_t, double> probabilidadesCartas =
+{
+{SUBMARINO, 0.08},
+{ATAQUE_QUIMICO, 0.12},
+{BARCO, 0.17},
+{AVION_RADAR, 0.20},
+{TRINCHERA, 0.25},
+{REFUERZOS, 0.30}
+};
+
 
 class Carta
 {
     private:
     tipoCarta_t tipo;
-    double generarNumeroAleatorioExponencial(double parametroLambda);
 
     public:
     //Constructor.

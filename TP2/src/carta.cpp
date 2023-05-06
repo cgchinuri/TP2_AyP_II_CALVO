@@ -1,24 +1,34 @@
 #include "carta.hpp"
 #include <random>
+#include <iostream>
 
-double generarNumeroAleatorio(double parametroLambda)
+tipoCarta_t calculoProbabilidad(std::map<tipoCarta_t, double> probabilidadesCartas)
 {
-  std::random_device generador;
-  std::exponential_distribution<double> distribucion(parametroLambda);
+    std::random_device generador;
+    std::uniform_real_distribution<double> distribucion(0, 1);
+    double probabilidad = distribucion(generador);
 
-  return distribucion(generador);
+    std::map<tipoCarta_t, double>::iterator it;
+    for (it = probabilidadesCartas.begin(); it != probabilidadesCartas.end(); it++)
+    {
+            if(probabilidad < it->second)
+                return it->first;
+            probabilidad -= it->second;
+    }
+
+    throw("Esto no deberia pasar");
 }
 
 Carta::Carta()
 {
-    double probabilidad = generarNumeroAleatorio(LAMBDA);
-
-    if (probabilidad < 0.2) this->tipo = REFUERZOS;
-    if (probabilidad >= 0.2 && probabilidad < 0.3) this->tipo = TRINCHERA;
-    if (probabilidad >= 0.3 && probabilidad < 0.6) this->tipo = BARCO;
-    if (probabilidad >= 0.6 && probabilidad < 0.7) this->tipo = AVION_RADAR;
-    if (probabilidad >= 0.7 && probabilidad < 0.8) this->tipo = ATAQUE_QUIMICO;
-    else this->tipo = SUBMARINO;
+    try
+    {
+    this->tipo = calculoProbabilidad(probabilidadesCartas);
+    }
+    catch (...)
+    {
+        std::cout << "Error en creacion de carta" << std::endl;
+    }
 }
 
 tipoCarta_t Carta::getTipoCarta()
@@ -26,24 +36,7 @@ tipoCarta_t Carta::getTipoCarta()
     return this->tipo;
 }
 
-
 std::string Carta::cartaToString()
 {
-    switch (this->tipo)
-    {
-    case SUBMARINO:
-        return "Submarino";
-    case ATAQUE_QUIMICO:
-        return "Ataque Quimico";
-    case REFUERZOS:
-        return "Refuerzos de Infantería";
-    case AVION_RADAR:
-        return "Radar Aereo Movil";
-    case TRINCHERA:
-        return "Cavar Trinchera";
-    case BARCO:
-        return "Barco";
-    default:
-        return "DESCONOCIDO";
-    };
+    return cadenasCartas[this->tipo];
 }
