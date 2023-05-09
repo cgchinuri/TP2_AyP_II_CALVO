@@ -4,8 +4,16 @@
 
 
 int main(void)  {
-    Jugador * j1=new Jugador(3);
+    
+    Jugador * nuevoJugador=new Jugador(1,"Santiago");
+    
+    //Obtener nombre e id
+    std::cout<<"Jugador:"<<nuevoJugador->identificador()<<'\t'<<
+    nuevoJugador->Nombre()<<std::endl;
 
-    std::cout<<j1->ObtenerIdentificador()<<std::endl;
+
+    nuevoJugador->moverFicha(0,0,0,0,0,0);
+
+    
     return 0;
 }
