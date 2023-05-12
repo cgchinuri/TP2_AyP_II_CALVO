@@ -10,15 +10,10 @@
 
 #include <iostream>
 #include "../Utils/Lista/LinkedList_T.hpp"
+#include "../Utils/Coordenada/Coordenada.hpp"
+
 typedef int Ficha;//Para que compile
-class Coordenada {
-private:
-    int x;
-    int y;
-    int z;
-public:
-    Coordenada(int x, int y, int z);
-};
+
 class Jugador
 {
 private:
@@ -30,10 +25,11 @@ public:
     Jugador(int id, const std::string s);
     std::string & Nombre(void);
     int identificador(void);
+    
     bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
     void agregarFicha(Ficha * nuevaFicha);
-    Ficha * obtenerFicha(Coordenada & pos);
-
+    Ficha * obtenerFicha(Coordenada<int> & pos);
+    void eliminarFicha(Coordenada<int> & pos);
 };
 
 #endif

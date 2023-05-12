@@ -1,12 +1,6 @@
 #include "Jugador.hpp"
  #include <stdexcept>
-
-Coordenada::Coordenada(int x, int y, int z) {
-    this->x=x;
-    this->y=y;
-    this->z=z;
-}
-
+ 
 Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
     this->nombre=new std::string(s);
@@ -33,17 +27,14 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
         throw std::invalid_argument("Fichas no disponibles");
     }
 
-    for(ficha=this->Fichas->getCursor(); ficha!=NULL; ficha=this->Fichas->getCursor())  {
-        if(ficha->obtenerPosicion()==origen){ //Mejor implementar un metodo 'equals() en el tipo de dato coordenada que diga si son iguales
-            ficha->establecerPosicion(destinoX,destinoY,destinoZ);
-            Fichas->reiniciarCursor();
+    while(this->Fichas->avanzarCursor())   {
+        if(this->Fichas->getCursor())   {//Si la ficha actual tiene la posicion de origen...... (usar primitivas de ficha)
+            this->Fichas->getCursor();//Cambiar coordenada de la ficha
+           // ....
             return true;
         }
-        else    {
-            this->Fichas->avanzarCursor();
-        }
     }
-    
+
     Fichas->reiniciarCursor();
     return false;
 
@@ -54,6 +45,8 @@ void Jugador::agregarFicha(Ficha * nuevaFicha)  {
 }
 
 
-Ficha * Jugador::obtenerFicha(Coordenada & pos) {
-    
+Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
+    while(this->Fichas->avanzarCursor())   {
+        Fichas->getCursor();//Acá deberia tener una primitiva del tda ficha que me devuelva su posicion, si coincide con la pasada por arg, retorno la ficha
+    }
 }
