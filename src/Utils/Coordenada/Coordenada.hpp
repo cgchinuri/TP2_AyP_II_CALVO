@@ -1,7 +1,7 @@
 #ifndef COORDENADA__H
 #define COORDENADA__H
 #include <math.h>
-
+#include<iostream>
 template <typename T>
 class Coordenada {
 private:
@@ -15,7 +15,7 @@ public:
         this->z=z;
     }
 
-    bool iguales(const Coordenada & c)  {
+    bool iguales(const Coordenada & c)const  {
         return ((this->x==c.x && this->y==c.y) && this->z==c.z) ? true : false;
     }
 
@@ -32,6 +32,12 @@ public:
 
     void imprimir(void) {
         std::cout<<'('<< this->x<<','<<this->y<<','<<this->z<<')'<<std::endl;
+    }
+
+    void actualizar(T x, T y, T z)  {   
+        this->x=x;
+        this->y=y;
+        this->z=z;
     }
 };
 
