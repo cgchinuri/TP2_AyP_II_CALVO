@@ -21,6 +21,8 @@ establece su posicion con las coordenadas del destino. Retorna true si pudo move
 */
 bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
     Coordenada origen(origenX,origenY,origenZ);
+    Coordenada destino(destinoX,destinoY,destinoZ);
+
     Ficha * ficha;
 
     if(this->Fichas->vacia())   {
@@ -28,9 +30,9 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
     }
 
     while(this->Fichas->avanzarCursor())   {
-        if(this->Fichas->getCursor())   {//Si la ficha actual tiene la posicion de origen...... (usar primitivas de ficha)
-            this->Fichas->getCursor();//Cambiar coordenada de la ficha
-           // ....
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(origen)==true) {
+            Fichas->getCursor()->obtenerCoordenada()->sumar(destino);
+            Fichas->reiniciarCursor();
             return true;
         }
     }

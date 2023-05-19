@@ -19,6 +19,11 @@ int main(void) {
 
     std::cout<<"Cantidad de fichas:"<<jugador1->cantidadFichas()<<std::endl;
 
+    Coordenada<int> * target = new Coordenada(0,0,1);
+    target->imprimir();
+
+    std::cout<<((jugador1->obtenerFicha(*target)!=NULL)?"Está":"No está")<<std::endl;
+    
 
 
     return 0;
@@ -26,4 +31,4 @@ int main(void) {
 
 #endif
 
-//cmd compilacion:  g++ -o test Jugador_test.o Jugador.o ../Ficha/Ficha.o
+//comando compilacion:  g++ -o test Jugador_test.o Jugador.o ../Ficha/Ficha.o
