@@ -1,5 +1,5 @@
 #include "Jugador.hpp"
- #include <stdexcept>
+#include <stdexcept>
  
 Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
@@ -47,6 +47,14 @@ void Jugador::agregarFicha(Ficha * nuevaFicha)  {
 
 Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     while(this->Fichas->avanzarCursor())   {
-        Fichas->getCursor();//Acá deberia tener una primitiva del tda ficha que me devuelva su posicion, si coincide con la pasada por arg, retorno la ficha
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true)
+            return Fichas->getCursor();
     }
+
+    return NULL;
+}
+
+
+int Jugador::cantidadFichas(void)   {
+    return this->Fichas->contarElementos();
 }

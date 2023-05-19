@@ -11,8 +11,7 @@
 #include <iostream>
 #include "../Utils/Lista/LinkedList_T.hpp"
 #include "../Utils/Coordenada/Coordenada.hpp"
-
-typedef int Ficha;//Para que compile
+#include "../Ficha/Ficha.hpp"
 
 class Jugador
 {
@@ -29,7 +28,8 @@ public:
     bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
     void agregarFicha(Ficha * nuevaFicha);
     Ficha * obtenerFicha(Coordenada<int> & pos);
-    void eliminarFicha(Coordenada<int> & pos);
+    int cantidadFichas(void);
+    //void eliminarFicha(Coordenada<int> & pos);
 };
 
 #endif
