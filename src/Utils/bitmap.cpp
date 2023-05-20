@@ -65,7 +65,7 @@ void graficarPlanoZ(TDAtablero tablero, int z, int tamaño){
 }
   
 
-
+//recibe un jugador  y grafica su tablero
 void GraficarTablerodeJugador(TDAJugador jugador){
    
    
