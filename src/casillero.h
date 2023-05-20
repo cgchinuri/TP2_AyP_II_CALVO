@@ -31,8 +31,6 @@ class Casillero
 		// Turnos de inactividad restantes
 		int turnosInactivoRestantes;
 
-		// Puntero a objeto que lo ocupa:
-
 
 	public:
 		// Constructor
