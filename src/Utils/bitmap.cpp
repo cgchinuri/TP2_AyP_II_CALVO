@@ -15,8 +15,8 @@ string obtenerOcupanteCasilla (TDAJugador jugador,TDAtablero tablero, int x, int
 }
 
 //recibe un int/string que le indica lo que ocupa(nombre provisional) la casilla,
-//pinta o coloca una imagen  segun que tiene la casilla, todo lo que no son tipos las imagenes voy a posiblemente dibujarlas dsps
-
+//pinta o coloca una imagen  segun que tiene la casilla, todo lo que no son tipos las imagenes voy a posiblemente dibujarlas, se puede/debe
+//configurar para que todos los valores se obtengan de un archivo o de datos ya dados
 void dibujarBloque(int x, int y, int z, string tipoCasilla, image imagen){
    if (tipoCasilla=="tierra" || tipoCasilla=="cielo"){
       
@@ -26,19 +26,19 @@ void dibujarBloque(int x, int y, int z, string tipoCasilla, image imagen){
       34, 27, 245
       return
    }
-   if tipoCasilla=="soldado"{
+   if (tipoCasilla=="soldado"){
       imgsoldado
       return
    }
-   if tipoCasilla=="mina"{
+   if (tipoCasilla=="mina"){
       imgmina
       return
    }
-   if tipoCasilla=="destruida"{
+   if (tipoCasilla=="destruida"){
       imgdestruida
       return
    }
-   if tipoCasilla==6{
+   if (tipoCasilla=="carta1"){
       imgcarta1
       return
    }
@@ -49,7 +49,7 @@ void graficarPlanoZ(TDAtablero tablero, int z, int tamaño){
    bitmap_image image(tamaño,tamaño);
   
    // pone todo los bloques de base en marron(tierra) o celeste (cielo) segun la altura, para ahorrar pintar de ese color
-  if z<4{
+  if (z<4){
      //color marron/tierra a todo bajo el nivel 4
       image.set_all_channels(115, 64, 32);
   } else {
