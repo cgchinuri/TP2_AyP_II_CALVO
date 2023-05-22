@@ -1,6 +1,6 @@
-#include <stdexcept>
 #include "Jugador.hpp"
-
+#include <stdexcept>
+ 
 Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
     this->nombre=new std::string(s);
@@ -16,11 +16,9 @@ int Jugador::identificador(void)    {
     return this->idJugador;
 }
 
-/* Con la implementacion actual esta primitiva ya no le pertenece al jugador, ya que si quisiera
-    mover una ficha deberia:
-        -   Pedirle al tablero el casillero en la posicion deseada
-        -   Chequear si el casillero de destino esta apuntando a algo
-        -   Eliminar ese algo... etc etc etc.
+/*  Recibe una posicion de origen y de destino, si hay alguna ficha con la posicion de origen => 
+establece su posicion con las coordenadas del destino. Retorna true si pudo mover, false si no.
+*/
 bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
     Coordenada origen(origenX,origenY,origenZ);
     Coordenada destino(destinoX,destinoY,destinoZ);
@@ -32,8 +30,8 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
     }
 
     while(this->Fichas->avanzarCursor())   {
-        if(Fichas->getCursor()->obtenerCasillero()->obtenerCoordenada()->iguales(origen)==true) {
-            Fichas->getCursor()->obtenerCasillero()->obtenerCoordenada()->sumar(destino);
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(origen)==true) {
+            Fichas->getCursor()->obtenerCoordenada()->sumar(destino);
             Fichas->reiniciarCursor();
             return true;
         }
@@ -43,7 +41,7 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
     return false;
 
 }
-*/
+
 void Jugador::agregarFicha(Ficha * nuevaFicha)  {
     this->Fichas->add(nuevaFicha);
 }
@@ -51,12 +49,10 @@ void Jugador::agregarFicha(Ficha * nuevaFicha)  {
 
 Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     while(this->Fichas->avanzarCursor())   {
-        if(Fichas->getCursor()->obtenerCasillero()->obtenerCoordenada()->iguales(pos)==true)    {
-            Fichas->reiniciarCursor();
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true)
             return Fichas->getCursor();
-        }
     }
-    Fichas->reiniciarCursor();
+
     return NULL;
 }
 

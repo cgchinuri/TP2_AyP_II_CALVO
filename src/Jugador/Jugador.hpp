@@ -25,6 +25,7 @@ public:
     std::string & Nombre(void);
     int identificador(void);
     
+    bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
     void agregarFicha(Ficha * nuevaFicha);
     Ficha * obtenerFicha(Coordenada<int> & pos);
     int cantidadFichas(void);

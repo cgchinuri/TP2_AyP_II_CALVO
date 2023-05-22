@@ -3,31 +3,15 @@
 
 
 
-Ficha::Ficha(t_ficha tipo,Jugador * jugador,Casillero * pc) {
+Ficha::Ficha(t_ficha tipo,int x, int y, int z)  {
     this->tipo=tipo;
-    this->pc=pc;
-    this->pj=jugador;
+    this->coordenada=new Coordenada<int>(x,y,z);
 }
 
-t_ficha Ficha::getTipo(void)const  {
-    return this->tipo;
-}
+t_ficha Ficha::obtenerTipo(void)const  {
+        return this->tipo;
+    }
 
-Jugador * Ficha::getJugador(void)  {
-    return this->pj;
-}
-
-Casillero *Ficha::getCasillero(void) {  
-    return this->pc;
-}
-
-
-void Ficha::setJugador(Jugador * pj)  {
-    this->pj=pj;
-}
-void Ficha::setCasillero(Casillero * pc)  {
-    this->pc=pc;
-}
-void Ficha::setTipo(t_ficha tipo) {
-    this->tipo=tipo;
+Coordenada<int> * Ficha::obtenerCoordenada(void)  {
+    return this->coordenada;
 }
