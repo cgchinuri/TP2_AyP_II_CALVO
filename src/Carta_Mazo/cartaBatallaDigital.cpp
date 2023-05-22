@@ -38,15 +38,19 @@ std::string CartaBatallaDigital::getDescripcion()
     switch (this->tipo)
     {
     case SUBMARINO:
-        return "Agrega una unidad a la armada del jugador [AGUA PROFUNDIDAD MINIMA]";
+        return "Agrega una unidad a la armada del jugador capaz de lanzar misiles. Solo puede ser destruidos por barcos y "
+        "otros submarinos [AGUA PROFUNDIDAD MINIMA]";
     case AVION_RADAR:
-        return "Avion Radar le agrega una unidad a la fuerza aérea del jugador, capaz de detectar ... [AIRE ALTURA MINIMA]";
+        return "Avion Radar le agrega una unidad a la fuerza aérea del jugador, capaz de detectar unidades enemigas en la superficie. "
+        "No tiene capacidades ofensivas o defensivas. [AIRE ALTURA MINIMA]";
     case TRINCHERA:
-        return "Trinchera le permite convertir un soldado en una trinchera por -- turnos, la cual eliminara soldados enemigos. El soldado queda imovil pero es inmune a soldados enemigos[TIERRA PROFUNDIDAD]";
+        return "Trinchera le permite convertir un soldado en una trinchera por -- turnos, la cual eliminara soldados enemigos. "
+        "El soldado queda imovil pero es inmune a soldados enemigos[TIERRA PROFUNDIDAD]";
     case BARCO:
-        return "La carta barco le agrega una unidad a la armada del jugador [SUPERFICIE DE AGUA]";
+        return "La carta barco le agrega una unidad a la armada del jugador capaz de lanzar misiles y "
+        "torpedos anti-submarinos [SUPERFICIE DE AGUA]";
     case ATAQUE_QUIMICO:
-        return "Ataque quimico! Ataca ";
+        return "Ataque quimico! Elimina soldados enemigos en un radio de -- casillas. Deja las casillas inactivas por -- turnos";
     case REFUERZOS:
         return "Agrega un soldado al ejercito del jugador [SUPERFICIE DE TIERRA]";
     
