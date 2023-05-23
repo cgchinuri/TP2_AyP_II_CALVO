@@ -42,6 +42,15 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
 
 }
 
+bool Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)    {
+    Coordenada destino(destinoX,destinoY,destinoZ);
+    this->Fichas->get(indiceFicha)->obtenerCoordenada()->sumar(destino);
+    return true;
+
+}
+
+
+
 void Jugador::agregarFicha(Ficha * nuevaFicha)  {
     this->Fichas->add(nuevaFicha);
 }
@@ -56,7 +65,23 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     return NULL;
 }
 
-
+Ficha * Jugador::obtenerFicha(int pos) {
+    return this->Fichas->get(pos);
+}
 int Jugador::cantidadFichas(void)   {
     return this->Fichas->contarElementos();
 }
+
+void Jugador::mostrarFichas()   {
+    std::cout<<"Fichas Disponibles:"<<std::endl;//DEBUG
+
+    for(size_t i=1; Fichas->avanzarCursor();i++)    {
+        std::cout<<'['<<i<<']'<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
+    }
+}
+
+void Jugador::eliminarFicha(unsigned int pos)   {
+    this->Fichas->remover(pos);
+
+}
+

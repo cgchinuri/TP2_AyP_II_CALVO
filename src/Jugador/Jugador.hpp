@@ -26,10 +26,14 @@ public:
     int identificador(void);
     
     bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
+    bool moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ);
+
     void agregarFicha(Ficha * nuevaFicha);
+    void eliminarFicha(unsigned int pos);
     Ficha * obtenerFicha(Coordenada<int> & pos);
+    Ficha * obtenerFicha(int pos);
     int cantidadFichas(void);
-    //void eliminarFicha(Coordenada<int> & pos);
+    void mostrarFichas(void);
 };
 
 #endif

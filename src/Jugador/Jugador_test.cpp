@@ -9,21 +9,43 @@ int main(void) {
 
     Jugador * jugador1=new Jugador(1,"Santiago");
 
-    std::cout<<jugador1->Nombre()<<std::endl;
-    std::cout<<jugador1->identificador()<<std::endl;
+    std::cout<<"Nombre:"<<jugador1->Nombre()<<std::endl;
+    std::cout<<"id:"<<jugador1->identificador()<<std::endl;
 
     std::cout<<"Cantidad de fichas:"<<jugador1->cantidadFichas()<<std::endl;
 
-    Ficha * ficha=new Ficha(FICHA_BARCO,0,0,0);
-    jugador1->agregarFicha(ficha);
+    Ficha * barco1=new Ficha(FICHA_BARCO,0,0,0);
+    Ficha * soldado1=new Ficha(FICHA_SOLDADO,0,1,0);
+    Ficha * avion1=new Ficha(FICHA_AVION,0,1,10);
+    Ficha * mina1= new Ficha(FICHA_MINA,0,3,0); 
 
-    std::cout<<"Cantidad de fichas:"<<jugador1->cantidadFichas()<<std::endl;
+    jugador1->agregarFicha(barco1);
+    jugador1->agregarFicha(soldado1);
+    jugador1->agregarFicha(avion1);
+    jugador1->agregarFicha(mina1);
 
-    Coordenada<int> * target = new Coordenada(0,0,1);
-    target->imprimir();
-
-    std::cout<<((jugador1->obtenerFicha(*target)!=NULL)?"Está":"No está")<<std::endl;
     
+
+    std::cout<<"Cantidad de fichas:"<<jugador1->cantidadFichas()<<std::endl;
+
+    jugador1->mostrarFichas();
+
+    std::cout<<"Obtener ficha en pos 3"<<jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,1,10
+    std::cout<<"Obtener ficha en pos 4"<<jugador1->obtenerFicha(4)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,3,0
+    //std::cout<<jugador1->obtenerFicha(5)->obtenerCoordenada()->toString()<<std::endl;//Fuera de rango. Esperado :? Explota
+
+    std::cout<<"Eliminar ficha pos 3:"<<std::endl;
+    jugador1->eliminarFicha(3);
+    jugador1->mostrarFichas();
+
+    
+    std::cout<<"Obtener ficha en pos 3"<<jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,3,0
+    std::cout<<"desplazar ficha de pos 3 en (5,5,5)"<<jugador1->moverFicha(3,5,5,5)<<
+    jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,3,0 + 5,5,5= 5,8,5
+
+    jugador1->mostrarFichas();
+
+
 
 
     return 0;

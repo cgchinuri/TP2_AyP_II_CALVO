@@ -2,6 +2,7 @@
 #define COORDENADA__H
 #include <math.h>
 #include<iostream>
+#include <sstream>
 template <typename T>
 class Coordenada {
 private:
@@ -15,6 +16,18 @@ public:
         this->z=z;
     }
 
+    T obtenerX(void)    {
+        return this->x;
+    }
+
+    T obtenerY(void)    {
+        return this->y;
+    }
+
+    T obtenerZ(void)    {
+        return this->z;
+    }
+
     bool iguales(const Coordenada & c)const  {
         return ((this->x==c.x && this->y==c.y) && this->z==c.z) ? true : false;
     }
@@ -25,13 +38,17 @@ public:
     }   
 
     void sumar(const Coordenada & d)    {
-        this->x=d.x;
-        this->z=d.y;
-        this->z=d.z;
+        this->x+=d.x;
+        this->y+=d.y;
+        this->z+=d.z;
     }
 
-    void imprimir(void) {
-        std::cout<<'('<< this->x<<','<<this->y<<','<<this->z<<')'<<std::endl;
+
+    std::string toString(void)  {
+        std::ostringstream oss;
+        oss<<'('<<this->x<<','<<this->y<<','<<this->z<<')';
+        std::string s= oss.str();
+        return s;
     }
 
     void actualizar(T x, T y, T z)  {   

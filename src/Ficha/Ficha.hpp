@@ -14,8 +14,7 @@ class Ficha {
 private:
     Coordenada<int> * coordenada;
     t_ficha tipo;
-    //atributo de estado? vivo/no
-
+    bool activo;
 public: 
     Ficha(t_ficha tipo,int x, int y, int z);
     t_ficha obtenerTipo(void)const;
