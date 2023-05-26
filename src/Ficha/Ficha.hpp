@@ -2,6 +2,7 @@
 #define FICHA__H
 
 #include "../Utils/Coordenada/Coordenada.hpp"
+#include "../casillero.h"
 
 enum t_ficha    {
     FICHA_BARCO,
@@ -15,6 +16,8 @@ private:
     Coordenada<int> * coordenada;
     t_ficha tipo;
     bool activo;
+    //Puntero al casillero sobre el cual está la ficha
+    Casillero * casillero;
 public: 
 
     //pre: tipo debe ser un valor de t_ficha
@@ -32,6 +35,18 @@ public:
     //pre: -
     //post: devuelve un string con el tipo de la ficha
     std::string toStringTipo(void);
+
+    // Pre: -
+	// Pos: devuelve puntero al casillero que apunta la ficha
+	Casillero * getCasilleroFicha();
+
+    // Pre: -
+	// Pos: cambia la dirección del puntero a casillero donde apunta la ficha
+	void setCasilleroFicha(Casillero * casillero);
+
+    // Pre: -
+	// Pos: cambia la dirección del puntero a casillero a NULL
+	void desvincularFichaDeCasillero();
 };
 
 
