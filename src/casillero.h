@@ -8,6 +8,9 @@ typedef enum
 	aire
 }tipoCasillero_t;
 
+// Declaro la clase ficha que está descripta e implementada en Ficha.h y Ficha.cpp
+class Ficha;
+
 
 class Casillero
 {
@@ -30,6 +33,9 @@ class Casillero
 
 		// Turnos de inactividad restantes
 		int turnosInactivoRestantes;
+
+		// Puntero a la ficha que va a estar ocupando el casillero
+		Ficha * fichaOcupa ;
 
 
 	public:
@@ -103,6 +109,26 @@ class Casillero
 		// Pre: -
 		// Pos: devuelve el puntero al casillero anterior en Z
 		Casillero * getAntZ();
+
+
+		// Pre: -
+		// Pos: apunta a NULL el puntero a ficha que ocupa al casillero
+		void vaciarCasillero();
+
+		// Pre: -
+		// Pos: cambia la dirección a donde apunta el casillero en su parámetro fichaOcupa
+		void setFichaCasillero(Ficha * fichaOcupa);
+
+		// Pre: -
+		// Pos: devuelve la dirección de memoria de la ficha donde apunta el casillero
+		//		o NULL si es nula
+		Ficha * getFichaCasillero();
+
+		// Pre: -
+		// Pos: retorna true si el puntero a ficha del casillero está apuntando a algo
+		//		retorna false si el puntero a ficha del casillero está apuntando a null
+		bool estaOcupado();
+
 };
 
 #endif // CASILLERO_H_

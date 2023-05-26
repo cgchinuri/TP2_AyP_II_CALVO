@@ -18,6 +18,9 @@ Casillero::Casillero(int x, int y, int z, tipoCasillero_t tipoCasillero)
 	this->antZ=NULL;
 
 	this->turnosInactivoRestantes = 0;
+
+	// Puntero a la ficha que lo ocupa
+	this->fichaOcupa = NULL;
 }
 
 
@@ -106,4 +109,24 @@ Casillero * Casillero::getSigZ()
 Casillero * Casillero::getAntZ()
 {
 	return this->antZ;
+}
+
+void Casillero::vaciarCasillero()
+{
+	this->fichaOcupa = NULL;
+}
+
+void Casillero::setFichaCasillero(Ficha * fichaOcupa)
+{
+	this->fichaOcupa = fichaOcupa;
+}
+
+Ficha * Casillero::getFichaCasillero()
+{
+	return this->fichaOcupa;
+}
+
+bool Casillero::estaOcupado()
+{
+	return (this->fichaOcupa)?true:false;
 }

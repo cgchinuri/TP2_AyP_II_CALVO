@@ -43,6 +43,7 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	}
 
 	this->tableroJuego=tableroJuego;
+	vincularTablero();
 
 }
 
@@ -207,4 +208,22 @@ Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 }
 
 Tablero::~Tablero()
-{}
+{
+    // Liberar la memoria de los casilleros
+    for (int z = 1; z <= dimZ; z++)
+    {
+        Lista<Lista<Casillero*>*>* pisos = tableroJuego->obtener(z);
+        for (int y = 1; y <= dimY; y++)
+        {
+            Lista<Casillero*>* columnas = pisos->obtener(y);
+            for (int x = 1; x <= dimX; x++)
+            {
+                Casillero* casillero = columnas->obtener(x);
+                delete casillero;
+            }
+            delete columnas;
+        }
+        delete pisos;
+    }
+    delete tableroJuego;
+}

@@ -13,6 +13,21 @@ class Tablero
 
 		// Lista de casilleros inactivos
 		Lista<Casillero*>* listaCasillerosInactivos;
+
+		// Pre: debe haber un tablero creado
+		// Pos: vincula todos los casilleros del tablero con sus aledaños
+		void vincularTablero();
+
+		// Pre: debe haber un tablero creado
+		//		recibe como argumento el nivel a vincular
+		// Pos: vincula los casilleros de un mismo nivel
+		//		llena los punteros antX, sigX, antY, sigY con los casilleros aledaños
+		void vincularNivelTablero(int nivel);
+
+		// Pre: debe haber un tablero creado
+		// Pos: vincula los casilleros de un nivel con los de los niveles aledaños
+		//		llena los punteros antZ y sigZ con los casilleros inferiores y superiores
+		void vincularPisosTablero();
 		
 		// Dimensiones del tablero
 		int dimX;
@@ -36,20 +51,6 @@ class Tablero
 		//		saca un casillero de la lista si vuelve a estar activo
 		//decrementarInactividad()
 
-		// Pre: debe haber un tablero creado
-		// Pos: vincula todos los casilleros del tablero con sus aledaños
-		void vincularTablero();
-
-		// Pre: debe haber un tablero creado
-		//		recibe como argumento el nivel a vincular
-		// Pos: vincula los casilleros de un mismo nivel
-		//		llena los punteros antX, sigX, antY, sigY con los casilleros aledaños
-		void vincularNivelTablero(int nivel);
-
-		// Pre: debe haber un tablero creado
-		// Pos: vincula los casilleros de un nivel con los de los niveles aledaños
-		//		llena los punteros antZ y sigZ con los casilleros inferiores y superiores
-		void vincularPisosTablero();
 
 		// Función que chequea todas las filas del tablero por si tienen vínculos
 		bool chequearVinculosPisosTablero();
