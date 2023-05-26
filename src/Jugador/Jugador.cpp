@@ -21,6 +21,8 @@ establece su posicion con las coordenadas del destino. Retorna true si pudo move
 */
 bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
     Coordenada origen(origenX,origenY,origenZ);
+    Coordenada destino(destinoX,destinoY,destinoZ);
+
     Ficha * ficha;
 
     if(this->Fichas->vacia())   {
@@ -28,9 +30,9 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
     }
 
     while(this->Fichas->avanzarCursor())   {
-        if(this->Fichas->getCursor())   {//Si la ficha actual tiene la posicion de origen...... (usar primitivas de ficha)
-            this->Fichas->getCursor();//Cambiar coordenada de la ficha
-           // ....
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(origen)==true) {
+            Fichas->getCursor()->obtenerCoordenada()->sumar(destino);
+            Fichas->reiniciarCursor();
             return true;
         }
     }
@@ -39,6 +41,15 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
     return false;
 
 }
+
+bool Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)    {
+    Coordenada destino(destinoX,destinoY,destinoZ);
+    this->Fichas->get(indiceFicha)->obtenerCoordenada()->sumar(destino);
+    return true;
+
+}
+
+
 
 void Jugador::agregarFicha(Ficha * nuevaFicha)  {
     this->Fichas->add(nuevaFicha);
@@ -54,7 +65,23 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     return NULL;
 }
 
-
+Ficha * Jugador::obtenerFicha(int pos) {
+    return this->Fichas->get(pos);
+}
 int Jugador::cantidadFichas(void)   {
     return this->Fichas->contarElementos();
 }
+
+void Jugador::mostrarFichas()   {
+    std::cout<<"Fichas Disponibles:"<<std::endl;//DEBUG
+
+    for(size_t i=1; Fichas->avanzarCursor();i++)    {
+        std::cout<<'['<<i<<']'<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
+    }
+}
+
+void Jugador::eliminarFicha(unsigned int pos)   {
+    this->Fichas->remover(pos);
+
+}
+

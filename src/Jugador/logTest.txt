@@ -1,0 +1,23 @@
+Pruebas del TDA Jugador:
+Nombre:Santiago
+id:1
+Cantidad de fichas:0
+Cantidad de fichas:4
+Fichas Disponibles:
+[1](0,0,0)
+[2](0,1,0)
+[3](0,1,10)
+[4](0,3,0)
+Obtener ficha en pos 3(0,1,10)
+Obtener ficha en pos 4(0,3,0)
+Eliminar ficha pos 3:
+Fichas Disponibles:
+[1](0,0,0)
+[2](0,1,0)
+[3](0,3,0)
+Obtener ficha en pos 3(0,3,0)
+desplazar ficha de pos 3 en (5,5,5)1(5,8,5)
+Fichas Disponibles:
+[1](0,0,0)
+[2](0,1,0)
+[3](5,8,5)
