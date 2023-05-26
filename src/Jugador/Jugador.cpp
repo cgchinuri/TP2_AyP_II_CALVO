@@ -5,6 +5,7 @@ Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
     this->nombre=new std::string(s);
     this->Fichas= new Lista <Ficha *>();
+    this->Cartas=new Mazo<CartaBatallaDigital>();
 }  
 
 
@@ -42,10 +43,13 @@ bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int de
 
 }
 
-bool Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)    {
+void Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)    {
+    if(indiceFicha>this->Fichas->contarElementos()){
+        throw std::invalid_argument("Opcion invalida");
+        }
+
     Coordenada destino(destinoX,destinoY,destinoZ);
     this->Fichas->get(indiceFicha)->obtenerCoordenada()->sumar(destino);
-    return true;
 
 }
 
@@ -66,12 +70,16 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
 }
 
 Ficha * Jugador::obtenerFicha(int pos) {
+    if(pos>this->Fichas->contarElementos()){
+        throw std::invalid_argument("Opcion invalida");
+    }
+
     return this->Fichas->get(pos);
 }
+
 int Jugador::cantidadFichas(void)   {
     return this->Fichas->contarElementos();
 }
-
 void Jugador::mostrarFichas()   {
     std::cout<<"Fichas Disponibles:"<<std::endl;//DEBUG
 
@@ -79,9 +87,16 @@ void Jugador::mostrarFichas()   {
         std::cout<<'['<<i<<']'<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
     }
 }
-
 void Jugador::eliminarFicha(unsigned int pos)   {
     this->Fichas->remover(pos);
+}
 
+
+
+void Jugador::agregarCarta(CartaBatallaDigital carta)  {
+    this->Cartas.agregarCarta(carta);
+}
+CartaBatallaDigital * Jugador::obtenerCarta(int pos) {
+    return this->Cartas->getCarta(pos);
 }
 

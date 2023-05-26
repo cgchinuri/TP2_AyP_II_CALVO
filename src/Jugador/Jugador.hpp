@@ -19,21 +19,32 @@ private:
     std::string *nombre;
     int idJugador;
     Lista <Ficha *> * Fichas;
+    Mazo <CartaBatallaDigital> * Cartas;
 
 public:
+
     Jugador(int id, const std::string s);
     std::string & Nombre(void);
     int identificador(void);
     
     bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
-    bool moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ);
+    void moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ);
 
     void agregarFicha(Ficha * nuevaFicha);
     void eliminarFicha(unsigned int pos);
     Ficha * obtenerFicha(Coordenada<int> & pos);
     Ficha * obtenerFicha(int pos);
     int cantidadFichas(void);
+
+    /*  Muestra las fichas del jugador por la consola
+    */
     void mostrarFichas(void);
+
+    void agregarCarta(CartaBatallaDigital * carta);
+    CartaBatallaDigital * obtenerCarta(int pos);
+
+
+
 };
 
 #endif
