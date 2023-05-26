@@ -16,11 +16,18 @@ using namespace std;
 
 int main() {
 
-	//unsigned int [3] dimensiones = {5,3,8};
 
-	//BatallaDigital batallaDigital(3, dimensiones);
 
 	cout << "Inicio" << endl;
+
+
+	// Creo la clase del juego batalla digital
+	BatallaDigital * batallaDigital = NULL;
+
+	batallaDigital = new BatallaDigital();
+
+
+	/*
 
 	Tablero tableroJuego(5, 5, 5);
 	
@@ -62,6 +69,8 @@ int main() {
 	ficha4.imprimirInfo();
 	cout << "Apunto al casillero: (" << auxCasilleroPtr->getPosX() << ", " << auxCasilleroPtr->getPosY() << ", " << auxCasilleroPtr->getPosZ() << ")" << endl;
 
+
+	*/
 
 	cout << "====..... Fin .....====" << endl;
 	return 0;
