@@ -39,3 +39,15 @@ std::string Ficha::toStringTipo(void) {
     }
     return s;
 }
+
+Casillero * Ficha::getCasilleroFicha(){
+	return this->casillero;
+}
+
+void Ficha::setCasilleroFicha(Casillero * casillero) {
+	this->casillero = casillero;
+}
+
+void Ficha::desvincularFichaDeCasillero() {
+	this->casillero = NULL;
+}
