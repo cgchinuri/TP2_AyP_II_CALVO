@@ -112,9 +112,9 @@ void BatallaDigital::crearListaJugadores()
 
 	for(int i = 0; i < this->cantidadJugadores; i++){
 		int aux = i + 1;
-		std::string nombre = "Jugador " + std::to_string(aux);
+		std::string nombre = "Jugador ";//FALTA ACA LO DEL ID DEL JUGADOR
 		Jugador* jugador = new Jugador(i+1, nombre);
-		this->listaDeJugadores->agregar(jugador);
+		this->listaDeJugadores->add(jugador);
 	}
 }
 

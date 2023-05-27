@@ -9,10 +9,10 @@
 #define JUGADOR__H
 
 #include <iostream>
-#include "../Utils/Lista/LinkedList_T.hpp"
-#include "../Utils/Coordenada/Coordenada.hpp"
-#include "../Ficha/Ficha.hpp"
-#include "../Carta_Mazo/cartaBatallaDigital.hpp"
+#include "../Utils/LinkedList_T.h"
+#include "../Utils/Coordenada.h"
+#include "../Ficha/Ficha.h"
+#include "../Carta_Mazo/cartaBatallaDigital.h"
 
 class Jugador
 {
@@ -28,8 +28,8 @@ public:
     std::string & Nombre(void);
     int identificador(void);
     
-    bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
-    void moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ);
+    /*bool moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ);
+    void moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ);*/
 
     void agregarFicha(Ficha * nuevaFicha);
     void eliminarFicha(unsigned int pos);

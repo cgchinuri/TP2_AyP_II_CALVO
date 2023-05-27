@@ -1,4 +1,4 @@
-#include "Jugador.hpp"
+#include "Jugador.h"
 #include <stdexcept>
  
 Jugador::Jugador(int id,const std::string s)   {
@@ -20,7 +20,7 @@ int Jugador::identificador(void)    {
 /*  Recibe una posicion de origen y de destino, si hay alguna ficha con la posicion de origen => 
 establece su posicion con las coordenadas del destino. Retorna true si pudo mover, false si no.
 */
-bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
+/*bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
     Coordenada origen(origenX,origenY,origenZ);
     Coordenada destino(destinoX,destinoY,destinoZ);
 
@@ -52,7 +52,7 @@ void Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)
     this->Fichas->get(indiceFicha)->obtenerCoordenada()->sumar(destino);
 
 }
-
+*/
 
 
 void Jugador::agregarFicha(Ficha * nuevaFicha)  {

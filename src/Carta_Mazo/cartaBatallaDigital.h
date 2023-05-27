@@ -1,7 +1,7 @@
 #ifndef CARTA_H
 #define CARTA_H
 
-#include "mazo.hpp"
+#include "mazo.h"
 #include <string>
 
 typedef enum tipo

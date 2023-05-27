@@ -1,7 +1,6 @@
 #include <iostream>
 
 
-#include "lista.h"
 #include "tablero.h"
 
 using namespace std;
@@ -35,11 +34,11 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 				for(int x=1;x<=this->dimX;x++)
 				{
 					casilleroNuevo= new Casillero(x,y,z,tipoCasillero);
-					columnas->agregar(casilleroNuevo);
+					columnas->add(casilleroNuevo);
 				}
-				pisos->agregar(columnas);
+				pisos->add(columnas);
 		}
-		tableroJuego->agregar(pisos);
+		tableroJuego->add(pisos);
 	}
 
 	this->tableroJuego=tableroJuego;
@@ -57,13 +56,13 @@ void Tablero::imprimirTablero()
 	Lista<Casillero*>* columnasRecorrer=NULL;
 	for(int z = 1 ; z <= this->dimZ ; z++)
 	{
-		pisosRecorrer=this->tableroJuego->obtener(z);
+		pisosRecorrer=this->tableroJuego->get(z);
 		for(int y = 1 ; y <= this->dimY ; y++)
 		{
-			columnasRecorrer=pisosRecorrer->obtener(y);
+			columnasRecorrer=pisosRecorrer->get(y);
 			for(int x = 1 ; x <= this->dimX ; x++)
 			{
-				casilleroImprimir=columnasRecorrer->obtener(x);
+				casilleroImprimir=columnasRecorrer->get(x);
 				casilleroImprimir->imprimirPos();
 			}
 		}
@@ -97,12 +96,12 @@ void Tablero::vincularNivelTablero(int nivel)
 	// Vinculación de casilleros dentro de una columna
 	for(int i = 1 ; i <= this->dimY ; i++)
 	{
-		columnaAnterior = this->tableroJuego->obtener(nivel)->obtener(i);
+		columnaAnterior = this->tableroJuego->get(nivel)->get(i);
 
 		for(int j = 1 ; j < this->dimX ; j++)
 		{
-			casilleroAntX = columnaAnterior->obtener(j);
-			casilleroSigX = columnaAnterior->obtener(j+1);
+			casilleroAntX = columnaAnterior->get(j);
+			casilleroSigX = columnaAnterior->get(j+1);
 
 			casilleroAntX->setSigX(casilleroSigX);
 			casilleroSigX->setAntX(casilleroAntX);
@@ -113,13 +112,13 @@ void Tablero::vincularNivelTablero(int nivel)
 	// Vinculación de columnas entre si
 	for(int i = 1 ; i < this->dimY ; i++)
 	{
-		columnaAnterior = this->tableroJuego->obtener(nivel)->obtener(i);
-		columnaSiguiente = this->tableroJuego->obtener(nivel)->obtener(i+1);
+		columnaAnterior = this->tableroJuego->get(nivel)->get(i);
+		columnaSiguiente = this->tableroJuego->get(nivel)->get(i+1);
 
 		for(int j = 1 ; j <= this->dimX ; j++)
 		{
-			casilleroAntY = columnaAnterior->obtener(j);
-			casilleroSigY = columnaSiguiente->obtener(j);
+			casilleroAntY = columnaAnterior->get(j);
+			casilleroSigY = columnaSiguiente->get(j);
 
 			casilleroAntY->setSigY(casilleroSigY);
 			casilleroSigY->setAntY(casilleroAntY);
@@ -137,16 +136,16 @@ void Tablero::vincularPisosTablero()
 	Lista<Casillero*>* columnasSiguiente=NULL;
 	for(int z = 1 ; z < this->dimZ ; z++)
 	{
-		pisoActual=this->tableroJuego->obtener(z);
-		pisoSiguiente=this->tableroJuego->obtener(z+1);
+		pisoActual=this->tableroJuego->get(z);
+		pisoSiguiente=this->tableroJuego->get(z+1);
 		for(int y = 1 ; y <= this->dimY ; y++)
 		{
-			columnasInicial=pisoActual->obtener(y);
-			columnasSiguiente=pisoSiguiente->obtener(y);
+			columnasInicial=pisoActual->get(y);
+			columnasSiguiente=pisoSiguiente->get(y);
 			for(int x = 1 ; x <= this->dimX ; x++)
 			{
-				casilleroVincularInicial=columnasInicial->obtener(x);
-				casilleroVincularSiguiente=columnasSiguiente->obtener(x);
+				casilleroVincularInicial=columnasInicial->get(x);
+				casilleroVincularSiguiente=columnasSiguiente->get(x);
 				casilleroVincularInicial->setSigZ(casilleroVincularSiguiente);
 				casilleroVincularSiguiente->setAntZ(casilleroVincularInicial);
 			}
@@ -161,13 +160,13 @@ bool Tablero::chequearVinculosPisosTablero()
 	Lista<Casillero*>* columna=NULL;
 	for(int z = 1 ; z <= this->dimZ ; z++)
 	{
-		piso=this->tableroJuego->obtener(z);
+		piso=this->tableroJuego->get(z);
 		for(int y = 1 ; y <= this->dimY ; y++)
 		{
-			columna=piso->obtener(y);
+			columna=piso->get(y);
 			for(int x = 1 ; x <= this->dimX ; x++)
 			{
-				casillero=columna->obtener(x);
+				casillero=columna->get(x);
 				if(z==1)
 				{
 					if(!casillero->getSigZ())
@@ -201,7 +200,7 @@ Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 
 	if(x >=1 && x <=this->dimX && y >=1 && y <=this->dimY  && z >=1 && z <=this->dimZ)
 	{
-		casilleroReturn = this->tableroJuego->obtener(z)->obtener(y)->obtener(x);
+		casilleroReturn = this->tableroJuego->get(z)->get(y)->get(x);
 	}
 
 	return casilleroReturn;
@@ -212,13 +211,13 @@ Tablero::~Tablero()
     // Liberar la memoria de los casilleros
     for (int z = 1; z <= dimZ; z++)
     {
-        Lista<Lista<Casillero*>*>* pisos = tableroJuego->obtener(z);
+        Lista<Lista<Casillero*>*>* pisos = tableroJuego->get(z);
         for (int y = 1; y <= dimY; y++)
         {
-            Lista<Casillero*>* columnas = pisos->obtener(y);
+            Lista<Casillero*>* columnas = pisos->get(y);
             for (int x = 1; x <= dimX; x++)
             {
-                Casillero* casillero = columnas->obtener(x);
+                Casillero* casillero = columnas->get(x);
                 delete casillero;
             }
             delete columnas;

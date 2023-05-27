@@ -1,10 +1,11 @@
 #ifndef BATALLA_DIGITAL_H_
 #define BATALLA_DIGITAL_H_
 
-#include "../tablero.h"
-#include "../Ficha/Ficha.hpp"
-#include "../Utils/Lista/LinkedList_T.hpp"
-#include "../Jugador/Jugador.hpp"
+#include <cstddef>
+#include "../Tablero/tablero.h"
+#include "../Ficha/Ficha.h"
+#include "../Utils/LinkedList_T.h"
+#include "../Jugador/Jugador.h"
 
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
@@ -66,7 +67,7 @@ class BatallaDigital
 
         // Pre: -
         // Pos: crea un tablero con dimensiones especificadas y lo deja apuntado con el atributo de la clase
-        void  crearTablero();
+        void crearTablero();
 
         // Pre: -
         // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
@@ -86,17 +87,6 @@ class BatallaDigital
         void desvincularCasillero(Casillero * casillero);
 
 };
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif

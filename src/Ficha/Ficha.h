@@ -1,8 +1,8 @@
 #ifndef FICHA__H
 #define FICHA__H
 
-#include "../Utils/Coordenada/Coordenada.hpp"
-#include "../casillero.h"
+#include "../Utils/Coordenada.h"
+#include "../Tablero/casillero.h"
 
 enum t_ficha    {
     FICHA_BARCO,

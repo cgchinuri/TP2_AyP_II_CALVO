@@ -1,5 +1,4 @@
-#include "cartaBatallaDigital.hpp"
-#include "mazo.hpp"
+#include "cartaBatallaDigital.h"
 #include <string>
 
 // PRE: Recibe un tipo de carta de Batalla Digital válido

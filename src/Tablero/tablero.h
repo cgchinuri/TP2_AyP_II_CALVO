@@ -2,7 +2,7 @@
 #define TABLERO_H_
 
 #include "casillero.h"
-#include "lista.h"
+#include "../Utils/LinkedList_T.h"
 
 class Tablero
 {

@@ -1,7 +1,7 @@
 
 #ifndef SRC_ESTRUCTURAS_LISTA_H_
 #define SRC_ESTRUCTURAS_LISTA_H_
-#include "Nodo_T.hpp"
+#include "Nodo_T.h"
 //Lista implementada con iterador interno.
 
 template<class T> class Lista{
