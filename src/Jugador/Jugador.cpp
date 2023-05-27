@@ -1,13 +1,11 @@
 #include "Jugador.hpp"
-#include "../Carta_Mazo/cartaBatallaDigital.hpp"
-#include "../Carta_Mazo/mazo.hpp"
 #include <stdexcept>
  
 Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
     this->nombre=new std::string(s);
     this->Fichas= new Lista <Ficha *>();
-    this->mazoJugador=new Mazo<CartaBatallaDigital*>();
+    this->Cartas=new Mazo<CartaBatallaDigital*>();
 }  
 
 
@@ -93,6 +91,19 @@ void Jugador::eliminarFicha(unsigned int pos)   {
     this->Fichas->remover(pos);
 }
 
-Mazo<CartaBatallaDigital*>* Jugador::getMazoJugador() {
-    return this->mazoJugador;
+
+
+void Jugador::agregarCarta(CartaBatallaDigital *carta)  {
+    this->Cartas->agregarCarta(carta);
+}
+CartaBatallaDigital * Jugador::obtenerCarta(int pos) {
+    return this->Cartas->getCarta(pos);
+}
+
+void Jugador::mostrarCartas()   {
+    std::cout<<"Cartas Disponibles:"<<std::endl;//DEBUG
+
+    for(size_t i=1; Cartas->avanzarCursor();i++)    {
+        std::cout<<'['<<i<<']'<<Cartas->getCursor()->getNombre()<<std::endl;
+    }
 }
