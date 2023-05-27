@@ -13,6 +13,7 @@
 #include "../Utils/Coordenada/Coordenada.hpp"
 #include "../Ficha/Ficha.hpp"
 #include "../Carta_Mazo/cartaBatallaDigital.hpp"
+#include "../Carta_Mazo/mazo.hpp"
 
 class Jugador
 {
@@ -20,7 +21,7 @@ private:
     std::string *nombre;
     int idJugador;
     Lista <Ficha *> * Fichas;
-    Mazo <CartaBatallaDigital*> * Cartas;
+    Mazo <CartaBatallaDigital*> *mazoJugador;
 
 public:
 
@@ -41,10 +42,7 @@ public:
     */
     void mostrarFichas(void);
 
-    void agregarCarta(CartaBatallaDigital * carta);
-    CartaBatallaDigital * obtenerCarta(int pos);
-    void mostrarCartas();
-
+    Mazo <CartaBatallaDigital*> *getMazoJugador(); 
 };
 
 #endif
