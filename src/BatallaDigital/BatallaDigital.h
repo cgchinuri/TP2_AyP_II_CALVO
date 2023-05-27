@@ -3,6 +3,8 @@
 
 #include "../tablero.h"
 #include "../Ficha/Ficha.hpp"
+#include "../Utils/Lista/LinkedList_T.hpp"
+#include "../Jugador/Jugador.hpp"
 
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
@@ -36,8 +38,8 @@ class BatallaDigital
         // Dimensiones del tablero
         unsigned int dimensionesTablero [3];
 
-        // Aca tendria que haber una lista de jugadores
-
+        // Lista de jugadores
+        Lista<Jugador*> * listaDeJugadores;
         // Puntero al tablero
         Tablero * tableroJuego;
 
