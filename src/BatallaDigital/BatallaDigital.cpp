@@ -7,7 +7,7 @@ BatallaDigital::BatallaDigital()
 	//this->dimensionesTablero = {0, 0, 0};
 	this->cantidadJugadores = 0;
 
-	//listaJugadores = NULL;
+	this->listaDeJugadores = NULL;
 
 	// Se imprime por consola el mensaje de bienvenida
 	imprimirMensajeBienvenida();
