@@ -3,11 +3,12 @@
 
 #include <iostream>
 #include "Jugador.hpp"
+#include "../Carta_Mazo/cartaBatallaDigital.hpp"
 
 int main(void) {
     std::cout<<"Pruebas del TDA Jugador:\n";
 
-    Jugador * jugador1=new Jugador(1,"Santiago");
+    Jugador * jugador1=new Jugador(1,"Jugador 1");
 
     std::cout<<"Nombre:"<<jugador1->Nombre()<<std::endl;
     std::cout<<"id:"<<jugador1->identificador()<<std::endl;
@@ -40,17 +41,33 @@ int main(void) {
 
     
     std::cout<<"Obtener ficha en pos 3"<<jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,3,0
-    std::cout<<"desplazar ficha de pos 3 en (5,5,5)"<<jugador1->moverFicha(3,5,5,5)<<
-    jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;//esperado 0,3,0 + 5,5,5= 5,8,5
+
+    std::cout<<"Desplazar ficha de pos 3 en (5,5,5)"<<std::endl;
+    std::cout<<jugador1->obtenerFicha(3)->toStringTipo()<<jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;
+    jugador1->moverFicha(3,5,5,5);
+    std::cout<<jugador1->obtenerFicha(3)->toStringTipo()<<jugador1->obtenerFicha(3)->obtenerCoordenada()->toString()<<std::endl;
+
 
     jugador1->mostrarFichas();
 
+    //Integracion del mazo
+
+    CartaBatallaDigital * cartaAvion=new CartaBatallaDigital(AVION_RADAR);
+    CartaBatallaDigital * cartaQuimica=new CartaBatallaDigital(ATAQUE_QUIMICO);
+    CartaBatallaDigital * cartaTrinchera=new CartaBatallaDigital(TRINCHERA);
+
+    jugador1->agregarCarta(cartaAvion);
+    jugador1->agregarCarta(cartaQuimica);
+    jugador1->agregarCarta(cartaTrinchera);
 
 
+    jugador1->mostrarCartas();
+    jugador1->obtenerCarta(1);
+        jugador1->mostrarCartas();
 
     return 0;
 }
 
 #endif
 
-//comando compilacion:  g++ -o test Jugador_test.o Jugador.o ../Ficha/Ficha.o
+//comando compilacion:  g++ -o test Jugador_test.o Jugador.o ../Ficha/Ficha.o ../Carta_Mazo/cartaBatallaDigital.o

@@ -5,7 +5,7 @@ Jugador::Jugador(int id,const std::string s)   {
     this->idJugador=id;
     this->nombre=new std::string(s);
     this->Fichas= new Lista <Ficha *>();
-    this->Cartas=new Mazo<CartaBatallaDigital>();
+    this->Cartas=new Mazo<CartaBatallaDigital*>();
 }  
 
 
@@ -84,7 +84,7 @@ void Jugador::mostrarFichas()   {
     std::cout<<"Fichas Disponibles:"<<std::endl;//DEBUG
 
     for(size_t i=1; Fichas->avanzarCursor();i++)    {
-        std::cout<<'['<<i<<']'<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
+        std::cout<<'['<<i<<']'<<Fichas->getCursor()->toStringTipo()<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
     }
 }
 void Jugador::eliminarFicha(unsigned int pos)   {
@@ -93,10 +93,17 @@ void Jugador::eliminarFicha(unsigned int pos)   {
 
 
 
-void Jugador::agregarCarta(CartaBatallaDigital carta)  {
-    this->Cartas.agregarCarta(carta);
+void Jugador::agregarCarta(CartaBatallaDigital *carta)  {
+    this->Cartas->agregarCarta(carta);
 }
 CartaBatallaDigital * Jugador::obtenerCarta(int pos) {
     return this->Cartas->getCarta(pos);
 }
 
+void Jugador::mostrarCartas()   {
+    std::cout<<"Cartas Disponibles:"<<std::endl;//DEBUG
+
+    for(size_t i=1; Cartas->avanzarCursor();i++)    {
+        std::cout<<'['<<i<<']'<<Cartas->getCursor()->getNombre()<<std::endl;
+    }
+}

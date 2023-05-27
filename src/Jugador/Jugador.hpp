@@ -12,6 +12,7 @@
 #include "../Utils/Lista/LinkedList_T.hpp"
 #include "../Utils/Coordenada/Coordenada.hpp"
 #include "../Ficha/Ficha.hpp"
+#include "../Carta_Mazo/cartaBatallaDigital.hpp"
 
 class Jugador
 {
@@ -19,7 +20,7 @@ private:
     std::string *nombre;
     int idJugador;
     Lista <Ficha *> * Fichas;
-    Mazo <CartaBatallaDigital> * Cartas;
+    Mazo <CartaBatallaDigital*> * Cartas;
 
 public:
 
@@ -42,8 +43,7 @@ public:
 
     void agregarCarta(CartaBatallaDigital * carta);
     CartaBatallaDigital * obtenerCarta(int pos);
-
-
+    void mostrarCartas();
 
 };
 
