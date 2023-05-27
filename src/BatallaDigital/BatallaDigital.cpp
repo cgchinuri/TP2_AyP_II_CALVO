@@ -108,6 +108,14 @@ void BatallaDigital::crearTablero()
 void BatallaDigital::crearListaJugadores()
 {
 	// 2 generacion lista jugadores
+	this->listaDeJugadores = new Lista<Jugador*>();
+
+	for(int i = 0; i < this->cantidadJugadores; i++){
+		int aux = i + 1;
+		std::string nombre = "Jugador " + std::to_string(aux);
+		Jugador* jugador = new Jugador(i+1, nombre);
+		this->listaDeJugadores->agregar(jugador);
+	}
 }
 
 void BatallaDigital::imprimirMensajeBienvenida()
