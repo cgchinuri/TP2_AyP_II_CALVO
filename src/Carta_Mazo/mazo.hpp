@@ -1,11 +1,21 @@
+/*
+ * mazo.hpp
+ *
+ *  Created on: 20 May. 2023
+ *      Author: Facundo Baratta
+ * 
+ * "mazo" utiliza lista ligada. Si no esta mezclado, es identico a una lista.
+ * 	Si esta mezclado, devuelve una carta aleatoria.
+ */
+
 #ifndef MAZO_H
 #define MAZO_H
+
 #include <cstdlib>
 #include <ctime>
 #include "../Utils/Lista/LinkedList_T.hpp"
 
-// MAZO utiliza lista ligada. Si no esta mezclado, es identico a una lista.
-// Si esta mezclado, devuelve una carta aleatoria.
+
 
 typedef enum {MEZCLADO, NO_MEZCLADO} estadoMazo_t;
 
