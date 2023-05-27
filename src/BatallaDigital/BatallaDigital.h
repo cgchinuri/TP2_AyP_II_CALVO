@@ -2,7 +2,7 @@
 #define BATALLA_DIGITAL_H_
 
 #include "../tablero.h"
-#include "../Ficha.hpp"
+#include "../Ficha/Ficha.hpp"
 
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
