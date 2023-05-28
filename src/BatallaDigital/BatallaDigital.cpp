@@ -110,9 +110,9 @@ void BatallaDigital::crearListaJugadores()
 	// 2 generacion lista jugadores
 	this->listaDeJugadores = new Lista<Jugador*>();
 
-	for(int i = 0; i < this->cantidadJugadores; i++){
+	for(unsigned int i = 0; i < this->cantidadJugadores; i++){
 		int aux = i + 1;
-		std::string nombre = "Jugador ";//FALTA ACA LO DEL ID DEL JUGADOR
+		std::string nombre = "Jugador " + aux;//FALTA ACA LO DEL ID DEL JUGADOR
 		Jugador* jugador = new Jugador(i+1, nombre);
 		this->listaDeJugadores->add(jugador);
 	}

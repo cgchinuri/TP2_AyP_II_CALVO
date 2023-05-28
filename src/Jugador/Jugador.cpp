@@ -69,7 +69,7 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     return NULL;
 }
 
-Ficha * Jugador::obtenerFicha(int pos) {
+Ficha * Jugador::obtenerFicha(unsigned int pos) {
     if(pos>this->Fichas->contarElementos()){
         throw std::invalid_argument("Opcion invalida");
     }
