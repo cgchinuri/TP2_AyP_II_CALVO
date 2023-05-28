@@ -1,5 +1,4 @@
 #include "EasyBMP_1.06/EasyBMP.h"
-#include "TP2_AyP_II_CALVO/src/Tablero/tablero.h"
 
 #define RESOLUCION 50 // pixeles
 
