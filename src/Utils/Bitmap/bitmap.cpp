@@ -15,7 +15,8 @@ void dibujar(unsigned int x, unsigned int y, unsigned int altoTablero, BMP &tabl
 
 void dibujarTransparente(unsigned int x, unsigned int y, unsigned int altoTablero, BMP &tablero, BMP &elemento)
 {   
-    RGBApixel transparent = {.Blue = 0, .Green = 0, .Red = 0}; // NEGRO
+    RGBApixel transparent;
+    transparent.Blue = transparent.Green = transparent.Red = 0; // NEGRO
     unsigned int moverX = x * RESOLUCION;
     unsigned int moverY = RESOLUCION * (altoTablero - 1 - y);
     for (size_t i = 0; i < RESOLUCION; i++) {
@@ -26,7 +27,7 @@ void dibujarTransparente(unsigned int x, unsigned int y, unsigned int altoTabler
 }
 
 int main() {
-
+    SetEasyBMPwarningsOff();
     BMP tablero;
     unsigned int anchoTablero = 25, altoTablero = 50;
     tablero.SetSize(RESOLUCION * anchoTablero, RESOLUCION*altoTablero);
