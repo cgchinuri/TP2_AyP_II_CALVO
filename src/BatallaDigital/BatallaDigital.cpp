@@ -16,6 +16,7 @@ BatallaDigital::BatallaDigital()
 	ingresarNumeroJugadores();
 
 	// Se crea la lista de jugadores
+	crearListaJugadores();
 
 	// Se solicita que se ingresen las dimensiones del tablero
 	ingresarDimensionesTablero();
@@ -98,7 +99,7 @@ void BatallaDigital::ingresarDimensionesTablero()
 
 void BatallaDigital::crearTablero()
 {
-	// 1 generacion del tablero
+	// generacion del tablero
 	tableroJuego = new Tablero(this->dimensionesTablero[0],this->dimensionesTablero[1],this->dimensionesTablero[2]);
 
 	std::cout << "Se generó un tablero con dimensiones (" << this->dimensionesTablero[0] <<", " << this->dimensionesTablero[1] << ", " << this->dimensionesTablero[2] <<")" << std::endl;
@@ -107,7 +108,7 @@ void BatallaDigital::crearTablero()
 
 void BatallaDigital::crearListaJugadores()
 {
-	// 2 generacion lista jugadores
+	// generacion lista jugadores
 	this->listaDeJugadores = new Lista<Jugador*>();
 
 	for(unsigned int i = 0; i < this->cantidadJugadores; i++){
@@ -145,4 +146,64 @@ void BatallaDigital::desvincularFicha(Ficha * ficha)
 void desvincularCasillero(Casillero * casillero)
 {
 	casillero->vaciarCasillero();
+}
+
+
+Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z)
+{
+
+	Ficha * nuevaFicha = new Ficha(tipoFicha, x, y , z);
+	Casillero * casilleroVinculacion = this->tableroJuego->obtenerCasillero(x,y,z);
+
+	vincularFichaYCasillero(casilleroVinculacion, nuevaFicha);
+
+	// No estaría mal agregar la ficha a la lista de fichas del jugador antes de terminar la función
+
+
+	return nuevaFicha;
+
+}
+
+
+void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros)
+{
+	// Casillero de inicio de la trayectoria
+	Casillero * casilleroInicio = fichaMover->getCasilleroFicha();
+
+	// Casillero destino de la trayectoria
+	// Llamo a la funcion de tablero que navega por si mismo encontrando obstaculos o cambio de terreno
+	Casillero * casilleroDestino = this->tableroJuego->navegarTablero(casilleroInicio, tipoMovimiento, cantCasilleros);
+
+
+	if(!casilleroDestino)
+	{
+		// Si el casillero destino es null entonces me fui del mapa
+		std::cout << "Error fuera de mapa" << std::endl;
+	}
+	else if (casilleroInicio->getTipoCasillero() != casilleroDestino->getTipoCasillero())
+	{
+		// Si hay cambio de terreno no puedo mover
+		std::cout << "Error distinto terreno" << std::endl;
+	}
+	else if(casilleroDestino->estaOcupado())
+	{
+		// Si el casillero esta ocupado hay que tomar alguna accion pero no se puede completar el movimiento
+		std::cout << "Casillero de destino ocupado" << std::endl;
+
+
+		// Aca tenemos que hacer la logica de explosion o lo que fuere
+
+
+	}
+	else
+	{
+		// Si no se cumplen las condiciones anteriores entonces puedo mover la ficha
+
+		// Desvinculo ficha y casillero anterior
+		fichaMover->desvincularFichaDeCasillero();
+		casilleroInicio->vaciarCasillero();
+
+		// Vinculo ficha y casillero destino
+		vincularFichaYCasillero(casilleroDestino, fichaMover);
+	}
 }

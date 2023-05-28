@@ -206,6 +206,72 @@ Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 	return casilleroReturn;
 }
 
+Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros)
+{
+	// Puntero que se retornará al final de la función
+	Casillero * casilleroRetorno = casilleroInicio ;
+
+	// Tipo de terreno inicial
+	tipoCasillero_t tipoCasilleroInicio = casilleroInicio->getTipoCasillero();
+
+	for(int i = 0 ; i < cantidadCasilleros ; i ++)
+	{
+		switch(tipoMovimiento)
+		{
+			case adelante:
+				casilleroRetorno = casilleroRetorno->getSigY();
+				break;
+			case atras:
+				casilleroRetorno = casilleroRetorno->getAntY();
+				break;
+			case izquierda:
+				casilleroRetorno = casilleroRetorno->getAntX();
+				break;
+			case derecha:
+				casilleroRetorno = casilleroRetorno->getSigX();
+				break;
+			case adelante_izquierda:
+				casilleroRetorno = casilleroRetorno->getSigY();
+				casilleroRetorno = casilleroRetorno->getAntX();
+				break;
+			case adelante_derecha:
+				casilleroRetorno = casilleroRetorno->getSigY();
+				casilleroRetorno = casilleroRetorno->getSigX();
+				break;
+			case atras_izquierda:
+				casilleroRetorno = casilleroRetorno->getAntY();
+				casilleroRetorno = casilleroRetorno->getAntX();
+				break;
+			case atras_derecha:
+				casilleroRetorno = casilleroRetorno->getAntY();
+				casilleroRetorno = casilleroRetorno->getSigX();
+				break;
+			default:
+				break;
+		}
+
+
+		if(!casilleroRetorno)
+		{
+			// Si estoy fuera del mapa retorno null
+			return casilleroRetorno;
+		}
+		else if(casilleroRetorno->getTipoCasillero() != tipoCasilleroInicio)
+		{
+			// Si cambié de tipo de terreno retorno este casillero
+			return casilleroRetorno;
+		}
+		else if(casilleroRetorno->estaOcupado())
+		{
+			// Si el casillero está ocupado, lo retorno y finalizo el movimiento
+			return casilleroRetorno;
+		}
+	}
+
+	return casilleroRetorno;
+}
+
+
 Tablero::~Tablero()
 {
     // Liberar la memoria de los casilleros

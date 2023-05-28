@@ -3,6 +3,7 @@
 
 #include "casillero.h"
 #include "../Utils/LinkedList_T.h"
+#include "../Utils/TipoMovimiento.h"
 
 class Tablero
 {
@@ -59,6 +60,15 @@ class Tablero
 		// Pos: devuelve un puntero a un casillero si está dentro de las dimensiones del tablero
 		//		devuelve null si no está dentro de las dimensiones del tablero
 		Casillero * obtenerCasillero(int x, int y, int z);
+
+		// Pre: se ingresa como argumento un casillero inicial para el movimiento, un tipo de movimiento que puede ser
+		//		vertical horizontal o diagonal, y una cantidad de casilleros a desplazar
+		// Pos: el algoritmo navega por el tablero pasando por los casilleros de su trayectoria.
+		//		Si el trayecto fue ideal (sin obstáculos y sin cambiar de terreno) devuelve el casillero final
+		//		Si encontró un obstáculo en el medio, devuelve el casillero con el obstáculo, sin terminar la trayectoria
+		//		Si encontró un cambio de terreno, devuelve dicho casillero, sin terminar la trayectoria
+		//		Si el mapa se acabó, devuelve null.
+		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
 
 		// Destructor
 		~Tablero();

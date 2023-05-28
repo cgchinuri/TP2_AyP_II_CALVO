@@ -4,9 +4,14 @@
 
 Casillero::Casillero(int x, int y, int z, tipoCasillero_t tipoCasillero)
 {
+	// Redundante, reemplazado por TDA coordenada
 	this->x = x;
 	this->y = y;
 	this->z = z;
+
+	// Inicializo TDA coordenada
+	this->coordenada= new Coordenada<int>(x,y,z);
+
 
 	this->tipoCasillero = tipoCasillero;
 
@@ -38,6 +43,11 @@ int Casillero::getPosY()
 int Casillero::getPosZ()
 {
 	return this->z;
+}
+
+Coordenada<int> * Casillero::getCoordenada(void)
+{
+	return this->coordenada;
 }
 
 void Casillero::imprimirPos()
@@ -129,4 +139,12 @@ Ficha * Casillero::getFichaCasillero()
 bool Casillero::estaOcupado()
 {
 	return (this->fichaOcupa)?true:false;
+}
+
+Casillero::~Casillero()
+{
+	std::cout << "destructor casillero" << std::endl;
+	// Libero la memoria del TDA coordenada
+	delete this->coordenada;
+
 }

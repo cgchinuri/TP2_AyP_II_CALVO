@@ -1,6 +1,9 @@
 #ifndef CASILLERO_H_
 #define CASILLERO_H_
 
+#include "../Utils/Coordenada.h"
+
+
 typedef enum
 {
 	tierra,
@@ -15,10 +18,13 @@ class Ficha;
 class Casillero
 {
 	private:
-		// Atributos de posción
+		// Atributos de posción (reemplazado por tda coordenada)
 		int x;
 		int y;
 		int z;
+
+		// Puntero a TDA coordenada
+		Coordenada<int> * coordenada;
 
 		// Punteros a casilleros aledaños
 		Casillero * sigX;
@@ -53,6 +59,10 @@ class Casillero
 		// Pre: -
 		// Pos: devuelve la posición en Z
 		int getPosZ();
+
+		// Pre: -
+		// Pos: devuelve puntero a su TDA coordenada
+		Coordenada<int> * getCoordenada(void);
 
 		// Pre: -
 		// Pos: imprime la posicion del casillero
@@ -128,6 +138,10 @@ class Casillero
 		// Pos: retorna true si el puntero a ficha del casillero está apuntando a algo
 		//		retorna false si el puntero a ficha del casillero está apuntando a null
 		bool estaOcupado();
+
+
+		// Destructor
+		~Casillero();
 
 };
 

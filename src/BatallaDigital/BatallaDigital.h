@@ -86,6 +86,19 @@ class BatallaDigital
         // Pos: lo deja apuntnado a null en su puntero a ficha
         void desvincularCasillero(Casillero * casillero);
 
+        // Pre: recibe como argumentos el tipo de ficha y la posicion a vincular en el tablero
+        // Pos: crea una ficha del tipo solicitado y la vincula con la posicion especificada del tablero
+        Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z);
+
+
+        // Pre: recibe como argumentos una ficha, un tipo de movimiento y una cantidad de casilleros a mover
+        // Pos: si la trayectoria es limpia la mueve
+        //		si la trayectoria cae fuera del mapa avisa
+        // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
+        // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
+        void moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros);
+
+
 };
 
 
