@@ -1903,3 +1903,2551 @@ bool Rescale( BMP& InputImage , char mode, int NewDimension )
  *InputImage(NewWidth-1,NewHeight-1) = *OldImage(OldWidth-1,OldHeight-1);
  return true;
 }
+
+/*************************************************
+*                                                *
+*  EasyBMP Cross-Platform Windows Bitmap Library * 
+*                                                *
+*  Author: Paul Macklin                          *
+*   email: pmacklin@math.uci.edu                 *
+*                                                *
+*    file: EasyBMP_Geometry.h                    *
+*    date: 2-21-2005                             *
+* version: 1.05.00                               *
+*                                                *
+*   License: BSD (revised)                       *
+* Copyright: 2005-2006 by the EasyBMP Project    * 
+*                                                *
+* description: draw simple geometric objects     *
+*                                                *
+*************************************************/
+
+#include "EasyBMP_Geometry.h"
+
+int ebmpRound( double input )
+{
+ double output = floor( input );
+ if( output - input >= 0.50 )
+ { return (int) ( output+1 ); }
+ return (int) output;
+}
+
+double InverseAngle( double Xdir, double Ydir )
+{
+ double pi = 3.14159265358979;
+ double Norm = sqrt( Xdir*Xdir + Ydir*Ydir );
+ if( Norm <= 0.25 )
+ { return 0.0; }
+ Xdir /= Norm; 
+ Ydir /= Norm;
+
+ double Xabs = fabs( Xdir );
+ double Yabs = fabs( Ydir );
+ double theta = 0.5*( acos( Xabs ) + asin( Yabs ) );
+
+ if( Xdir >= 0.0 && Ydir >= 0.0 )
+ { return theta; }
+ if( Xdir < 0.0 && Ydir >= 0.0 )
+ { return pi - theta; }
+ if( Xdir < 0.0 && Ydir < 0.0 )
+ { return pi + theta; }
+ return 2*pi - theta; 
+}
+
+double LineFunction( double SlopeX , double SlopeY, int StartX, int StartY, double TestX, double TestY )
+{
+ return fabs( SlopeX*(TestY-StartY) - SlopeY*(TestX-StartX) );
+}
+
+void DrawAALine( BMP &Image , int FromX, int FromY, int ToX, int ToY , RGBApixel Color )
+{
+ double SlopeX = ToX-FromX;
+ double SlopeY = ToY-FromY;
+
+ if( fabs( SlopeX ) <= 0.8 && fabs( SlopeY ) <= 0.8 ) // nothing to do; don't bother
+ {
+  return;
+ }
+ double Norm = sqrt( Square( SlopeX ) + Square( SlopeY ) );
+ SlopeX /= Norm; 
+ SlopeY /= Norm;
+
+ // bounds checking
+
+ if( FromX >= Image.TellWidth() )
+ { FromX = Image.TellWidth()-1; }
+ if( FromX < 0 )
+ { FromX = 0; }
+ if( ToX >= Image.TellWidth() )
+ { ToX = Image.TellWidth()-1; }
+ if( ToX < 0 )
+ { ToX = 0; }
+
+ if( FromY >= Image.TellHeight() )
+ { FromY = Image.TellHeight()-1; }
+ if( FromY < 0 )
+ { FromY = 0; }
+ if( ToY >= Image.TellHeight() )
+ { ToY = Image.TellHeight()-1; }
+ if( ToY < 0 )
+ { ToY = 0; }
+
+ int LeftI = FromX;
+ int RightI = ToX;
+ if( RightI < LeftI ){ int temp = LeftI; LeftI = RightI; RightI = temp; }
+ int LeftJ = FromY;
+ int RightJ = ToY;
+ if( RightJ < LeftJ ){ int temp = LeftJ; LeftJ = RightJ; RightJ = temp; }
+ 
+ int i,j;
+ for( i=LeftI ; i <= RightI ; i++ )
+ {
+  for( j=LeftJ ; j <= RightJ ; j++ )
+  {
+   double ii=0;
+   double jj=0;
+   double dx = 0.25;
+   double dy = 0.25;
+   double x = i-1.5*dx;
+   double y = j-1.5*dx;
+   
+   double Temp = 0.0;
+   
+   for( ii=-2; ii<=1 ; ii++)
+   {
+    for( jj=-2 ; jj<=1 ; jj++)
+    {
+     x = i+ii*dx+0.5*dx;
+     y = j+jj*dy+0.5*dy;
+     double Temp1 = LineFunction( SlopeX, SlopeY , FromX, FromY, x,y ); 
+     if( Temp1 <= 0.5 ){ Temp1 = 1.0; }else{ Temp1 = 0.0; }
+     Temp+=Temp1;
+    }   
+   }
+   
+   Temp /= 16.0;
+   double MinValue = 0.03125; // 1.0/32.0
+   
+   if( Temp > MinValue )
+   {
+    Image(i,j)->Red = (ebmpBYTE) (unsigned int) (  (1.0-Temp)*( (double) Image(i,j)->Red )
+                                                        +Temp*( (double) Color.Red ) );
+    Image(i,j)->Green = (ebmpBYTE) (unsigned int) (  (1.0-Temp)*( (double) Image(i,j)->Green )
+                                                        +Temp*( (double) Color.Green ) );
+    Image(i,j)->Blue = (ebmpBYTE) (unsigned int) (  (1.0-Temp)*( (double) Image(i,j)->Blue )
+                                                          +Temp*( (double) Color.Blue ) );
+   }
+   
+  }
+ }
+ 
+ return; 
+}
+
+void DrawFastLine( BMP &Image , int FromX, int FromY, int ToX, int ToY , RGBApixel Color )
+{
+ // bounds checking
+
+ if( FromX >= Image.TellWidth() )
+ { FromX = Image.TellWidth()-1; }
+ if( FromX < 0 )
+ { FromX = 0; }
+ if( ToX >= Image.TellWidth() )
+ { ToX = Image.TellWidth()-1; }
+ if( ToX < 0 )
+ { ToX = 0; }
+
+ if( FromY >= Image.TellHeight() )
+ { FromY = Image.TellHeight()-1; }
+ if( FromY < 0 )
+ { FromY = 0; }
+ if( ToY >= Image.TellHeight() )
+ { ToY = Image.TellHeight()-1; }
+ if( ToY < 0 )
+ { ToY = 0; }
+
+ // source: http://www.gamedev.net/reference/articles/article1275.asp
+
+ int dX = ToX - FromX;
+ int dY = ToY - FromY;
+ 
+ if( dX == 0 && dY == 0 ) // nothing to do; don't bother
+ {
+  return;
+ }
+ 
+ int Xinc1 = 1;
+ if( dX < 0 )
+ { Xinc1 = -1; dX = -dX; } 
+ int Yinc1 = 1;
+ if( dY < 0 )
+ { Yinc1 = -1; dY = -dY; }
+ 
+ int x = FromX;               // Start x off at the first pixel
+ int y = FromY;               // Start y off at the first pixel
+ 
+ int Xinc2 = Xinc1;
+ int Yinc2 = Yinc1;
+ 
+ double Denominator;
+ double Numerator;
+ int NumberToAdd;
+ int NumberOfPixels;
+
+ if ( dX >= dY )         // There is at least one x-value for every y-value
+ {
+  Xinc1 = 0;                  // Don't change the x when numerator >= denominator
+  Yinc2 = 0;                  // Don't change the y for every iteration
+  Denominator = dX+0.0;
+  Numerator = 0.5*dX;
+  NumberToAdd = dY;
+  NumberOfPixels = dX;         // There are more x-values than y-values
+ }
+ else                          // There is at least one y-value for every x-value
+ {
+  Xinc2 = 0;                  // Don't change the x for every iteration
+  Yinc1 = 0;                  // Don't change the y when numerator >= denominator
+  Denominator = dY+0.0;
+  Numerator = 0.5*dY;
+  NumberToAdd = dX;
+  NumberOfPixels = dY;         // There are more y-values than x-values
+ }
+ 
+ int CurrentPixel;
+
+ for (CurrentPixel = 0; CurrentPixel <= NumberOfPixels; CurrentPixel++ )
+ {
+  Image(x,y)->Red = Color.Red;
+  Image(x,y)->Green = Color.Green;
+  Image(x,y)->Blue = Color.Blue;
+  
+  Numerator += NumberToAdd;   // Increase the numerator by the top of the fraction
+  if( Numerator >= Denominator ) // Check if numerator >= denominator
+  {
+    Numerator -= Denominator; // Calculate the new numerator value
+    x += Xinc1;               // Change the x as appropriate
+    y += Yinc1;               // Change the y as appropriate
+  }
+  x += Xinc2;                 // Change the x as appropriate
+  y += Yinc2;                 // Change the y as appropriate
+ }
+ 
+ return; 
+}
+
+void DrawArc( BMP &Image , double CenterX, double CenterY , double Radius, 
+              double FromTheta, double ToTheta , RGBApixel Color )
+{
+ double pi = 3.14159265358979;
+
+ while( ToTheta < FromTheta )
+ { ToTheta += 2*pi; }
+
+ double Arclength = (ToTheta-FromTheta)*Radius;
+ if( fabs( Arclength ) <= 1e-5 ) // if it's short, don't bother
+ { return; }
+ 
+ // set up the final circle first
+ 
+ BMP Downsampled;
+ int FinalWidth = (int) floor( 2.0*Radius + 1.0); // was ceil ,also tried Round
+ 
+ // new for testing
+ Radius = 0.5*(FinalWidth-1.0);
+ // end new for testing 
+ 
+ int FinalHeight = FinalWidth;
+ Downsampled.SetSize( FinalWidth , FinalHeight );
+ 
+ // make a temporary circle of double resolution
+
+ BMP Temp;
+ double TempRadius = 2.0*Radius; 
+ 
+ Temp.SetSize( 2*FinalWidth, 2*FinalHeight );
+ //double dTheta = 1.0/TempRadius;
+ 
+ double CenterXtemp = FinalWidth - 0.5; // was TempRadius + .5
+ double CenterYtemp = FinalHeight - 0.5; // was TempRadius + 0.5;
+
+ int x,y;
+ 
+ double OuterRadiusSquared = TempRadius+1.0;
+ OuterRadiusSquared *= OuterRadiusSquared;
+ double InnerRadiusSquared = TempRadius-1.0;
+ InnerRadiusSquared *= InnerRadiusSquared;
+ 
+ for( x=0 ; x < Temp.TellWidth() ;x++)
+ {
+  for( y=0 ; y < Temp.TellHeight() ; y++)
+  {
+   double X = x-CenterXtemp;
+   double Y = y-CenterYtemp;
+   double TempRadiusSquared = X*X + Y*Y;
+   
+   if( InnerRadiusSquared <= TempRadiusSquared && 
+       TempRadiusSquared <= OuterRadiusSquared )
+   {
+    double Angle = InverseAngle( X, Y );
+    bool PlotIt = false;
+    if( FromTheta <= Angle && Angle <= ToTheta )
+    { PlotIt = true; }
+    Angle += 2*pi;
+    if( FromTheta <= Angle && Angle <= ToTheta )
+    { PlotIt = true; }
+    Angle -= 4*pi;
+    if( FromTheta <= Angle && Angle <= ToTheta )
+    { PlotIt = true; }
+    
+    if( PlotIt )
+    { Temp(x,y)->Red = 0; }
+   }
+  }
+ }
+ 
+ // downsample to anti-alias
+ 
+ int i,j;
+ for( i=0 ; i < Downsampled.TellWidth() ; i++ )
+ {
+  for( j=0 ; j < Downsampled.TellHeight() ; j++ )
+  {
+   double TempRed = 0.0;
+  
+   int k,ell;
+   for( k=0 ; k <= 1 ; k++ )
+   {
+    for( ell=0 ; ell <= 1 ; ell++ )
+    {
+     int I = 2*i+k;
+     int J = 2*j+ell;
+     TempRed += (double) Temp(I,J)->Red;
+    }
+   }
+   TempRed /= 4.0;
+   
+   Downsampled(i,j)->Red = (ebmpBYTE) TempRed;
+  }
+ }
+ 
+ // paste with alpha blending 
+ 
+ int DestinationTopLeft = ebmpRound( CenterX - Radius );
+ int DestinationTopRight = ebmpRound( CenterY - Radius );
+ 
+ for( i=0 ; i < Downsampled.TellWidth() ; i++) 
+ {
+  for( j=0 ; j < Downsampled.TellHeight() ; j++)
+  {
+   int DestinationI = DestinationTopLeft+i;
+   int DestinationJ = DestinationTopRight+j;
+   if( DestinationI >= 0 && DestinationI < Image.TellWidth() &&
+       DestinationJ >= 0 && DestinationJ < Image.TellHeight() )
+   {
+    double alpha = (255.0 - Downsampled(i,j)->Red )/255.0;
+    Image(DestinationI,DestinationJ)->Red = (ebmpBYTE) ( 
+      (1.0-alpha)*Image(DestinationI,DestinationJ)->Red 
+    + (alpha)*Color.Red );
+    Image(DestinationI,DestinationJ)->Green = (ebmpBYTE) ( 
+      (1.0-alpha)*Image(DestinationI,DestinationJ)->Green 
+    + (alpha)*Color.Green );
+    Image(DestinationI,DestinationJ)->Blue = (ebmpBYTE) ( 
+      (1.0-alpha)*Image(DestinationI,DestinationJ)->Blue 
+    + (alpha)*Color.Blue );
+   }
+  
+  }
+ }
+ 
+ return;
+}
+
+void DrawLine( BMP &Image , int FromX , int FromY, int ToX, int ToY, RGBApixel Color )
+{
+ if( FromX != ToX && FromY != ToY )
+ {
+  DrawAALine( Image, FromX, FromY, ToX, ToY, Color);
+ } 
+ DrawFastLine( Image, FromX, FromY, ToX, ToY, Color); 
+ return;
+}
+
+
+/*************************************************
+*                                                *
+*  EasyBMP Cross-Platform Windows Bitmap Library * 
+*                                                *
+*  Author: Paul Macklin                          *
+*   email: pmacklin@math.uci.edu                 *
+*                                                *
+*    file: EasyBMP_Font.h                        *
+*    date: 2-21-2005                             *
+* version: 1.05.00                               *
+*                                                *
+*   License: BSD (revised)                       *
+* Copyright: 2005-2006 by the EasyBMP Project    * 
+*                                                *
+* description: draw a simple font                *
+*                                                *
+*************************************************/
+
+#include "EasyBMP_Geometry.h"
+#include "EasyBMP_Font.h"
+				  
+int PrintString( BMP& Image, char* String , int TopLeftX, int TopLeftY , int Height , 
+                  RGBApixel Color )
+{
+ int CharNumber = 0;
+ int StartX = TopLeftX;
+ int Spacing = (int) ebmpRound( 0.2*Height );
+ if( Spacing < 3 )
+ { Spacing = 3; }
+ 
+ for( CharNumber = 0 ; CharNumber < int(strlen( String )) ; CharNumber++ )
+ {
+  int ReturnPosition = PrintLetter( Image , String[CharNumber] , StartX , TopLeftY , Height , Color );
+  StartX = ReturnPosition;
+  StartX += Spacing;
+ }
+ return StartX;
+}
+
+int PrintLetter( BMP& Image, char Letter , int TopLeftX, int TopLeftY, int Height , 
+                  RGBApixel Color )
+{
+ int Width = (int) floor( 0.6*Height);
+ if( Width % 2 != 0 ){ Width++; }
+ int Center = (Width)/2;
+ 
+ //RGBApixel TempColor;
+ //TempColor.Red = 0;
+ //TempColor.Green = 255;
+ //TempColor.Blue = 0;
+ 
+ double pi = 3.14159265358979;
+
+// if( isalpha(Letter) )
+// { Letter = toupper(Letter); }
+
+ if( Letter == COPYRIGHT_SYMBOL )
+ {
+  return PrintCopyright( Image, TopLeftX, TopLeftY, Height, Color );
+ }
+
+ if( Letter == 'a'  )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x3 = x2;
+  int y3 = TopLeftY+Height;
+  
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }
+ 
+ if( Letter == 'b' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x2 = TopLeftX; // ebmpRound(TopLeftX+0.5*Height);
+  int y2 = TopLeftY; // ebmpRound(TopLeftY+0.5*Height);
+  
+  int x3 = x2;
+  int y3 = TopLeftY+Height;
+  
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return ebmpRound( TopLeftX + 0.5*Height );
+ } 
+ 
+ if( Letter == 'c' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+
+  DrawArc(Image,x1,y1,0.25*Height,0.25*pi,-0.25*pi,Color);
+  return ebmpRound( TopLeftX+0.5*Height);
+ }
+
+ if( Letter == 'd' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = TopLeftY; // ebmpRound(TopLeftY+0.5*Height);
+  
+  int x3 = x2;
+  int y3 = TopLeftY+Height;
+  
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }  
+ 
+ if( Letter == 'e' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x2 = TopLeftX;
+  int y2 = ebmpRound(TopLeftY + 0.75*Height);
+  
+  int x3 = ebmpRound( TopLeftX+0.5*Height);
+  int y3 = y2;
+
+  DrawArc(Image,x1,y1,0.25*Height,0.25*pi,0,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+  
+  return x3;
+ } 
+ 
+ if( Letter == 'f' )
+ {
+  int x1 = ebmpRound( TopLeftX + 0.25*Height);
+  int y1 = TopLeftY + Center;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x4 = x1 + (x1-x3);
+  int y4 = y3;
+  
+  double x5 = TopLeftX+0.5*Height;
+  double y5 = TopLeftY+0.25*Height;
+  
+  if( Height % 4 == 3 )
+  { x5 -= 1; }
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  
+  DrawArc(Image,x5,y5,0.25*Height,7*pi/8    ,2*pi,Color);
+
+  return x4;  
+ }
+ 
+ if( Letter == 'g' )
+ {
+  double x1 = TopLeftX+0.25*Height;
+  double y1 = TopLeftY+0.75*Height;
+ 
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x3 = x2;
+  int y3 = ebmpRound(TopLeftY+1.25*Height);
+  
+  double x4 = x1; 
+  double y4 = TopLeftY+1.25*Height;
+ 
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawArc(Image,x4,y4,0.25*Height,0,pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return ebmpRound(TopLeftX+0.5*Height);
+ }
+ 
+ if( Letter == 'h' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x3 = TopLeftX;
+  int y3 = TopLeftY; // ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+  int x5 = ebmpRound(TopLeftX+0.5*Height);
+  int y5 = ebmpRound(TopLeftY+0.75*Height);
+  
+  int x6 = x5;
+  int y6 = y4;
+  
+  DrawArc(Image,x1,y1,0.25*Height,pi,2*pi,Color);
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x5,y5,x6,y6,Color);
+ 
+  return x5;
+ }  
+ 
+ if( Letter == 'i' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+   
+  int x2 = x1;
+  int y2 = TopLeftY+Height;
+  
+  double x3 = x1;
+  double y3 = y1 - 2.5;
+ 
+  DrawArc( Image, x3, y3, 0.75 , 0 , 6.3 , Color );
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  
+  return ebmpRound(x1+1.25);
+ }
+ 
+ if( Letter == 'j' )
+ {
+  int x1 = ebmpRound(TopLeftX+0.25*Height);
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+   
+  int x2 = x1;
+  int y2 = ebmpRound(TopLeftY+1.25*Height);
+  
+  double x3 = x1;
+  double y3 = y1 - 2.5;
+  
+  double x4 = TopLeftX;
+  double y4 = TopLeftY+1.25*Height;
+ 
+  DrawArc( Image, x3, y3, 0.75 , 0 , 6.3 , Color );
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  
+  DrawArc(Image,x4,y4,0.25*Height,0,pi,Color);
+  
+  return x1;
+ } 
+ 
+ if( Letter == 'k' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY+Height;
+  
+  int x3 = x1;
+  int y3 = ebmpRound(TopLeftY+0.75*Height);
+  
+  int x4 = ebmpRound(TopLeftX+0.3*Height);
+  int y4 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x5 = x4;
+  int y5 = y2;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x3,y3,x5,y5,Color);
+ 
+  return x5;
+ }
+ 
+ if( Letter == 'm' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+
+  double x2 = TopLeftX + 0.75*Height;
+  double y2 = y1;  
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+  int x5 = ebmpRound(TopLeftX+0.5*Height);
+  int y5 = ebmpRound(TopLeftY+0.75*Height);
+  
+  int x6 = x5;
+  int y6 = y4;
+  
+  int x7 = ebmpRound(TopLeftX+Height);
+  if( x7 - x5 > x5 - x3 )
+  { x7--; }
+  
+  int y7 = y5;
+  
+  int x8 = x7;
+  int y8 = y4;
+  
+  
+  DrawArc(Image,x1,y1,0.25*Height,pi,2*pi,Color);
+  DrawArc(Image,x2,y2,0.25*Height,pi,2*pi,Color);
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x5,y5,x6,y6,Color);
+  DrawLine(Image,x7,y7,x8,y8,Color);
+ 
+  return x7;
+ }
+ 
+ if( Letter == 'n' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+  int x5 = ebmpRound(TopLeftX+0.5*Height);
+  int y5 = ebmpRound(TopLeftY+0.75*Height);
+  
+  int x6 = x5;
+  int y6 = y4;
+  
+  DrawArc(Image,x1,y1,0.25*Height,pi,2*pi,Color);
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x5,y5,x6,y6,Color);
+ 
+  return x5;
+ } 
+ 
+ if( Letter == 'o' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+ 
+  return ebmpRound(TopLeftX + 0.5*Height);
+ }   
+ 
+ if( Letter == 'p' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x2 = TopLeftX;
+  int y2 = ebmpRound(TopLeftY + 0.5*Height);
+  
+  int x3 = x2;
+  int y3 = ebmpRound(TopLeftY + 1.5*Height);
+
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }
+ 
+ if( Letter == 'q' )
+ {
+  double x1 = TopLeftX+0.25*Height;
+  double y1 = TopLeftY+0.75*Height;
+ 
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x3 = x2;
+  int y3 = ebmpRound(TopLeftY+1.5*Height);
+
+  int x4 = ebmpRound(x3+0.2*Height);
+  int y4 = ebmpRound(y3-0.2*Height);
+ 
+  DrawArc(Image,x1,y1,0.25*Height,0,2*pi,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+ 
+  return ebmpRound(TopLeftX+0.5*Height);
+ }
+ 
+ if( Letter == 'r' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+
+/*  
+  int x5 = ebmpRound(TopLeftX+0.5*Height);
+  int y5 = ebmpRound(TopLeftY+0.75*Height);
+  
+  int x6 = x5;
+  int y6 = y4;
+*/  
+  
+  DrawArc(Image,x1,y1,0.25*Height,pi,2*pi,Color);
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+//  DrawLine(Image,x5,y5,x6,y6,Color);
+ 
+  return ebmpRound(TopLeftX+0.5*Height);
+ }  
+ 
+ if( Letter == 's' )
+ {
+  double x1 = TopLeftX+0.125*Height;
+  double y1 = TopLeftY+0.625*Height;
+
+  double x2 = x1;
+  double y2 = (TopLeftY+0.875*Height);
+  
+  double difference = (TopLeftY+Height)-y2;
+  double MaxAngle1 = 0;
+  //double MaxAngle2 = pi; REvisar por las dudas
+  //if( difference < 1.5 )
+  //{ difference = 1.5; MaxAngle1 = 0; MaxAngle2 = 1.5; x1 = TopLeftX + difference; x2 = x1; }
+  
+  y1 = y2 - 2*difference;
+  
+  DrawArc(Image,x1,y1,difference,0.5*pi,MaxAngle1,Color);
+  DrawArc(Image,x2,y2,difference,-0.5*pi,pi,Color);
+ 
+  return ebmpRound(TopLeftX+2*difference);
+ }
+ 
+ if( Letter == 't' )
+ {
+  int x1 = ebmpRound( TopLeftX + 0.25*Height);
+  int y1 = TopLeftY + Center;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x4 = x1 + (x1-x3);
+  int y4 = y3;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+
+  return x4; 
+ }
+ 
+ if( Letter == 'u' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.75*Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = x3;
+  int y4 = ebmpRound(TopLeftY+0.75*Height);//  + Height;
+  
+  int x5 = ebmpRound(TopLeftX+0.5*Height);
+  int y5 = TopLeftY + Height;// ebmpRound(TopLeftY+0.75*Height);
+  
+  int x6 = x5;
+  int y6 = y3;
+  
+  DrawArc(Image,x1,y1,0.25*Height,0,pi,Color);
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x5,y5,x6,y6,Color);
+ 
+  return x5;
+ }  
+ 
+ if( Letter == 'v' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x2 = ebmpRound( TopLeftX+0.2*Height);
+  int y2 = TopLeftY+Height;
+  
+  int x3 = ebmpRound( TopLeftX+0.4*Height);
+  int y3 = y1;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return x3;
+ }
+
+ if( Letter == 'w' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x2 = ebmpRound(TopLeftX+0.2*Height);
+  int y2 = TopLeftY+Height;
+  
+  int x3 = ebmpRound(TopLeftX+0.4*Height);
+  int y3 = y1;
+  
+  int x4 = ebmpRound(x3+0.2*Height);
+  int y4 = y2;
+  
+  int x5 = ebmpRound(x3+0.4*Height);
+  int y5 = y1;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x4,y4,x5,y5,Color);
+  
+  return x5;
+ }
+ 
+ if( Letter == 'x' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = TopLeftY+Height;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  DrawLine(Image,x1,y1,x4,y4,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+ 
+  return x4;
+ }
+ 
+ if( Letter == 'y' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = y1;
+  
+  int x3 = ebmpRound(x1+0.25*Height);
+  int y3 = TopLeftY+Height;
+  
+  int x4 = x1;
+  int y4 = ebmpRound(TopLeftY+1.25*Height)+1;
+  
+  DrawLine(Image,x1,y1,x3,y3,Color);
+  DrawLine(Image,x2,y2,x4,y4,Color);
+ 
+  return x2;
+ } 
+ 
+ if( Letter == 'z' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x2 = ebmpRound(TopLeftX+0.5*Height);
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = TopLeftY+Height;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  
+  return x4;
+ }
+ 
+ if( Letter == 'A' )
+ {
+  // define some control points
+  
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+  
+  int x2 = TopLeftX + ebmpRound( 0.3*Height );
+  int y2 = TopLeftY;
+  
+  int x3 = TopLeftX + ebmpRound( 0.6*Height );
+  int y3 = y1;
+  
+  int x4 = TopLeftX + ebmpRound( 0.1*Height );
+  int y4 = ebmpRound( y1 - Height/3.0 );
+  
+  int x5 = ebmpRound( x3 - 0.1*Height ); 
+  int y5 = y4;
+ 
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  DrawLine( Image , x4, y4, x5, y5, Color );
+ 
+  return x3; 
+ }
+ 
+ if( Letter == 'B' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+  
+  int x2 = TopLeftX;
+  int y2 = TopLeftY;
+  
+  int x3 = TopLeftX + Center; // (int) ebmpRound( 0.3*Height );
+  int y3 = TopLeftY;
+  
+  int x4 = x1;
+  int y4 = (int) ebmpRound( TopLeftY + 0.5*Height );
+
+  int x5 = x3;
+  int y5 = y4;
+  
+  int x6 = x3;
+  int y6 = y1;
+
+  // centers of the circles
+  
+  double x7 = x3;
+  double y7 = ( TopLeftY + 0.25*Height );
+
+  double x8 = x3;
+  double y8 = ( TopLeftY + 0.75*Height );
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  
+  DrawLine( Image , x2, y2, x3, y3, Color );  
+  DrawLine( Image , x4, y4, x5, y5, Color );  
+  DrawLine( Image , x1, y1, x6, y6, Color );
+  
+  DrawArc( Image, x7, y7 , 0.25*Height , -1.57079632679490 , 1.57079632679490 , Color ); 
+  DrawArc( Image, x8, y8 , 0.25*Height , -1.57079632679490 , 1.57079632679490 , Color ); 
+  
+  return ebmpRound( TopLeftX + Center + 0.25*Height); 
+ }
+ 
+ if( Letter == 'C' )
+ {
+  double x5 = TopLeftX + Center; 
+  double y5 = TopLeftY + Center; 
+
+  double x6 = x5;
+  double y6 = TopLeftY + Height - Center; 
+  
+  int x7 = TopLeftX;
+  int y7 = (int) y5; 
+  
+  int x8 = x7;
+  int y8 = (int) y6; 
+
+  DrawArc( Image, x5, y5 , Center , -3.14159265358979 , 0 , Color ); 
+  DrawArc( Image, x6, y6 , Center , 0 , 3.14159265358979, Color ); 
+  
+  DrawLine( Image , x7, y7, x8, y8, Color );
+ 
+  return TopLeftX + Width; //  ebmpRound(TopLeftX+0.6*Height);
+ } 
+ 
+ if( Letter == 'D' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Center; // ebmpRound( TopLeftX + 0.3*Height );
+  int y2 = y1;
+  
+  int x3 = TopLeftX;
+  int y3 = TopLeftY+Height;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  double x5 = x2;
+  double y5 = TopLeftY + Center; // TopLeftY + 0.3*Height;
+
+  double x6 = x2;
+  double y6 = TopLeftY + Height - Center; // TopLeftY + 0.7*Height;
+  
+  int x7 = TopLeftX + Width; // ebmpRound(TopLeftX + 0.6*Height);
+  int y7 = (int) y5; // ebmpRound( y5 );
+  
+  int x8 = x7;
+  int y8 = (int) y6; //  ebmpRound( y6 );
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x1, y1, x3, y3, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+
+  DrawArc( Image, x5, y5 , Center , -1.57079632679490 , 0 , Color ); 
+  DrawArc( Image, x6, y6 , Center , 0 , 1.57079632679490 , Color ); 
+
+  DrawLine( Image , x7, y7, x8, y8, Color );
+ 
+  return x7;
+ }
+ 
+ if( Letter == 'E' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = TopLeftY;
+  
+  int x4 = TopLeftX;
+  int y4 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x5 = ebmpRound( TopLeftX + 0.45*Height);
+  int y5 = y4;
+  
+  int x6 = TopLeftX + Width;
+  int y6 = y2;
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x1, y1, x3, y3, Color );
+  DrawLine( Image , x4, y4, x5, y5, Color );
+  DrawLine( Image , x2, y2, x6, y6, Color );
+  
+  return x6;
+ }
+ 
+ if( Letter == 'F' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = TopLeftY;
+  
+  int x4 = TopLeftX;
+  int y4 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x5 = ebmpRound( TopLeftX + 0.45*Height); // x3;
+  int y5 = y4;
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x1, y1, x3, y3, Color );
+  DrawLine( Image , x4, y4, x5, y5, Color );
+  
+  return x3;
+ } 
+ 
+ if( Letter == 'G' )
+ {
+  double x5 = TopLeftX + Center; 
+  double y5 = TopLeftY + Center; 
+
+  double x6 = x5;
+  double y6 = TopLeftY + Height - Center; 
+  
+  int x7 = TopLeftX;
+  int y7 = (int) y5; 
+  
+  int x8 = x7;
+  int y8 = (int) y6; 
+  
+  int x9 = TopLeftX + Center; // ebmpRound( TopLeftX + 0.45*Height );
+  int y9 = ebmpRound( TopLeftY + 0.6*Height );
+  
+  int x10 = TopLeftX + Width; // ebmpRound( TopLeftX + 0.65*Height );
+  int y10 = y9;
+  
+  int x11 = x10;
+  int y11 = TopLeftY + Height;
+
+  DrawArc( Image, x5, y5 , Center , -3.14159265358979 , 0 , Color ); 
+  DrawArc( Image, x6, y6 , Center , 0 , 3.14159265358979, Color ); 
+  
+  DrawLine( Image , x7, y7, x8, y8, Color );
+  
+  DrawLine( Image , x9, y9, x10 ,y10 ,Color );
+  DrawLine( Image , x10, y10, x11 ,y11 ,Color );
+ 
+  return x10; //  ebmpRound(TopLeftX+0.6*Height);
+ }  
+ 
+ if( Letter == 'H' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = y2;
+  
+  int x5 = x1;
+  int y5 = ebmpRound( TopLeftY + 0.5*Height );
+  
+  int x6 = x3;
+  int y6 = y5;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  DrawLine( Image , x5, y5, x6, y6, Color );
+
+  return x3;
+ }
+ 
+ if( Letter == 'I' )
+ {
+  int x1 = ebmpRound( TopLeftX + Height*0.05);
+  int y1 = TopLeftY;
+  
+  int x2 = ebmpRound(x1 + 0.4*Height);
+  int y2 = y1;
+  
+  int x3 = ebmpRound( x1 + 0.2*Height);
+  int y3 = y1;
+  
+  int x4 = x1;
+  int y4 = TopLeftY+Height;
+  
+  int x5 = x2;
+  int y5 = y4;
+  
+  int x6 = x3;
+  int y6 = y4;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x6, y6, Color );
+  DrawLine( Image , x4, y4, x5, y5, Color );
+  
+  return x2;
+ }
+ 
+ if( Letter == 'J' )
+ {
+  int x1 = TopLeftX + Width;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height - Center;
+  
+  double x3 = TopLeftX + Center;
+  double y3 = y2;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawArc( Image, x3, y3, Center , 0 , 1.1*pi , Color );
+  return x1;
+ }
+ 
+ if( Letter == 'K' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = x1;
+  int y3 = TopLeftY + Height - Center; // ebmpRound( TopLeftY + 0.6*Height );
+  
+  int x4 = TopLeftX + Width;
+  int y4 = y1;
+  
+  int x5 = TopLeftX + Center;
+  int y5 = ebmpRound( TopLeftY + 0.5*Height );
+  
+  int x6 = x4;
+  int y6 = y2;
+  
+  DrawLine( Image, x1, y1, x2, y2, Color );
+  DrawLine( Image, x3, y3, x4, y4, Color );
+  DrawLine( Image, x5, y5, x6, y6, Color );
+ 
+  return x4;
+ }
+ 
+ if( Letter == 'L' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y2;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+
+  return x3;
+ }
+  
+ if( Letter == 'M' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = y2;
+  
+  int x5 = TopLeftX + Center;
+  int y5 = y4;
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  DrawLine( Image , x1, y1, x5, y5, Color );
+  DrawLine( Image , x3, y3, x5, y5, Color );
+ 
+  return x3;
+ } 
+ 
+ if( Letter == 'N' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Height;
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = y2;
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  DrawLine( Image , x1, y1, x4, y4, Color );
+ 
+  return x3;
+ }
+
+ if( Letter == 'P' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+  
+  int x2 = TopLeftX;
+  int y2 = TopLeftY;
+  
+  int x3 = TopLeftX + Center; 
+  int y3 = TopLeftY;
+  
+  int x4 = x1;
+  int y4 = ebmpRound( TopLeftY + 0.5*Height );
+
+  int x5 = x3;
+  int y5 = y4;
+  
+  //int x6 = x3;
+  //int y6 = y1;
+
+  // centers of the circles
+  
+  double x7 = x3;
+  double y7 = ( 0.5*(y3+y5) );
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  
+  DrawLine( Image , x2, y2, x3, y3, Color );  
+  DrawLine( Image , x4, y4, x5, y5, Color );  
+  
+  DrawArc( Image, x7, y7 , 0.25*Height , -1.57079632679490 , 1.57079632679490 , Color ); 
+  
+  return ebmpRound( TopLeftX + Center + 0.25*Height); 
+ }
+ 
+ if( Letter == 'Q' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + Height - Center;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Center; 
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y2;
+  
+  int x4 = x3;
+  int y4 = y1;
+
+  // centers of the circles
+  
+  double x5 = TopLeftX + Center; 
+  double y5 = TopLeftY + Center; 
+
+  double x6 = x5;
+  double y6 = TopLeftY + Height - Center; 
+  
+  // more points
+  
+  int x7 = TopLeftX + Width;
+  int y7 = TopLeftY + Height;
+  
+  int x8 = x7 - Center;
+  int y8 = y7 - Center;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  
+  DrawArc( Image, x5, y5 , Center , 3.14159265358979 , 6.28318530717959 , Color ); 
+  DrawArc( Image, x6, y6 , Center , 0 ,  3.14159265358979 , Color ); 
+  
+  DrawLine( Image , x7, y7 , x8, y8 , Color );
+  
+  return x3; 
+ } 
+ 
+ if( Letter == 'R' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+  
+  int x2 = TopLeftX;
+  int y2 = TopLeftY;
+  
+  int x3 = TopLeftX + Center; 
+  int y3 = TopLeftY;
+  
+  int x4 = x1;
+  int y4 = ebmpRound( TopLeftY + 0.5*Height );
+
+  int x5 = x3;
+  int y5 = y4;
+  
+  //int x6 = x3;
+  //int y6 = y1;
+  
+  // centers of the circles
+  
+  double x7 = x3;
+  double y7 = ( 0.5*(y3+y5) );
+  
+  // more
+  
+  int x8 = TopLeftX + Width;
+  int y8 = y1;
+  
+  int x9 = ebmpRound( TopLeftX + 0.25*Height);
+  int y9 = y4;  
+
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  
+  DrawLine( Image , x2, y2, x3, y3, Color );  
+  DrawLine( Image , x4, y4, x5, y5, Color );  
+  
+  DrawArc( Image, x7, y7 , 0.25*Height , -1.57079632679490 , 1.57079632679490 , Color ); 
+  
+  DrawLine( Image , x8, y8, x9, y9 , Color);
+  
+  return TopLeftX + Width; 
+ } 
+ 
+ if( Letter == 'T' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+    
+  int x2 = TopLeftX + Width;
+  int y2 = y1; 
+  
+  int x3 = TopLeftX + Center;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+ 
+  return x2;
+ }
+ 
+ if( Letter == 'S' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.25*Height;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.75*Height;
+  
+  DrawArc( Image, x1, y1 , 0.25*Height, 1.5707963267948 , 6.28318530717 , Color );
+  DrawArc( Image, x2, y2 , 0.25*Height, -1.5707963267948 ,3.1415926535897 , Color );
+  
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }
+ 
+ if( Letter == 'U' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + Height - Center;
+  
+  int x2 = x1;
+  int y2 = TopLeftY; 
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y2;
+  
+  int x4 = x3;
+  int y4 = y1;
+
+  // centers of the circle
+  
+  double x5 = TopLeftX + Center;
+  double y5 = TopLeftY + Height - Center; 
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  
+  DrawArc( Image, x5, y5 , Center , 0 , 3.14159265358979 , Color ); 
+
+  return x3; 
+ }
+
+ if( Letter == 'V' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = TopLeftX + Center;
+  int y3 = TopLeftY + Height;
+  
+  DrawLine( Image , x1, y1, x3, y3, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+
+  return x2;
+ } 
+ 
+ if( Letter == 'W' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = ebmpRound(TopLeftX + 0.4*Height);
+  int y2 = y1;
+  
+  int x3 = ebmpRound( TopLeftX + 0.8*Height);
+  int y3 = y1;
+  
+  int x4 = ebmpRound( TopLeftX + 0.2*Height );
+  int y4 = TopLeftY + Height;
+  
+  int x5 = ebmpRound( TopLeftX + 0.6*Height );
+  int y5 = y4;
+  
+  DrawLine( Image , x1, y1, x4, y4, Color );
+  DrawLine( Image , x4, y4, x2, y2, Color );
+  DrawLine( Image , x2, y2, x5, y5, Color );
+  DrawLine( Image , x5, y5, x3, y3, Color );
+
+  return x3;
+ }  
+ 
+ if( Letter == 'X' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = TopLeftY + Height;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  DrawLine( Image , x1 , y1, x4, y4 , Color );
+  DrawLine( Image , x2 , y2, x3, y3 , Color );
+ 
+  return x2;
+ }
+ 
+ if( Letter == 'Y' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = TopLeftX + Center;
+  int y3 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+  DrawLine( Image , x1, y1, x3, y3, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+
+  return x2;
+ }
+ 
+ if( Letter == 'Z' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = TopLeftY + Height;
+  
+  int x4 = x2;
+  int y4 = y3;
+
+  
+  DrawLine( Image , x1 , y1, x2, y2 , Color );
+  DrawLine( Image , x2 , y2, x3, y3 , Color );
+  DrawLine( Image , x3 , y3, x4, y4 , Color );
+ 
+  return x2;
+ } 
+ 
+ // space 
+ 
+ if( Letter == ' ' || Letter == '\t' )
+ {
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }
+
+ // numbers
+
+ if( Letter == '0' || Letter == 'O' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + Height - Center;
+  
+  int x2 = x1;
+  int y2 = TopLeftY + Center; 
+  
+  int x3 = TopLeftX + Width;
+  int y3 = y2;
+  
+  int x4 = x3;
+  int y4 = y1;
+
+  // centers of the circles
+  
+  double x5 = TopLeftX + Center; 
+  double y5 = TopLeftY + Center; 
+
+  double x6 = x5;
+  double y6 = TopLeftY + Height - Center; 
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  
+  DrawArc( Image, x5, y5 , Center , 3.14159265358979 , 6.28318530717959 , Color ); 
+  DrawArc( Image, x6, y6 , Center , 0 ,  3.14159265358979 , Color ); 
+  
+  return x3; 
+ }
+ 
+ if( Letter == '1' )
+ {
+  int x1 = ebmpRound( TopLeftX + Height*0.05);
+  int y1 = TopLeftY+Height;
+  
+  int x2 = ebmpRound(x1 + 0.4*Height);
+  int y2 = y1;
+  
+  int x3 = ebmpRound( x1 + 0.2*Height);
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = TopLeftY;
+  
+  int x5 = ebmpRound(x1 + 0.05*Height);
+  int y5 = ebmpRound(TopLeftY+ 0.2*Height);
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  DrawLine( Image , x4, y4, x5, y5, Color );
+  
+  return ebmpRound(x2 + Height*0.05);
+ } 
+ 
+ if( Letter == '2' )
+ {
+  int x1 = TopLeftX + Width; // ebmpRound( TopLeftX + 0.6*Height );
+  int y1 = TopLeftY+Height;
+  
+  int x2 = TopLeftX;
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = TopLeftY + Center; // ebmpRound( TopLeftY + 0.3*Height )+1;
+  
+  double x4 = TopLeftX + Center; // TopLeftX + (0.3*Height);
+  double y4 = TopLeftY + Center; // TopLeftY + (0.3*Height);
+  
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  
+  DrawArc( Image , x4 , y4 , Center , 2.74 , 6.3 , Color );
+  
+  return x1;
+ } 
+ 
+ if( Letter == '3' )
+ {
+  double x1 = TopLeftX + (0.25*Height);
+  double y1 = TopLeftY + (0.25*Height);
+  
+  double x2 = x1;
+  double y2 = TopLeftY + (0.75*Height);
+  
+  int x3 = ebmpRound( TopLeftX + 0.3*Height);
+  int y3 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x4 = ebmpRound( TopLeftX + 0.2*Height);
+  int y4 = y3;
+  
+  DrawArc( Image , x1 , y1 , 0.25*Height , -3.14159265358979 , 1.57079632679490 , Color );
+  DrawArc( Image , x2 , y2 , 0.25*Height , -1.57079632679490 , 3.14159265358979 , Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+
+  return ebmpRound(TopLeftX + 0.5*Height); 
+ }  
+ 
+ if( Letter == '4' )
+ {
+  // define some control points
+  
+  int x1 = TopLeftX+Width;
+  int y1 = TopLeftY+ebmpRound(Height*2.0/3.0);
+  
+  int x2 = TopLeftX;
+  int y2 = y1;
+  
+  int x3 = ebmpRound( TopLeftX + 0.5*Height );
+  int y3 = TopLeftY;
+  
+  int x4 = x3;
+  int y4 = TopLeftY + Height;
+  
+ 
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  
+  return x1;
+ }
+ 
+ if( Letter == '5' )
+ {
+  int x1 = TopLeftX + Width;
+  int y1 = TopLeftY;
+  
+  int x2;
+  int y2 = TopLeftY;
+  
+  int x3 = TopLeftX + ebmpRound( 0.2*Height )-1;
+  int y3 = TopLeftY + ebmpRound( 0.48786796564404*Height );
+  
+  x2 = x3+1;
+  
+  double x4 = TopLeftX + Center;
+  double y4 = TopLeftY + Height - Center;
+
+  DrawArc( Image , x4, y4, Center, -2.35619449019234 , 3 , Color );
+ 
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+ 
+  return x1;
+ }
+
+ if( Letter == '6' )
+ {
+  double x1 = TopLeftX + (0.25*Height);
+  double y1 = TopLeftY + (0.25*Height);
+  
+  double x2 = x1;
+  double y2 = TopLeftY + (0.75*Height);
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound( y1 );
+  
+  int x4 = x3;
+  int y4 = ebmpRound( y2 );
+
+  DrawArc( Image , x1 , y1 , 0.25*Height , 3.1 , 6.2 , Color );
+  DrawArc( Image , x2 , y2 , 0.25*Height , 0 , 6.29 , Color );
+  
+  DrawLine( Image , x3, y3, x4, y4, Color );
+
+  return TopLeftX + (int) ebmpRound(.5*Height); 
+ } 
+ 
+ if( Letter == '7' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = ebmpRound(TopLeftX + 0.1*Height);
+  int y3 = TopLeftY + Height;
+ 
+  DrawLine( Image , x1, y1, x2, y2, Color );
+  DrawLine( Image , x2, y2, x3, y3, Color );
+  
+  return x2; 
+ }
+ 
+ if( Letter == '8' )
+ {
+  double x1 = TopLeftX + (0.25*Height);
+  double y1 = TopLeftY + (0.25*Height);
+  
+  double x2 = x1;
+  double y2 = TopLeftY + (0.75*Height);
+
+  DrawArc( Image , x1 , y1 , 0.25*Height , 0 , 6.28318530717959 , Color );
+  DrawArc( Image , x2 , y2 , 0.25*Height , 0 , 6.28318530717959 , Color );
+
+  return TopLeftX + (int) ebmpRound(.5*Height); 
+ } 
+
+ if( Letter == '9' )
+ {
+  double x1 = TopLeftX + (0.25*Height);
+  double y1 = TopLeftY + (0.25*Height);
+  
+  double x2 = x1;
+  double y2 = TopLeftY + (0.75*Height);
+  
+  int x3 = ebmpRound( TopLeftX + 0.5*Height );
+  int y3 = ebmpRound( y1 );
+  
+  int x4 = x3;
+  int y4 = ebmpRound( y2 );
+
+  DrawArc( Image , x1 , y1 , 0.25*Height , 0 , 6.28318530717959 , Color );
+  DrawArc( Image , x2 , y2 , 0.25*Height , 0 , 3 , Color );
+  
+  DrawLine( Image , x3, y3, x4, y4, Color );
+
+  return TopLeftX + (int) ebmpRound(.5*Height); 
+ } 
+ 
+ if( Letter == '.' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Height  - 0.5;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ }
+ 
+ if( Letter == '!' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Height  - 0.5;
+  
+  int x2 = ebmpRound( x1 );
+  int y2 = TopLeftY;
+  
+  int x3 = x2;
+  int y3 = ebmpRound( y1 - 2 );
+  
+  int y4 = ebmpRound( 0.05*(13*y3+7*y2) );
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  
+  DrawLine( Image, x2,y2, x3,y3 , Color);
+  DrawLine( Image, x2-1, y2, x3-1,y4 , Color);
+  
+  return ebmpRound( x1 + 1.25 );
+ } 
+ 
+ if( Letter == ',' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Height  - 0.5;
+  
+  double x3 = x1;
+  double y3 = y1 + 1.75;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3, y3, 1.75 , -0.5*pi , 0.65*pi , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ }
+ 
+ if( Letter == '\'' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Center  - 0.5;
+  
+  double x3 = x1;
+  double y3 = y1 + 1.75;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3, y3, 1.75 , -0.5*pi , 0.65*pi , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ } 
+
+ if( Letter == '`' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Center  - 0.5;
+  
+  double x3 = x1;
+  double y3 = y1 + 1.75;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3, y3, 1.75 , 0.35*pi , 1.5*pi , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ } 
+ 
+ 
+ if( Letter == '"' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Center  - 0.5;
+  
+  double x3 = x1;
+  double y3 = y1 + 1.75;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3, y3, 1.75 , -0.5*pi , 0.65*pi , Color );
+  
+  DrawArc( Image, x1+3.5, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3+3.5, y3, 1.75 , -0.5*pi , 0.65*pi , Color );  
+  
+  return ebmpRound( x1 + 1.25 + 3.5);
+ }  
+ 
+ if( Letter == '[' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = y1 + Height;
+  
+  int x3 = ebmpRound(TopLeftX + 0.15*Height)+1;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = y2;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x1,y1,x3,y3,Color);
+  DrawLine(Image,x2,y2,x4,y4,Color);
+  
+  return x3;
+ }   
+ 
+ if( Letter == ']' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = y1 + Height;
+  
+  int x3 = ebmpRound(TopLeftX + 0.15*Height)+1;
+  int y3 = y1;
+  
+  int x4 = x3;
+  int y4 = y2;
+  
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x1,y1,x3,y3,Color);
+  DrawLine(Image,x2,y2,x4,y4,Color);
+  
+  return x3;
+ }   
+ 
+ if( Letter == '|' || Letter == 'l' )
+ {
+  int x1 = TopLeftX+2;
+  int y1 = TopLeftY;
+  
+  int x2 = x1;
+  int y2 = y1 + Height;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  
+  return x1+2;
+ }    
+ 
+ if( Letter == ':' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Height  - 0.5;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.5*Height;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x2, y2, 0.75 , 0 , 6.3 , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ } 
+
+ if( Letter == ';' )
+ {
+  double x1 = TopLeftX + 1.25;
+  double y1 = TopLeftY + Height  - 0.5;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.5*Height;
+  
+  double x3 = x1;
+  double y3 = y1 + 1.75;
+ 
+  DrawArc( Image, x1, y1, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x2, y2, 0.75 , 0 , 6.3 , Color );
+  DrawArc( Image, x3, y3, 1.75 , -0.5*pi , 0.65*pi , Color );
+  
+  return ebmpRound( x1 + 1.25 );
+ } 
+ 
+ if( Letter == '-' )
+ {
+  int TempWidth = ebmpRound(0.5*Height);
+  if( TempWidth % 2 != 0 )
+  { TempWidth++; }
+  //int TempRad = (TempWidth-1)/2;
+ 
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + TempWidth;
+  
+  int x2 = TopLeftX + TempWidth;
+  int y2 = y1;
+  
+  DrawLine( Image, x1, y1, x2, y2 , Color );
+  
+  return x2;
+ } 
+ 
+ if( Letter == '=' )
+ {
+  int TempWidth = ebmpRound(0.5*Height);
+  if( TempWidth % 2 != 0 )
+  { TempWidth++; }
+  //int TempRad = (TempWidth-1)/2;
+ 
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + TempWidth-1;
+  
+  int x2 = TopLeftX + TempWidth+1;
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = y1+3;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  
+  DrawLine( Image, x1, y1, x2, y2 , Color );
+  DrawLine( Image, x3, y3, x4, y4 , Color );
+  
+  return x2;
+ }  
+ 
+ if( Letter == '+' )
+ {
+  int TempWidth = ebmpRound(0.5*Height);
+  if( TempWidth % 2 != 0 )
+  { TempWidth++; }
+  int TempRad = (TempWidth-1)/2;
+ 
+  int x1 = TopLeftX;
+  int y1 = TopLeftY + TempWidth;
+  
+  int x2 = TopLeftX + TempWidth;
+  int y2 = y1;
+  
+  int x3 = ( x1 + TempRad + 1);
+  int y3 = ( y1 + TempRad + 1);
+
+  int x4 = x3;
+  int y4 = ( y1 - TempRad - 1);
+  
+  DrawLine( Image, x1, y1, x2, y2 , Color );
+  DrawLine( Image, x3, y3, x4, y4 , Color );
+  
+  return x2;
+ }  
+ 
+ if( Letter == '/' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+ 
+  int x2 = TopLeftX+Width;
+  int y2 = TopLeftY;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+ 
+  return x2;
+ }
+ if( Letter == '\\' )
+ {
+  int x1 = TopLeftX+Width;
+  int y1 = TopLeftY+Height;
+ 
+  int x2 = TopLeftX;
+  int y2 = TopLeftY;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+ 
+  return x1;
+ }
+ 
+ if( Letter == '%' )
+ {
+  int x1 = TopLeftX;
+  int y1 = TopLeftY+Height;
+ 
+  int x2 = TopLeftX+Width;
+  int y2 = TopLeftY;
+  
+  double x3 = TopLeftX + 0.15*Height;
+  double y3 = TopLeftY + 0.15*Height;
+  
+  double x4 = ceil( TopLeftX + 0.45*Height + 0.5);
+  double y4 = ceil( TopLeftY + 0.85*Height );
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+
+  DrawArc(Image,x3,y3,0.15*Height,0,2*pi,Color);
+  DrawArc(Image,x4,y4,0.15*Height,0,2*pi,Color);
+  
+  return x2;
+ } 
+ 
+ if( Letter == '_' )
+ {
+  DrawLine(Image,TopLeftX,TopLeftY+Height,TopLeftX+Width,TopLeftY+Height,Color);
+ 
+  return TopLeftX + Width;
+ }
+ 
+ if( Letter == '^' )
+ {
+  DrawLine(Image,TopLeftX,TopLeftY+Center,TopLeftX+Center,TopLeftY,Color);
+  DrawLine(Image,TopLeftX+Center,TopLeftY,TopLeftX+Width,TopLeftY+Center,Color);
+ 
+  return TopLeftX + Width;
+ } 
+ 
+ if( Letter == '<' )
+ {
+  int x1 = TopLeftX;
+  int y1 = ebmpRound( TopLeftY + 0.5*Height );
+  
+  int x2 = TopLeftX+Width;
+  int y2 = TopLeftY;
+  
+  int x3 = x2;
+  int y3 = TopLeftY+Height;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x1,y1,x3,y3,Color);
+  
+  return x2;
+ }
+ 
+ if( Letter == '>' )
+ {
+  int x1 = TopLeftX+Width;
+  int y1 = ebmpRound( TopLeftY + 0.5*Height );
+  
+  int x2 = TopLeftX;
+  int y2 = TopLeftY;
+  
+  int x3 = x2;
+  int y3 = TopLeftY+Height;
+  
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x1,y1,x3,y3,Color);
+  
+  return x1;
+ } 
+ 
+ if( Letter == '#' )
+ {
+  int TempWidth = ebmpRound(0.5*Height);
+  if( TempWidth % 2 != 0 )
+  { TempWidth++; }
+  //int TempRad = (TempWidth-1)/2;
+ 
+  int x1 = TopLeftX;
+  int y1 = (int) floor(TopLeftY + 0.5*Height-1);
+  
+  int x2 = TopLeftX + Width;
+  int y2 = y1;
+  
+  int x3 = x1;
+  int y3 = y1+2;
+  
+  int x4 = x2;
+  int y4 = y3;
+  
+  int x5 = TopLeftX+Center-1;
+  int y5 = TopLeftY;
+
+  int x6 = x5;
+  int y6 = TopLeftY+Height;
+  
+  int x7 = TopLeftX+Center+1;
+  int y7 = TopLeftY;
+
+  int x8 = x7;
+  int y8 = TopLeftY+Height;
+  
+  DrawLine( Image, x1, y1, x2, y2 , Color );
+  DrawLine( Image, x3, y3, x4, y4 , Color );
+  DrawLine( Image, x5, y5, x6, y6, Color );
+  DrawLine( Image, x7,y7,x8,y8,Color);
+
+  return x2;
+ }
+ 
+ if( Letter == '?' )
+ {
+  double x1 = TopLeftX+Center;
+  double y1 = TopLeftY+Center;
+  
+  int x2 = (int) x1;
+  int y2 = TopLeftY + Width;
+  
+  int x3 = x2;
+  int y3 = ebmpRound(TopLeftY+ 0.8*Height);
+  if( TopLeftY+Height-y3 <= 2 )
+  { y3--; }
+  
+  double x4 = x1;
+  double y4 = TopLeftY + Height  - 0.5;
+  
+  DrawArc(Image,x1,y1,Center,pi,pi/2,Color);
+  DrawLine(Image,x2,y2,x3,y3,Color);
+  DrawArc( Image, x4, y4, 0.75 , 0 , 6.3 , Color );
+ 
+  return TopLeftX + Width;
+ }
+ 
+ if( Letter == '*' )
+ {
+  int x1 = TopLeftX+Center;
+  int y1 = TopLeftY;
+ 
+  int x2 = x1;
+  int y2 = TopLeftY+Height;
+  
+  int x3 = TopLeftX;
+  int y3 = ebmpRound(TopLeftY+0.5*Height);
+  
+  int x4 = TopLeftX+Width;
+  int y4 = y3;
+  
+  int x5 = TopLeftX+1; // ebmpRound(TopLeftX+0.15*Width);
+  int y5 = TopLeftY+1; // ebmpRound(TopLeftY+0.15*Height);
+  
+  int x6 = TopLeftX+Width-1; // ebmpRound(TopLeftX+0.45*Width);
+  int y6 = TopLeftY+Height-1; //  ebmpRound(TopLeftY+0.85*Height);
+  
+  int x7 = x6;
+  int y7 = y5;
+  
+  int x8 = x5;
+  int y8 = y6;
+ 
+  DrawLine(Image,x1,y1,x2,y2,Color);
+  DrawLine(Image,x3,y3,x4,y4,Color);
+  DrawLine(Image,x5,y5,x6,y6,Color);
+  DrawLine(Image,x7,y7,x8,y8,Color);
+  
+  return x4;
+ }
+ 
+ if( Letter == '@' )
+ {
+  double x1 = TopLeftX + 1.5*Center;
+  double y1 = TopLeftY + Height - 1.5*Center;
+  
+  double x2 = x1 + .35*Center + .6*Center;
+  double y2 = y1 + .35*Center;
+  
+  DrawArc(Image,x1,y1,Center*1.5,0,2*pi,Color);
+  DrawArc(Image,x1,y1,Center*0.5,0,2*pi,Color);
+  
+  DrawArc(Image,x2,y2,Center*0.45,0,pi,Color);
+ 
+  return ebmpRound(TopLeftX + 3*Center);
+ }
+ 
+ if( Letter == '~' )
+ {
+  double x1 = TopLeftX + 0.2*Height;
+  double y1 = TopLeftY + 0.4*Height;
+  
+  double x2 = TopLeftX + 0.6*Height;
+  double y2 = y1;
+  
+  DrawArc(Image,x1,y1,0.2*Height, 0.7*pi,2*pi, Color);
+  DrawArc(Image,x2,y2,0.2*Height, -0.3*pi,pi, Color);
+ 
+  return ebmpRound(TopLeftX + 0.8*Height);
+ }
+ 
+ if( Letter == '(' ) 
+ {
+  double x5 = TopLeftX + Center; 
+  double y5 = TopLeftY + 0.5*Height; 
+
+  DrawArc( Image, x5, y5 , 0.7*Height , 0.5*pi , -0.5*pi , Color ); 
+ 
+  return TopLeftX;
+ }
+ 
+ if( Letter == ')' ) 
+ {
+  double x5 = TopLeftX - Center; 
+  double y5 = TopLeftY + 0.5*Height; 
+
+  DrawArc( Image, x5, y5 , 0.7*Height , -0.5*pi , 0.5*pi , Color ); 
+ 
+  return TopLeftX;
+ } 
+ 
+ if( Letter == '&' )
+ {
+  double x1 = TopLeftX + Center;
+  double y1 = TopLeftY + Height-Center;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.2*Height;
+  
+  //int x3 = ebmpRound(TopLeftX+0.5*Height);
+  //int y3 = ebmpRound(y2);
+  
+  //int x4 = TopLeftX;
+  //int y4 = ebmpRound(y1);
+  
+  int x5 = ebmpRound(TopLeftX+0.25*Height);
+  int y5 = TopLeftY+Height-2*Center;
+  
+  int x6 = ebmpRound(TopLeftX+1.1*Width);
+  int y6 = TopLeftY+Height;  
+  
+  
+  DrawArc( Image, x1,y1, Center, -.1*pi, 1.5*pi, Color);
+  DrawArc( Image, x2,y2, 0.2*Height, 0,2*pi,Color); 
+  
+//  DrawLine( Image, x3,y3, x4,y4, Color);
+  DrawLine( Image, x5,y5, x6,y6, Color);
+ 
+  return x6;
+ }
+
+ if( Letter == '&' && 1 == 0 ) // alt ampersand &
+ {
+  double x1 = TopLeftX + Center;
+  double y1 = TopLeftY + Height-Center;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.2*Height;
+  
+  int x3 = ebmpRound(TopLeftX+0.5*Height);
+  int y3 = ebmpRound(y2);
+  
+  int x4 = TopLeftX;
+  int y4 = ebmpRound(y1);
+  
+  int x5 = ebmpRound(TopLeftX+0.1*Height);
+  int y5 = y3;
+  
+  int x6 = ebmpRound(TopLeftX+1.1*Width);
+  int y6 = TopLeftY+Height;  
+  
+  
+  DrawArc( Image, x1,y1, Center, -.25*pi, pi, Color);
+  DrawArc( Image, x2,y2, 0.2*Height, pi,2*pi,Color); 
+  
+  DrawLine( Image, x3,y3, x4,y4, Color);
+  DrawLine( Image, x5,y5, x6,y6, Color);
+ 
+  return x6;
+ } 
+ 
+ if( Letter == '$' )
+ {
+  double x1 = TopLeftX + 0.25*Height;
+  double y1 = TopLeftY + 0.25*Height;
+  
+  double x2 = x1;
+  double y2 = TopLeftY + 0.75*Height;
+  
+  int x3 = ebmpRound(x1);
+  int y3 = ebmpRound(TopLeftY-0.1*Height);
+  
+  int x4 = x3;
+  int y4 = ebmpRound(TopLeftY+1.1*Height);
+  
+  DrawArc( Image, x1, y1 , 0.25*Height, 1.5707963267948 , 6.28318530717 , Color );
+  DrawArc( Image, x2, y2 , 0.25*Height, -1.5707963267948 ,3.1415926535897 , Color );
+  DrawLine( Image, x3, y3, x4, y4, Color);
+  
+  return ebmpRound( TopLeftX + 0.5*Height );
+ }
+ 
+ if( Letter ==  '}' )
+ {
+  double x1 = TopLeftX;
+  double y1 = TopLeftY + 0.15*Height;
+  
+  double x2 = x1+0.3*Height;
+  double y2 = TopLeftY + 0.4*Height;
+
+  double x3 = x2;
+  double y3 = TopLeftY + 0.6*Height;
+  
+  double x4 = x1;
+  double y4 = TopLeftY + 0.85*Height;
+  
+  DrawArc( Image, x1,y1, 0.2*Height, 1.5*pi, 2*pi, Color);
+  
+  DrawArc( Image, x2,y2, 0.1*Height, 0.5*pi,pi, Color);
+  DrawArc( Image, x3,y3, 0.1*Height, pi,1.5*pi, Color);
+  
+  DrawArc( Image, x4,y4, 0.2*Height, 0,0.5*pi, Color);
+  
+  int x5 = ebmpRound( TopLeftX+0.2*Height);
+  int y5 = ebmpRound( TopLeftY+0.15*Height);
+  
+  int x6 = x5;
+  int y6 = ebmpRound( TopLeftY+0.4*Height);
+  
+  DrawLine( Image, x5,y5, x6,y6, Color );
+
+  int x7 = x5;
+  int y7 = ebmpRound( TopLeftY+0.6*Height);
+  
+  int x8 = x7;
+  int y8 = ebmpRound( TopLeftY+0.85*Height);
+  
+  DrawLine( Image, x7,y7, x8,y8, Color );  
+
+  return ebmpRound(TopLeftX + 0.4*Height);
+ }
+ 
+ if( Letter ==  '{' )
+ {
+  double x1 = TopLeftX + 0.3*Height;
+  double y1 = TopLeftY + 0.15*Height;
+  
+  double x2 = TopLeftX  ;
+  double y2 = TopLeftY + 0.4*Height;
+
+  double x3 = x2;
+  double y3 = TopLeftY + 0.6*Height;
+  
+  double x4 = x1;
+  double y4 = TopLeftY + 0.85*Height;
+  
+  DrawArc( Image, x1,y1, 0.2*Height, pi,1.5*pi, Color);
+  
+  DrawArc( Image, x2,y2, 0.1*Height, 0,0.5*pi, Color);
+  DrawArc( Image, x3,y3, 0.1*Height, 1.5*pi,2*pi, Color);
+  
+  DrawArc( Image, x4,y4, 0.2*Height, 0.5*pi,pi, Color);
+  
+  int x5 = ebmpRound( TopLeftX+0.1*Height);
+  int y5 = ebmpRound( TopLeftY+0.15*Height);
+  
+  int x6 = x5;
+  int y6 = ebmpRound( TopLeftY+0.4*Height);
+  
+  DrawLine( Image, x5,y5, x6,y6, Color );
+
+  int x7 = x5;
+  int y7 = ebmpRound( TopLeftY+0.6*Height);
+  
+  int x8 = x7;
+  int y8 = ebmpRound( TopLeftY+0.85*Height);
+  
+  DrawLine( Image, x7,y7, x8,y8, Color );  
+
+  return ebmpRound(TopLeftX + 0.4*Height);
+ }  
+ 
+ if( Letter == '&' && 1 == 0 ) // old ampersand '&'
+ {
+  double x1 = TopLeftX + (0.25*Height);
+  double y1 = TopLeftY + (0.25*Height);
+  
+  double x2 = x1;
+  double y2 = TopLeftY + (0.75*Height);
+  
+  int x3 = ebmpRound( TopLeftX + 0.3*Height);
+  int y3 = ebmpRound( TopLeftY + 0.5*Height);
+  
+  int x4 = ebmpRound( TopLeftX + 0.2*Height);
+  int y4 = y3;
+  
+  int x5 = ebmpRound(TopLeftX + 0.35*Height);
+  int y5 = ebmpRound(TopLeftY + 0.75*Height);
+  
+  int x6 = ebmpRound(TopLeftX + 0.65*Height);
+  int y6 = y5;
+  
+  
+  DrawArc( Image , x1 , y1 , 0.25*Height , 1.57079632679490 , 2*pi , Color );
+  DrawArc( Image , x2 , y2 , 0.25*Height , 0, 1.5*pi , Color );
+  DrawLine( Image , x3, y3, x4, y4, Color );
+  DrawLine( Image , x5, y5, x6, y6, Color );
+
+  return x6;
+ }   
+ 
+ 
+ return TopLeftX;
+}
+
+int PrintCopyright( BMP& Image, int TopLeftX, int TopLeftY , int Height , 
+                  RGBApixel Color )
+{
+ double pi = 3.14159265358979;
+ 
+ //int CharNumber = 0;
+ int StartX = ebmpRound(TopLeftX+0.25*Height);
+ int Spacing = (int) ebmpRound( 0.2*Height );
+ if( Spacing < 3 )
+ { Spacing = 3; }
+ int StartY = ebmpRound( TopLeftY-0.25*Height);
+ 
+ double x1 = TopLeftX + 0.5*Height;
+ double y1 = TopLeftY + 0.5*Height;
+ 
+ DrawArc(Image, x1, y1, 0.6*Height , 0, 2*pi , Color );
+ return PrintLetter( Image, 'c' , StartX, StartY , Height, Color ) + Spacing; 
+}
