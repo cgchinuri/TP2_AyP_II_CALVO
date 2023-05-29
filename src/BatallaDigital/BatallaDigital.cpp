@@ -25,6 +25,29 @@ BatallaDigital::BatallaDigital()
 	crearTablero();
 }
 
+
+BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ){
+	
+	if(cantidadJugadores>CANT_MAX_JUGADORES || cantidadJugadores<CANT_MIN_JUGADORES)	{
+        throw std::invalid_argument("La cantidad de jugadores no es valida");
+	}
+	
+	this->cantidadJugadores=cantidadJugadores;
+	this->tableroJuego=new Tablero(dimX,dimY,dimZ);
+	this->listaDeJugadores=new Lista<Jugador*>();
+
+	for(size_t i=0;	i<cantidadJugadores;i++){
+		std::ostringstream oss;
+		oss<<"Jugador"<<i+1;	//HARDCODEO
+		std::string aux=oss.str();
+		Jugador * nuevoJugador=new Jugador(i+1,aux);
+		this->listaDeJugadores->add(nuevoJugador);
+		oss.clear();
+	}
+
+
+}
+
 void BatallaDigital::ingresarNumeroJugadores()
 {
 	int num = 0;

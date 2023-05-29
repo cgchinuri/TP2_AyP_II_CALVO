@@ -51,6 +51,9 @@ class BatallaDigital
         //      pregunta dimensiones y genera un tablero y deja su puntero apuntando a él
         BatallaDigital();
 
+        //Otro constructor
+        BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ);
+
         // Pre: -
         // Pos: imprime un mensaje de bienvenida
         void imprimirMensajeBienvenida();
@@ -97,8 +100,6 @@ class BatallaDigital
         // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
         // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
         void moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros);
-
-
 };
 
 
