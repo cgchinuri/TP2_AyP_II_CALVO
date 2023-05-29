@@ -100,6 +100,10 @@ class BatallaDigital
         // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
         // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
         void moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros);
+
+
+        void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
+        
 };
 
 

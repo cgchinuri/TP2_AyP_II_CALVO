@@ -148,3 +148,9 @@ Casillero::~Casillero()
 	delete this->coordenada;
 
 }
+
+//Esta primitiva retorna true si el casillero esta activo, false si no lo esta
+//Nota: Esta utilizando el atributo de turnos inactivos para determinar si esta activo o no, ya que no tiene un estado esta implementacion
+bool Casillero::estaActivo(void)	{
+	return this->turnosInactivoRestantes==0;
+}

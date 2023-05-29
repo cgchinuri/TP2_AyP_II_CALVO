@@ -139,6 +139,7 @@ class Casillero
 		//		retorna false si el puntero a ficha del casillero está apuntando a null
 		bool estaOcupado();
 
+		bool estaActivo(void);
 
 		// Destructor
 		~Casillero();

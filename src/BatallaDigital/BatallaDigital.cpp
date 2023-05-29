@@ -25,7 +25,7 @@ BatallaDigital::BatallaDigital()
 	crearTablero();
 }
 
-
+//Constructor de batalla digital con parametros
 BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ){
 	
 	if(cantidadJugadores>CANT_MAX_JUGADORES || cantidadJugadores<CANT_MIN_JUGADORES)	{
@@ -45,8 +45,8 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 		oss.clear();
 	}
 
-
 }
+
 
 void BatallaDigital::ingresarNumeroJugadores()
 {
@@ -229,4 +229,17 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 		// Vinculo ficha y casillero destino
 		vincularFichaYCasillero(casilleroDestino, fichaMover);
 	}
+}
+
+//Deberia chequear el estado del casillero a minar: Si esta minado, explota? Si hay un jugador lo mata
+//si esta envenenado? Si esta inactivo .... etc.
+void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
+
+	Casillero * objetivo= this->tableroJuego->obtenerCasillero(x,y,z);
+
+	if(!objetivo->estaActivo()){
+        throw std::invalid_argument("El casillero esta inactivo");
+	}
+	
+
 }
