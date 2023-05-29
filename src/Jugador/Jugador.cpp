@@ -81,7 +81,7 @@ int Jugador::cantidadFichas(void)   {
     return this->Fichas->contarElementos();
 }
 void Jugador::mostrarFichas()   {
-    std::cout<<"Fichas Disponibles:"<<std::endl;//DEBUG
+    std::cout<<"Fichas Disponibles:"<<std::endl;
 
     for(size_t i=1; Fichas->avanzarCursor();i++)    {
         std::cout<<'['<<i<<']'<<Fichas->getCursor()->toStringTipo()<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
@@ -91,6 +91,17 @@ void Jugador::eliminarFicha(unsigned int pos)   {
     this->Fichas->remover(pos);
 }
 
+void Jugador::eliminarFicha(Coordenada<int> & pos)   {
+
+    for(size_t i=1; Fichas->avanzarCursor();i++){
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true){
+            Fichas->remover(i);
+            Fichas->reiniciarCursor();
+            return;
+        }
+    }
+
+}
 
 
 void Jugador::agregarCarta(CartaBatallaDigital *carta)  {

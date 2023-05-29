@@ -33,6 +33,8 @@ public:
 
     void agregarFicha(Ficha * nuevaFicha);
     void eliminarFicha(unsigned int pos);
+    void eliminarFicha(Coordenada<int> & pos);
+    
     Ficha * obtenerFicha(Coordenada<int> & pos);
     Ficha * obtenerFicha(unsigned int pos);
     int cantidadFichas(void);

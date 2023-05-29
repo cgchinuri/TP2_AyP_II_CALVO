@@ -240,6 +240,31 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 	if(!objetivo->estaActivo()){
         throw std::invalid_argument("El casillero esta inactivo");
 	}
-	
 
+	if(objetivo->getTipoCasillero()!=tierra)	{
+		 throw std::invalid_argument("Solo se puede minar un casillero de tipo tierra");
+	}
+
+	if(objetivo->estaOcupado()){
+		Ficha * fichaOcupante=objetivo->getFichaCasillero();
+		Jugador * jugadorOcupante=NULL;
+		int idJugador= fichaOcupante->getDueño();
+		
+		while(this->listaDeJugadores->avanzarCursor())	{
+			if(this->listaDeJugadores->getCursor()->identificador()==idJugador)	{
+				jugadorOcupante=this->listaDeJugadores->getCursor();
+				this->listaDeJugadores->reiniciarCursor();
+				break;
+			}
+		}
+		
+		jugadorOcupante->eliminarFicha(*objetivo->getCoordenada());//Se elimina la ficha, sea una mina o un jugador
+		objetivo->desactivar();//primitiva para inactivar un casillero cuando una mina explota
+	}	else {
+		Ficha * mina=new Ficha(FICHA_MINA,x,y,z);
+		objetivo->setFichaCasillero(mina);
+		mina->setCasilleroFicha(objetivo);
+		jugador->agregarFicha(mina);
+	}
+	return;
 }
