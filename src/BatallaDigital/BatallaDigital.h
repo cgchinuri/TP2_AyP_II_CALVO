@@ -101,15 +101,20 @@ class BatallaDigital
         // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
         void moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros);
 
-
+        //Recibe un puntero al jugador que pone la mina, y una posicion en coordenadas x,y,z
+        //Si la posicion es valida entonces coloca la mina. Una posicion es valida si el casillero esta activo
+        //y el terreno es tierra
         void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 
-
+        void avanzarTurno(Jugador * jugador);
+        void iniciarJuego(void);
+        
         void colocarFichaEnTablero();
 
         // Pre: debe haber una lista de jugadores con sus respectivas fichas
         // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
         bool hayGanador();
+
         
 };
 

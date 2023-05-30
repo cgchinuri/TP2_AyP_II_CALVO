@@ -15,7 +15,11 @@ public:
         this->y=y;
         this->z=z;
     }
-
+    
+   /* Coordenada(std::string csvString,char delim)    {
+        std::string token=csvString.substr(0,csvString.find(delim))
+    }
+*/
     T obtenerX(void)    {
         return this->x;
     }
@@ -56,6 +60,7 @@ public:
         this->y=y;
         this->z=z;
     }
+
 };
 
 

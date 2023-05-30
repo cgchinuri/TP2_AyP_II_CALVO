@@ -312,3 +312,49 @@ void colocarFichaEnTablero()
 {
 
 }
+
+
+
+void BatallaDigital::avanzarTurno(Jugador * jugador)	{
+		//leer coordenada a minar x y z (hacer funcion)
+		int x,y,z=0;
+		bool mover,jugarCarta=false;
+		int indice=1;
+		//feo, cambiar
+
+		std::cin>>x;
+		std::cin>>y;
+		std::cin>>z;
+
+		minarCasillero(x,y,z,jugador);
+
+		if(mover==true)	{
+			jugador->mostrarFichas();//mostrar en std?
+			//leer 
+			Ficha * ficha=jugador->obtenerFicha(indice);
+			//validar que sea un soldado
+			moverFicha(ficha,adelante,2);
+		}
+
+		if(jugarCarta==true)	{
+			return;
+		}
+	
+}
+
+void BatallaDigital::iniciarJuego(void)	{
+	posicionarSoldados();//Funcion que posiciona los soldados al inicio del juego para cada jugador
+
+	while(!hayGanador())	{
+
+		listaDeJugadores->reiniciarCursor();	
+
+		while(listaDeJugadores->avanzarCursor())	{
+			mostrarTablero(listaDeJugadores->getCursor());//mostrar el tablero al jugador
+			avanzarTurno(listaDeJugadores->getCursor());
+		}
+
+	}
+
+}
+
