@@ -247,6 +247,8 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 
 	if(objetivo->estaOcupado()){
 		Ficha * fichaOcupante=objetivo->getFichaCasillero();
+		/*
+		opcion1 si las fichas tienen un id de a que jugador pertenece
 		Jugador * jugadorOcupante=NULL;
 		int idJugador= fichaOcupante->getDueño();
 		
@@ -257,10 +259,21 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 				break;
 			}
 		}
-		
-		jugadorOcupante->eliminarFicha(*objetivo->getCoordenada());//Se elimina la ficha, sea una mina o un jugador
-		objetivo->desactivar();//primitiva para inactivar un casillero cuando una mina explota
+		*/
+		//Opcion2:si no tengo el id de jugador en la ficha :Recorrer la lista de jugadores, para cada jugador recorrer la lista de sus fichas... un poco feo
+	
+		while(this->listaDeJugadores->avanzarCursor())	{
+			if(this->listaDeJugadores->getCursor()->eliminarFicha(*objetivo->getCoordenada())==true)	{
+				this->listaDeJugadores->reiniciarCursor();
+				break;
+			}
+		}
+
+
+		objetivo->vaciarCasillero();
+		//objetivo->desactivar();//primitiva para inactivar un casillero cuando una mina explota
 	}	else {
+		
 		Ficha * mina=new Ficha(FICHA_MINA,x,y,z);
 		objetivo->setFichaCasillero(mina);
 		mina->setCasilleroFicha(objetivo);

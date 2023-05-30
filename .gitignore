@@ -5,3 +5,5 @@ Pruebas/
 *.o
 test_Ponce.cpp
 testponce
+Jugador_test.cpp
+test_jugador

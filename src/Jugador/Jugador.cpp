@@ -61,9 +61,12 @@ void Jugador::agregarFicha(Ficha * nuevaFicha)  {
 
 
 Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
+    
+    this->Fichas->reiniciarCursor();
     while(this->Fichas->avanzarCursor())   {
-        if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true)
+        if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true)    {
             return Fichas->getCursor();
+        }
     }
 
     return NULL;
@@ -91,15 +94,16 @@ void Jugador::eliminarFicha(unsigned int pos)   {
     this->Fichas->remover(pos);
 }
 
-void Jugador::eliminarFicha(Coordenada<int> & pos)   {
+bool Jugador::eliminarFicha(Coordenada<int> & pos)   {
 
     for(size_t i=1; Fichas->avanzarCursor();i++){
         if(Fichas->getCursor()->obtenerCoordenada()->iguales(pos)==true){
             Fichas->remover(i);
             Fichas->reiniciarCursor();
-            return;
+            return true;
         }
     }
+    return false;
 
 }
 
