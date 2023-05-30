@@ -22,12 +22,24 @@ int main()
 
 	// Creo la clase del juego batalla digital
 	BatallaDigital * batallaDigital = new BatallaDigital();
+
+
+	/* 
+	------------------------------------ PRUEBAS 30/05 ------------------------------------
+	Esto es para chequear que se detecte si hay algun jugador sin fichas de soldados
 	Ficha * fichaAux = NULL;
-	if(batallaDigital->hayGanador()!=false)
+	fichaAux = batallaDigital->crearFicha(FICHA_SOLDADO, 4,5,4,1);
+	if(batallaDigital->hayGanador()!=true)
 	{	
-		fichaAux = batallaDigital->crearFicha(FICHA_SOLDADO, 4,5,4,1);
 		cout << "====..... Hay jugadores en pie .....====" << endl;
 	}
+
+
+
+
+	Esto es para saber cómo se está generando el terreno del tablero
+	*/
+	batallaDigital->mostrarGeografiaTablero();
 	
 
 	/*

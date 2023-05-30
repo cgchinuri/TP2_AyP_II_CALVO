@@ -51,6 +51,10 @@ class Tablero
 		void imprimirTablero();
 
 		// Pre: -
+		// Pos: imprime el tipo de terreno por niveles
+		void imprimirGeografia();
+
+		// Pre: -
 		// Pos: recorre la lista de casilleros inactivos y les resta uno a todos
 		//		saca un casillero de la lista si vuelve a estar activo
 		//decrementarInactividad()
@@ -74,7 +78,7 @@ class Tablero
 		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
 
 
-		//tipoCasillero_t generarTierraOAgua();
+		void generarAguaEnTablero();
 
 		// Destructor
 		~Tablero();

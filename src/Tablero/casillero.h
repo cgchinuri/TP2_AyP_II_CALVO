@@ -68,8 +68,16 @@ class Casillero
 		void imprimirPos();
 
 		// Pre: -
+		// Pos: imprime el tipo del casillero
+		void imprimirTipo();
+
+		// Pre: -
 		// Pos: devuelve el tipo de casillero
 		tipoCasillero_t getTipoCasillero();
+
+		// Pre: -
+		// Pos: edita el tipo de casillero
+		void setTipoCasillero(tipoCasillero_t tipo);
 
 		// Pre: hay que pasarle un puntero a casillero
 		// Pos: queda apuntando a ese casillero como siguiente en X
@@ -139,6 +147,10 @@ class Casillero
 		bool estaOcupado();
 
 		bool estaActivo(void);
+
+		// Pre: recibe un puntero a un casillero con vínculos a los casilleros adyacentes del mismo piso
+		// Pos: retorna la cantidad de casilleros con agua adyacentes al casillero recibido
+		int casillerosAguaAdyacentes(Casillero* casilleroActual);
 
 		// Destructor
 		~Casillero();

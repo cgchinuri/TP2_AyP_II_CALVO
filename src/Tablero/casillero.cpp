@@ -61,6 +61,15 @@ tipoCasillero_t Casillero::getTipoCasillero()
 	return this->tipoCasillero;
 }
 
+void Casillero::setTipoCasillero(tipoCasillero_t tipo)
+{
+	this->tipoCasillero=tipo;
+}
+
+void Casillero::imprimirTipo()
+{
+	this->tipoCasillero;
+}
 
 void Casillero::setSigX(Casillero * casillero)
 {
@@ -139,6 +148,41 @@ Ficha * Casillero::getFichaCasillero()
 bool Casillero::estaOcupado()
 {
 	return (this->fichaOcupa)?true:false;
+}
+
+int Casillero::casillerosAguaAdyacentes(Casillero* casilleroActual)
+{
+	int casillerosConAgua=0;
+	if(casilleroActual->getAntX())
+	{
+		if(casilleroActual->getAntX()->getTipoCasillero()==agua)
+		{
+			casillerosConAgua++;
+		}
+	}
+	if(casilleroActual->getSigX())
+	{
+		if(casilleroActual->getSigX()->getTipoCasillero()==agua)
+		{
+			casillerosConAgua++;
+		}
+	}
+	if(casilleroActual->getAntY())
+	{
+		if(casilleroActual->getAntY()->getTipoCasillero()==agua)
+		{
+			casillerosConAgua++;
+		}
+	}
+	if(casilleroActual->getSigY())
+	{
+		if(casilleroActual->getSigY()->getTipoCasillero()==agua)
+		{
+			casillerosConAgua++;
+		}
+	}
+
+	return casillerosConAgua;
 }
 
 Casillero::~Casillero()

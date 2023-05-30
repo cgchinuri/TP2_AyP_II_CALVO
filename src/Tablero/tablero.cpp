@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>  // Para la generación de números aleatorios
+#include <ctime>    // Para la semilla de la generación aleatoria
 
 
 #include "tablero.h"
@@ -36,7 +38,7 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 				{	
 					if (z<=nivelDelMar)
 					{
-						tipoCasillero=tierra; //generarTierraOAgua();
+						tipoCasillero=tierra;
 					}
 					else
 					{
@@ -52,6 +54,7 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 
 	this->tableroJuego=tableroJuego;
 	vincularTablero();
+	generarAguaEnTablero();
 
 }
 
@@ -75,7 +78,29 @@ void Tablero::imprimirTablero()
 				casilleroImprimir->imprimirPos();
 			}
 		}
-	}
+	}	
+}
+
+void Tablero::imprimirGeografia()
+{
+	Casillero* casilleroImprimir = NULL;
+	Lista<Lista<Casillero*>* >* pisosRecorrer=NULL;
+	Lista<Casillero*>* columnasRecorrer=NULL;
+	for(int z = 1 ; z <= this->dimZ ; z++)
+	{
+		pisosRecorrer=this->tableroJuego->get(z);
+		for(int y = 1 ; y <= this->dimY ; y++)
+		{
+			columnasRecorrer=pisosRecorrer->get(y);
+			for(int x = 1 ; x <= this->dimX ; x++)
+			{
+				casilleroImprimir=columnasRecorrer->get(x);
+				std::cout << casilleroImprimir->getTipoCasillero()<<"\t";
+			}
+			std::cout << std::endl;
+		}
+		std::cout << std::endl;
+	}	
 }
 
 void Tablero::vincularTablero()
@@ -279,11 +304,53 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 
 	return casilleroRetorno;
 }
-
-/*tipoCasillero_t generarTierraOAgua()
+// Pre: debe haber un tablero creado con todos sus casilleros vinculados y separado en tierra y aire para una cierta altura
+//		
+// Pos: genera de forma aleatoria un cuerpo de agua contiguo en el tablero que cubra entre el 10% y 50% de éste
+//		
+void Tablero::generarAguaEnTablero() 
 {
-	return tierra;
-}*/
+    tipoCasillero_t tipoCasillero = tierra;
+    int nivelDelMar = this->dimZ / 2;
+    
+    // Generar una semilla aleatoria para generar números aleatorios
+    srand(time(NULL));
+    
+    for (int z = nivelDelMar; z > 0; z--)
+    {
+        Lista<Lista<Casillero*>*>* pisos = this->tableroJuego->get(z);
+        for (int y = 1; y <= this->dimY; y++)
+        {
+            Lista<Casillero*>* columnas = pisos->get(y);
+            for (int x = 1; x <= this->dimX; x++)
+            {
+                Casillero* casillero = columnas->get(x);
+                
+                // Verificar si el casillero siguiente en Z es de tipo agua
+                if (casillero->getSigZ()->getTipoCasillero() == agua)
+                {
+                    casillero->setTipoCasillero(agua);
+                }
+                else if (z == nivelDelMar)
+                {
+                    // Generar un número aleatorio entre 0 y 199
+                    int randomNum = rand() % 200;
+
+                    // Verificar casillas adyacentes
+                    int tieneAguaAdyacente = casillero->casillerosAguaAdyacentes(casillero);
+                    randomNum = randomNum + tieneAguaAdyacente*30;
+
+                    // Establecer el casillero como agua si tiene agua adyacente
+                    if (randomNum >= 180) 
+                    {
+                        casillero->setTipoCasillero(agua);
+                    }
+                    
+                }
+            }
+        }
+    }
+}
 
 
 Tablero::~Tablero()
