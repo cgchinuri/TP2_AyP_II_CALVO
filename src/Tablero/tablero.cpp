@@ -21,7 +21,8 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	Casillero* casilleroNuevo = NULL;
 	Lista<Lista<Casillero*>* >* pisos=NULL;
 	Lista<Casillero*>* columnas=NULL;
-	tipoCasillero_t tipoCasillero = tierra;
+	tipoCasillero_t tipoCasillero=tierra;
+	int nivelDelMar = dimZ/2;
 
 
 	Lista<Lista<Lista<Casillero*>*>*>* tableroJuego = new Lista<Lista<Lista<Casillero*>*>*>();
@@ -32,7 +33,15 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 		{
 				Lista<Casillero*>* columnas= new Lista<Casillero*>();
 				for(int x=1;x<=this->dimX;x++)
-				{
+				{	
+					if (z<=nivelDelMar)
+					{
+						tipoCasillero=tierra; //generarTierraOAgua();
+					}
+					else
+					{
+						tipoCasillero=aire;
+					}
 					casilleroNuevo= new Casillero(x,y,z,tipoCasillero);
 					columnas->add(casilleroNuevo);
 				}
@@ -270,6 +279,11 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 
 	return casilleroRetorno;
 }
+
+/*tipoCasillero_t generarTierraOAgua()
+{
+	return tierra;
+}*/
 
 
 Tablero::~Tablero()

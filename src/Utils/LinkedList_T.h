@@ -28,14 +28,16 @@ private:
 	Nodo<T>* getNodo(unsigned int posicion)const;
 };
 
-template<class T> Lista<T>::Lista(){
+template<class T> Lista<T>::Lista()
+{
 	this->primero = NULL;
 	this->tamanio = 0;
 	this->cursor = NULL;
 }
 
 /* POST: List equal to passed list. */
-template<class T> Lista<T>::Lista(Lista<T> &otraLista){
+template<class T> Lista<T>::Lista(Lista<T> &otraLista)
+{
 	this->primero = NULL;
 	this->tamanio = 0;
 	this->cursor = NULL;
@@ -48,18 +50,21 @@ template<class T> bool Lista<T>::vacia()const{
 }
 
 /* POST: Returns the amount of elements in the list. */
-template<class T> unsigned int Lista<T>::contarElementos()const{
+template<class T> unsigned int Lista<T>::contarElementos()const
+{
 	return (this->tamanio);
 }
 
 /* POST: Adds element at the end of the list (position countElements() + 1). */
-template<class T> void Lista<T>::add(T elemento){
+template<class T> void Lista<T>::add(T elemento)
+{
 	this->add(elemento, this->tamanio + 1);
 }
 
 /* PRE: Position is between [1 , countElements() + 1].
  * POST: Adds the element in passed position. */
-template<class T> void Lista<T>::add(T elemento, unsigned int posicion){
+template<class T> void Lista<T>::add(T elemento, unsigned int posicion)
+{
 	if((posicion > 0) && (posicion <= this->tamanio + 1)){ /* posición válida */
 		Nodo<T>* nuevoNodo = new Nodo<T>(elemento);
 		if(posicion == 1){
@@ -77,7 +82,8 @@ template<class T> void Lista<T>::add(T elemento, unsigned int posicion){
 
 /* POST: Adds all elements from passed list at the end of the list,
  *  that's from position countElements() + 1. */
-template<class T> void Lista<T>::add(Lista<T> &otraLista){
+template<class T> void Lista<T>::add(Lista<T> &otraLista)
+{
 	otraLista.reiniciarCursor();
 	while(otraLista.avanzarCursor()){
 		this->add(otraLista.getCursor());
@@ -86,7 +92,8 @@ template<class T> void Lista<T>::add(Lista<T> &otraLista){
 
 /* PRE: Position is between [1 , countElements()].
  * POST: Returns the element in that position. */
-template<class T> T Lista<T>::get(unsigned int posicion){
+template<class T> T Lista<T>::get(unsigned int posicion)
+{
 	if((posicion <= 0) || (posicion > this->tamanio)){
 		throw "POSICION INVALIDA";
 	}

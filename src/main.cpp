@@ -22,6 +22,13 @@ int main()
 
 	// Creo la clase del juego batalla digital
 	BatallaDigital * batallaDigital = new BatallaDigital();
+	Ficha * fichaAux = NULL;
+	if(batallaDigital->hayGanador()!=false)
+	{	
+		fichaAux = batallaDigital->crearFicha(FICHA_SOLDADO, 4,5,4,1);
+		cout << "====..... Hay jugadores en pie .....====" << endl;
+	}
+	
 
 	/*
 	// ------------------------------------ PRUEBAS 28/05 ------------------------------------

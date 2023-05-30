@@ -1,7 +1,8 @@
 #include "Jugador.h"
 #include <stdexcept>
  
-Jugador::Jugador(int id,const std::string s)   {
+Jugador::Jugador(int id,const std::string s)   
+{
     this->idJugador=id;
     this->nombre=new std::string(s);
     this->Fichas= new Lista <Ficha *>();
@@ -55,7 +56,8 @@ void Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)
 */
 
 
-void Jugador::agregarFicha(Ficha * nuevaFicha)  {
+void Jugador::agregarFicha(Ficha * nuevaFicha)  
+{
     this->Fichas->add(nuevaFicha);
 }
 
@@ -121,4 +123,19 @@ void Jugador::mostrarCartas()   {
     for(size_t i=1; Cartas->avanzarCursor();i++)    {
         std::cout<<'['<<i<<']'<<Cartas->getCursor()->getNombre()<<std::endl;
     }
+}
+
+int Jugador::cantidadFichasSoldado()
+{
+    this->Fichas->reiniciarCursor();
+    int cantidadSoldados=0;
+    while(Fichas->avanzarCursor())
+    {
+        Ficha* fichaCursor=Fichas->getCursor();
+            if (fichaCursor->obtenerTipo()==FICHA_SOLDADO)
+            {
+                cantidadSoldados++;
+            }
+    }
+    return cantidadSoldados;
 }

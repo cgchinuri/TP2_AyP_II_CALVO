@@ -43,7 +43,6 @@ class Casillero
 		// Puntero a la ficha que va a estar ocupando el casillero
 		Ficha * fichaOcupa ;
 
-
 	public:
 		// Constructor
 		// Pre: recibe como argumento la posición y el tipo de casillero

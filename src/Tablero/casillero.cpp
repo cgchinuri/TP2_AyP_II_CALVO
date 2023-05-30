@@ -154,3 +154,4 @@ Casillero::~Casillero()
 bool Casillero::estaActivo(void)	{
 	return this->turnosInactivoRestantes==0;
 }
+

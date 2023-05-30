@@ -134,12 +134,14 @@ void BatallaDigital::crearListaJugadores()
 	// generacion lista jugadores
 	this->listaDeJugadores = new Lista<Jugador*>();
 
-	for(unsigned int i = 0; i < this->cantidadJugadores; i++){
+	for(unsigned int i = 0; i < this->cantidadJugadores; i++)
+	{
 		int aux = i + 1;
 		std::string nombre = "Jugador " + aux;//FALTA ACA LO DEL ID DEL JUGADOR
 		Jugador* jugador = new Jugador(i+1, nombre);
 		this->listaDeJugadores->add(jugador);
 	}
+	std::cout << "Se generó una lista de "<< this->listaDeJugadores->contarElementos()<< " jugadores" << std::endl;
 }
 
 void BatallaDigital::imprimirMensajeBienvenida()
@@ -150,7 +152,6 @@ void BatallaDigital::imprimirMensajeBienvenida()
 	std::cout <<  STRING_ALUMNO_3 << std::endl;
 	std::cout <<  STRING_ALUMNO_4 << std::endl;
 	std::cout <<  STRING_ALUMNO_5 << std::endl;
-	std::cout <<  STRING_ALUMNO_6 << std::endl;
 }
 
 
@@ -172,17 +173,22 @@ void desvincularCasillero(Casillero * casillero)
 }
 
 
-Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z)
+Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z, int jugador)
 {
-
 	Ficha * nuevaFicha = new Ficha(tipoFicha, x, y , z);
 	Casillero * casilleroVinculacion = this->tableroJuego->obtenerCasillero(x,y,z);
 
 	vincularFichaYCasillero(casilleroVinculacion, nuevaFicha);
 
-	// No estaría mal agregar la ficha a la lista de fichas del jugador antes de terminar la función
-
-
+	this->listaDeJugadores->reiniciarCursor();
+	while(listaDeJugadores->avanzarCursor())
+	{
+		Jugador* cursorJugador = listaDeJugadores->getCursor();
+		if(cursorJugador->identificador()==jugador)
+		{
+			cursorJugador->agregarFicha(nuevaFicha);
+		}
+	}
 	return nuevaFicha;
 
 }
@@ -280,4 +286,29 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 		jugador->agregarFicha(mina);
 	}
 	return;
+}
+
+bool BatallaDigital::hayGanador()
+{
+	this->listaDeJugadores->reiniciarCursor();
+	int jugadoresConSoldados=0;
+	while(listaDeJugadores->avanzarCursor())
+	{
+		Jugador * Jugador = listaDeJugadores->getCursor();
+		if (Jugador->cantidadFichasSoldado()!=0)
+		{
+			jugadoresConSoldados++;
+		}
+	}
+	if (jugadoresConSoldados==1)
+	{
+		return true;
+	}
+	return false;
+}
+
+
+void colocarFichaEnTablero()
+{
+
 }

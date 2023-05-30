@@ -37,7 +37,9 @@ public:
     
     Ficha * obtenerFicha(Coordenada<int> & pos);
     Ficha * obtenerFicha(unsigned int pos);
+
     int cantidadFichas(void);
+    int cantidadFichasSoldado();
 
     /*  Muestra las fichas del jugador por la consola
     */

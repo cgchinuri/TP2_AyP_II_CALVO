@@ -13,13 +13,12 @@
 #define DIM_MIN_X_Y 8
 #define DIM_MIN_Z 6
 
-#define STRING_BIENVENIDA "||||||||||------------ BATALLA DIGITAL V2.0 ------------||||||||||"
-#define STRING_ALUMNO_1   "----------------- ALUMNO 1 -------- PADRON ALUMNO 1 --------------"
-#define STRING_ALUMNO_2   "----------------- ALUMNO 2 -------- PADRON ALUMNO 2 --------------"
-#define STRING_ALUMNO_3   "----------------- ALUMNO 3 -------- PADRON ALUMNO 3 --------------"
-#define STRING_ALUMNO_4   "----------------- ALUMNO 4 -------- PADRON ALUMNO 4 --------------"
-#define STRING_ALUMNO_5   "----------------- ALUMNO 5 -------- PADRON ALUMNO 5 --------------"
-#define STRING_ALUMNO_6   "----------------- ALUMNO 6 -------- PADRON ALUMNO 6 --------------"
+#define STRING_BIENVENIDA "||||||||||\t------------BATALLA DIGITAL V2.0------------\t||||||||||"
+#define STRING_ALUMNO_1   "-----------------Abraham, Tomás\t\t\t-------- Padron 100770\t--------------"
+#define STRING_ALUMNO_2   "-----------------Baratta, Facundo\t\t-------- Padron 104886\t--------------"
+#define STRING_ALUMNO_3   "-----------------Chinuri, Christian Gabriel\t-------- Padron 90888\t--------------"
+#define STRING_ALUMNO_4   "-----------------Lisdero Scaffino, Rafael\t-------- Padron 100871\t--------------"
+#define STRING_ALUMNO_5   "-----------------Ponce, Santiago\t\t-------- Padron 101017\t--------------"
 
 #define STRING_INGRESE_CANT_JUGADORES "Ingrese la cantidad de jugadores que jugaran Batalla Digital V2.0: "
 #define STRING_ERROR_CANT "Error en el ingreso. Por favor ingrese un numero entero entre "
@@ -41,6 +40,7 @@ class BatallaDigital
 
         // Lista de jugadores
         Lista<Jugador*> * listaDeJugadores;
+
         // Puntero al tablero
         Tablero * tableroJuego;
 
@@ -91,7 +91,7 @@ class BatallaDigital
 
         // Pre: recibe como argumentos el tipo de ficha y la posicion a vincular en el tablero
         // Pos: crea una ficha del tipo solicitado y la vincula con la posicion especificada del tablero
-        Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z);
+        Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z, int jugador);
 
 
         // Pre: recibe como argumentos una ficha, un tipo de movimiento y una cantidad de casilleros a mover
@@ -103,6 +103,13 @@ class BatallaDigital
 
 
         void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
+
+
+        void colocarFichaEnTablero();
+
+        // Pre: debe haber una lista de jugadores con sus respectivas fichas
+        // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
+        bool hayGanador();
         
 };
 

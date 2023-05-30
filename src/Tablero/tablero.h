@@ -5,6 +5,7 @@
 #include "../Utils/LinkedList_T.h"
 #include "../Utils/TipoMovimiento.h"
 
+
 class Tablero
 {
 	private:
@@ -14,6 +15,11 @@ class Tablero
 
 		// Lista de casilleros inactivos
 		Lista<Casillero*>* listaCasillerosInactivos;
+
+		// Dimensiones del tablero
+		int dimX;
+		int dimY;
+		int dimZ;
 
 		// Pre: debe haber un tablero creado
 		// Pos: vincula todos los casilleros del tablero con sus aledaños
@@ -30,10 +36,7 @@ class Tablero
 		//		llena los punteros antZ y sigZ con los casilleros inferiores y superiores
 		void vincularPisosTablero();
 		
-		// Dimensiones del tablero
-		int dimX;
-		int dimY;
-		int dimZ;
+
 
 	public:
 		// Constructor
@@ -69,6 +72,9 @@ class Tablero
 		//		Si encontró un cambio de terreno, devuelve dicho casillero, sin terminar la trayectoria
 		//		Si el mapa se acabó, devuelve null.
 		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
+
+
+		//tipoCasillero_t generarTierraOAgua();
 
 		// Destructor
 		~Tablero();
