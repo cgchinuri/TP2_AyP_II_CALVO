@@ -155,3 +155,17 @@ bool Casillero::estaActivo(void)	{
 	return this->turnosInactivoRestantes==0;
 }
 
+
+//Pos: Desactiva el casillero
+void Casillero::desactivar(void)	{
+	this->turnosInactivoRestantes=MAX_CANTIDAD_TURNOS_INACTIVO;
+}
+
+void Casillero::decrementarInactividad(void)	{
+	if(!this->turnosInactivoRestantes)	{
+		return; //el casillero no esta inactivo, retorno o lanzo una excepcion?
+	}
+
+	this->turnosInactivoRestantes--;
+	return;	
+}

@@ -3,6 +3,7 @@
 
 #include "../Utils/Coordenada.h"
 
+const int MAX_CANTIDAD_TURNOS_INACTIVO=10;
 
 typedef enum
 {
@@ -139,6 +140,10 @@ class Casillero
 		bool estaOcupado();
 
 		bool estaActivo(void);
+		//Pos: Desactiva el casillero
+		void desactivar(void);
+
+		void decrementarInactividad(void);
 
 		// Destructor
 		~Casillero();

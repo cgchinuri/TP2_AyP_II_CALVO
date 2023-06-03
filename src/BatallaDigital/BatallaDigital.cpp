@@ -29,13 +29,14 @@ BatallaDigital::BatallaDigital()
 BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ){
 	
 	if(cantidadJugadores>CANT_MAX_JUGADORES || cantidadJugadores<CANT_MIN_JUGADORES)	{
-        throw std::invalid_argument("La cantidad de jugadores no es valida");
+        throw "La cantidad de jugadores no es valida";
 	}
 	
 	this->cantidadJugadores=cantidadJugadores;
 	this->tableroJuego=new Tablero(dimX,dimY,dimZ);
 	this->listaDeJugadores=new Lista<Jugador*>();
 
+	//Esto, construir la lista de jugadores, puede ir en una funcion privada.
 	for(size_t i=0;	i<cantidadJugadores;i++){
 		std::ostringstream oss;
 		oss<<"Jugador"<<i+1;	//HARDCODEO
@@ -244,11 +245,11 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 	Casillero * objetivo= this->tableroJuego->obtenerCasillero(x,y,z);
 
 	if(!objetivo->estaActivo()){
-        throw std::invalid_argument("El casillero esta inactivo");
+        throw "El casillero esta inactivo";
 	}
 
 	if(objetivo->getTipoCasillero()!=tierra)	{
-		 throw std::invalid_argument("Solo se puede minar un casillero de tipo tierra");
+		 throw "Solo se puede minar un casillero de tipo tierra";
 	}
 
 	if(objetivo->estaOcupado()){
@@ -316,12 +317,10 @@ void colocarFichaEnTablero()
 
 
 void BatallaDigital::avanzarTurno(Jugador * jugador)	{
-		//leer coordenada a minar x y z (hacer funcion)
 		int x,y,z=0;
 		bool mover,jugarCarta=false;
 		int indice=1;
-		//feo, cambiar
-
+		//leer coordenada a minar x y z (hacer funcion) feo, cambiar
 		std::cin>>x;
 		std::cin>>y;
 		std::cin>>z;
@@ -343,14 +342,14 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)	{
 }
 
 void BatallaDigital::iniciarJuego(void)	{
-	posicionarSoldados();//Funcion que posiciona los soldados al inicio del juego para cada jugador
+	//posicionarSoldados();//Funcion que posiciona los soldados al inicio del juego para cada jugador
 
 	while(!hayGanador())	{
 
 		listaDeJugadores->reiniciarCursor();	
 
 		while(listaDeJugadores->avanzarCursor())	{
-			mostrarTablero(listaDeJugadores->getCursor());//mostrar el tablero al jugador
+			//mostrarTablero(listaDeJugadores->getCursor());//mostrar el tablero al jugador
 			avanzarTurno(listaDeJugadores->getCursor());
 		}
 
