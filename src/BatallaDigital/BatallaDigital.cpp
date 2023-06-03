@@ -125,7 +125,6 @@ void BatallaDigital::crearTablero()
 {
 	// generacion del tablero
 	tableroJuego = new Tablero(this->dimensionesTablero[0],this->dimensionesTablero[1],this->dimensionesTablero[2]);
-
 	std::cout << "Se generó un tablero con dimensiones (" << this->dimensionesTablero[0] <<", " << this->dimensionesTablero[1] << ", " << this->dimensionesTablero[2] <<")" << std::endl;
 
 }
@@ -296,25 +295,18 @@ bool BatallaDigital::hayGanador()
 	while(listaDeJugadores->avanzarCursor())
 	{
 		Jugador * Jugador = listaDeJugadores->getCursor();
-		if (Jugador->cantidadFichasSoldado()!=0)
+		if (Jugador->cantidadFichasSoldado()>0)
 		{
 			jugadoresConSoldados++;
 		}
 	}
+
 	if (jugadoresConSoldados==1)
 	{
 		return true;
 	}
 	return false;
 }
-
-
-void colocarFichaEnTablero()
-{
-
-}
-
-
 
 void BatallaDigital::avanzarTurno(Jugador * jugador)	{
 		int x,y,z=0;
@@ -355,5 +347,10 @@ void BatallaDigital::iniciarJuego(void)	{
 
 	}
 
+}
+
+void BatallaDigital::mostrarGeografiaTablero()
+{
+	this->tableroJuego->imprimirGeografia();
 }
 

@@ -73,6 +73,10 @@ class BatallaDigital
         void crearTablero();
 
         // Pre: -
+        // Pos: muestra la geografía del tablero
+        void mostrarGeografiaTablero();
+
+        // Pre: -
         // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
         void crearListaJugadores();
 
@@ -108,8 +112,6 @@ class BatallaDigital
 
         void avanzarTurno(Jugador * jugador);
         void iniciarJuego(void);
-        
-        void colocarFichaEnTablero();
 
         // Pre: debe haber una lista de jugadores con sus respectivas fichas
         // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
