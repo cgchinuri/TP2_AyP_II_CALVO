@@ -146,8 +146,10 @@ class Casillero
 		// Pos: retorna true si el puntero a ficha del casillero está apuntando a algo
 		//		retorna false si el puntero a ficha del casillero está apuntando a null
 		bool estaOcupado();
-
+		
+		
 		bool estaActivo(void);
+
 		//Pos: Desactiva el casillero
 		void desactivar(void);
 
