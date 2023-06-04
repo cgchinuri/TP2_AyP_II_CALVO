@@ -242,7 +242,7 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
 
 	Casillero * objetivo= this->tableroJuego->obtenerCasillero(x,y,z);
-
+	
 	if(!objetivo->estaActivo()){
         throw "El casillero esta inactivo";
 	}
@@ -266,7 +266,7 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 			}
 		}
 		*/
-		//Opcion2:si no tengo el id de jugador en la ficha :Recorrer la lista de jugadores, para cada jugador recorrer la lista de sus fichas... un poco feo
+		//Opcion 2:si no tengo el id de jugador en la ficha :Recorrer la lista de jugadores, para cada jugador recorrer la lista de sus fichas... un poco feo
 	
 		while(this->listaDeJugadores->avanzarCursor())	{
 			if(this->listaDeJugadores->getCursor()->eliminarFicha(*objetivo->getCoordenada())==true)	{
@@ -313,9 +313,8 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)	{
 		bool mover,jugarCarta=false;
 		int indice=1;
 		//leer coordenada a minar x y z (hacer funcion) feo, cambiar
-		std::cin>>x;
-		std::cin>>y;
-		std::cin>>z;
+		std::string stringCoordenada;
+		getline(std::cin, stringCoordenada);
 
 		minarCasillero(x,y,z,jugador);
 

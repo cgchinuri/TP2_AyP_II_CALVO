@@ -16,10 +16,23 @@ public:
         this->z=z;
     }
     
-   /* Coordenada(std::string csvString,char delim)    {
-        std::string token=csvString.substr(0,csvString.find(delim))
+ Coordenada(std::string csvString,std::string delimiter)    {
+        int aux[3];        
+        size_t pos = 0;
+        std::string token;
+        size_t i;
+        for(i=0;(pos = csvString.find(delimiter)) != std::string::npos;i++) {
+            token = csvString.substr(0, pos);
+            std::istringstream(token) >> aux[i];      
+            csvString.erase(0, pos + delimiter.length());
+        }
+
+        std::istringstream(token) >> aux[i];      
+        this->x=(T)aux[0];
+        this->y=(T)aux[1];
+        this->z=(T)aux[2];  
     }
-*/
+
     T obtenerX(void)    {
         return this->x;
     }
