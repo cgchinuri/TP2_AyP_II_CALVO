@@ -27,7 +27,7 @@ public:
             csvString.erase(0, pos + delimiter.length());
         }
 
-        std::istringstream(token) >> aux[i];      
+        std::istringstream(csvString) >> aux[i];
         this->x=(T)aux[0];
         this->y=(T)aux[1];
         this->z=(T)aux[2];  
