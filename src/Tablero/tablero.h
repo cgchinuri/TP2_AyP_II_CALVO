@@ -36,7 +36,11 @@ class Tablero
 		//		llena los punteros antZ y sigZ con los casilleros inferiores y superiores
 		void vincularPisosTablero();
 		
+		// Uso para pruebas
+		// Función que chequea todas las filas del tablero por si tienen vínculos
+		bool chequearVinculosPisosTablero();
 
+		void generarAguaEnTablero();
 
 	public:
 		// Constructor
@@ -54,14 +58,14 @@ class Tablero
 		// Pos: imprime el tipo de terreno por niveles
 		void imprimirGeografia();
 
+		// Pre: enviar como argumento un puntero a un casillero
+		// Pos: agrega un casillero a la lista de casilleros inactivos
+		void agregarCasilleroInactivo(Casillero * casilleroInactivoNuevo);
+
 		// Pre: -
 		// Pos: recorre la lista de casilleros inactivos y les resta uno a todos
 		//		saca un casillero de la lista si vuelve a estar activo
-		//decrementarInactividad()
-
-
-		// Función que chequea todas las filas del tablero por si tienen vínculos
-		bool chequearVinculosPisosTablero();
+		void decrementarInactividadCasilleros();
 
 		// Pre: insertar por argumentos las coordenadas del casillero buscado
 		// Pos: devuelve un puntero a un casillero si está dentro de las dimensiones del tablero
@@ -74,11 +78,10 @@ class Tablero
 		//		Si el trayecto fue ideal (sin obstáculos y sin cambiar de terreno) devuelve el casillero final
 		//		Si encontró un obstáculo en el medio, devuelve el casillero con el obstáculo, sin terminar la trayectoria
 		//		Si encontró un cambio de terreno, devuelve dicho casillero, sin terminar la trayectoria
-		//		Si el mapa se acabó, devuelve null.
+		//		Si encontró un casillero vacío en el recorrido, devuelve el mismo, sin terminar la trayectoria
+		// 		Si el mapa se acabó, devuelve null.
 		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
 
-
-		void generarAguaEnTablero();
 
 		// Destructor
 		~Tablero();

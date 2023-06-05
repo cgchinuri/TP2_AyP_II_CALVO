@@ -228,6 +228,38 @@ bool Tablero::chequearVinculosPisosTablero()
 	return true;
 }
 
+void Tablero::agregarCasilleroInactivo(Casillero * casilleroInactivoNuevo)
+{
+	// Agrego el casillero inactivo a la lista
+	this->listaCasillerosInactivos->add(casilleroInactivoNuevo);
+}
+
+
+void Tablero::decrementarInactividadCasilleros()
+{
+	// Variable aux para tener control de la posición de los elementos
+	unsigned int i = 1;
+
+	// Reinicio el cursor para comenzar a recorrer la lista
+	this->listaCasillerosInactivos->reiniciarCursor();
+
+	// Recorro la lista hasta el final
+	while (this->listaCasillerosInactivos->avanzarCursor())
+	{
+		// Decremento inactividad en cada casillero
+		this->listaCasillerosInactivos->getCursor()->decrementarInactividad();
+
+		// Si luego de decrementar inactividad queda activo tengo que sacarlo de la lista
+		if(this->listaCasillerosInactivos->getCursor()->estaActivo())
+		{
+			this->listaCasillerosInactivos->remover(i);
+			i--;
+		}
+
+		i++;
+	}
+}
+
 Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 {
 	Casillero * casilleroReturn = NULL;
@@ -298,6 +330,11 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 		else if(casilleroRetorno->estaOcupado())
 		{
 			// Si el casillero está ocupado, lo retorno y finalizo el movimiento
+			return casilleroRetorno;
+		}
+		else if(!casilleroRetorno->estaActivo())
+		{
+			// Si el casillero está inactivo, lo retorno y finalizo el movimiento
 			return casilleroRetorno;
 		}
 	}

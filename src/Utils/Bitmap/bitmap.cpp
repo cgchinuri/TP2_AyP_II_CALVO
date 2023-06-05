@@ -27,7 +27,7 @@ void dibujarTransparente(unsigned int x, unsigned int y, unsigned int altoTabler
         }     
     }
 }
-
+/*
 int main() {
     SetEasyBMPwarningsOff();
     BMP tablero;
@@ -87,3 +87,4 @@ int main() {
 
     tablero.WriteToFile("tablero.bmp");
 }
+*/

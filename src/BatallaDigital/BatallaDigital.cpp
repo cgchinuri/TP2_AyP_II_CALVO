@@ -214,10 +214,15 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 		// Si hay cambio de terreno no puedo mover
 		std::cout << "Error distinto terreno" << std::endl;
 	}
+	else if(!casilleroDestino->estaActivo())
+	{
+		// Si el casillero esta inactivo no puedo hacer el movimiento
+		std::cout << "Casillero inactivo en la trayectoria" << std::endl;
+	}
 	else if(casilleroDestino->estaOcupado())
 	{
 		// Si el casillero esta ocupado hay que tomar alguna accion pero no se puede completar el movimiento
-		std::cout << "Casillero de destino ocupado" << std::endl;
+		std::cout << "Casillero ocupado en la trayectoria" << std::endl;
 
 
 		// Aca tenemos que hacer la logica de explosion o lo que fuere
@@ -308,8 +313,11 @@ bool BatallaDigital::hayGanador()
 	return false;
 }
 
-void BatallaDigital::avanzarTurno(Jugador * jugador)	{
+void BatallaDigital::avanzarTurno(Jugador * jugador)
+{
+
 		int x,y,z=0;
+
 		bool mover,jugarCarta=false;
 		int indice=1;
 		//leer coordenada a minar x y z (hacer funcion) feo, cambiar
@@ -318,15 +326,17 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)	{
 
 		minarCasillero(x,y,z,jugador);
 
-		if(mover==true)	{
+		if(mover==true)
+		{
 			jugador->mostrarFichas();//mostrar en std?
 			//leer 
 			Ficha * ficha=jugador->obtenerFicha(indice);
 			//validar que sea un soldado
-			moverFicha(ficha,adelante,2);
+			//moverFicha(ficha,adelante,2);
 		}
 
-		if(jugarCarta==true)	{
+		if(jugarCarta==true)
+		{
 			return;
 		}
 	

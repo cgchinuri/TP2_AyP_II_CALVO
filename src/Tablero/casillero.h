@@ -133,7 +133,7 @@ class Casillero
 		// Pos: apunta a NULL el puntero a ficha que ocupa al casillero
 		void vaciarCasillero();
 
-		// Pre: -
+		// Pre: recibe como argumento un puntero a una ficha
 		// Pos: cambia la dirección a donde apunta el casillero en su parámetro fichaOcupa
 		void setFichaCasillero(Ficha * fichaOcupa);
 
@@ -147,7 +147,8 @@ class Casillero
 		//		retorna false si el puntero a ficha del casillero está apuntando a null
 		bool estaOcupado();
 		
-		
+		// Pre: -
+		// Pos: retorna true si el casillero está activo, false en caso contrario
 		bool estaActivo(void);
 
 		//Pos: Desactiva el casillero
