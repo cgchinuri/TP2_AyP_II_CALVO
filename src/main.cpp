@@ -39,8 +39,10 @@ int main()
 
 	Esto es para saber cómo se está generando el terreno del tablero
 	*/
-	batallaDigital->mostrarGeografiaTablero();
 	
+
+	//batallaDigital->mostrarGeografiaTablero();
+
 
 	/*
 	// ------------------------------------ PRUEBAS 28/05 ------------------------------------
@@ -108,7 +110,7 @@ int main()
 
 
 	// Una vez que genero el tablero se colocan las fichas al comienzo del juego
-	// colocarFichasIniciales();
+	batallaDigital->colocarFichasIniciales();
 
 	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
 	/* while(hayGanador!=false)

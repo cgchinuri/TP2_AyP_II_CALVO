@@ -193,6 +193,20 @@ Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z, int j
 
 }
 
+Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z, Jugador * jugador)
+{
+	Ficha * nuevaFicha = new Ficha(tipoFicha, x, y , z);
+	Casillero * casilleroVinculacion = this->tableroJuego->obtenerCasillero(x,y,z);
+
+	vincularFichaYCasillero(casilleroVinculacion, nuevaFicha);
+
+
+	jugador->agregarFicha(nuevaFicha);
+
+	return nuevaFicha;
+
+}
+
 
 void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros)
 {
@@ -361,5 +375,124 @@ void BatallaDigital::iniciarJuego(void)	{
 void BatallaDigital::mostrarGeografiaTablero()
 {
 	this->tableroJuego->imprimirGeografia();
+}
+
+Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
+{
+	// Coordenadas X e Y
+	int x, y = 0;
+
+	bool coordenadaOK = false;
+	bool casilleroOK = false;
+
+	Casillero * casilleroResultante = NULL;
+
+	while(!casilleroOK)
+	{
+		coordenadaOK = false ;
+		casilleroOK = false ;
+
+		// Ingreso de la coordenada X
+		while(!coordenadaOK)
+		{
+			std::cout << STRING_PEDIR_POS_X_SOLDADO ;
+			std::cin >> x ;
+
+
+			if(x < 1 || x > this->dimensionesTablero[0])
+			{
+				// Si fue ingresada una posicion externa a las dimensiones del mapa
+				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
+			}
+			else
+			{
+				// Hacer la asignacion en la coordenada
+				coordenadaOK = true;
+			}
+		}
+
+		coordenadaOK = false;
+
+		// Ingreso de la coordenada Y
+		while(!coordenadaOK)
+		{
+			std::cout << STRING_PEDIR_POS_Y_SOLDADO ;
+			std::cin >> y ;
+
+
+			if(y < 1 || y > this->dimensionesTablero[1])
+			{
+				// Si fue ingresada una posicion externa a las dimensiones del mapa
+				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
+			}
+			else
+			{
+				// Hacer la asignacion en la coordenada
+				coordenadaOK = true;
+			}
+		}
+
+		casilleroResultante = this->tableroJuego->obtenerCasillero(x,y,NIVEL_MAXIMO_TIERRA);
+
+
+		if(!casilleroResultante)
+		{
+			// Si el casillero es nulo informo
+			std::cout << STRING_INGRESO_SOLDADO_CAS_NULO << std::endl;
+		}
+		else if(casilleroResultante->getTipoCasillero()!=tipoCasillero)
+		{
+			// Si el casillero no es del tipo esperado informo
+			std::cout << STRING_INGRESO_SOLDADO_ERROR_AGUA << std::endl;
+		}
+		else if(casilleroResultante->estaOcupado())
+		{
+			// Si el casillero está ocupado lo informo
+			std::cout << STRING_INGRESO_SOLDADO_ERROR_OBSTACULO << std::endl;
+		}
+		else
+		{
+			// Si llegué acá el casillero sirve para poner el soldado
+			casilleroOK = true;
+		}
+	}
+
+	// Genero y retorno la coordenada
+	Coordenada<int> coordenada(x,y,NIVEL_MAXIMO_TIERRA);
+
+	return coordenada;
+}
+
+void BatallaDigital::colocarFichasIniciales()
+{
+	// Punteros aux
+	Ficha * fichaAux=NULL;
+	Casillero * casilleroAux = NULL;
+
+	// Inicializo lista de jugadores
+	this->listaDeJugadores->reiniciarCursor();
+
+	// Recorro la lista de jugadores
+	while(this->listaDeJugadores->avanzarCursor())
+	{
+		// ¡¡ Imprimir nombre del jugador !!
+
+		for(int i = 0 ; i < CANT_INICIAL_SOLDADOS_POR_JUGADOR ; i++)
+		{
+			std::cout << STRING_INGRESO_SOLDADO << std::endl;
+
+			Coordenada<int> coordenada = pedirXYJugador(tierra);
+
+			fichaAux = crearFicha(FICHA_SOLDADO, coordenada.obtenerX(), coordenada.obtenerY(), coordenada.obtenerZ(), this->listaDeJugadores->getCursor());
+
+			casilleroAux = fichaAux->getCasilleroFicha();
+
+			// Para verificar
+			std::cout << "Ficha agregada a casillero: " ;
+			casilleroAux->imprimirPos();
+		}
+
+	}
+
 }
 

@@ -5,6 +5,7 @@
 #include "../Utils/LinkedList_T.h"
 #include "../Utils/TipoMovimiento.h"
 
+#define NIVEL_MAXIMO_TIERRA 5
 
 class Tablero
 {

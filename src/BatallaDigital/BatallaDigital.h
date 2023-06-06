@@ -7,6 +7,8 @@
 #include "../Utils/LinkedList_T.h"
 #include "../Jugador/Jugador.h"
 
+#define CANT_INICIAL_SOLDADOS_POR_JUGADOR 4
+
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
 
@@ -28,6 +30,15 @@
 #define STRING_DIM_Z "Ingrese la dimension del tablero en el eje Z: "
 #define STRING_ERROR_DIM "La dimension ingresada es incorrecta. Debe ser un numero entero mayor o igual a "
 
+#define STRING_INGRESO_SOLDADO "Vas a agregar un soldado al mapa."
+#define STRING_PEDIR_POS_X_SOLDADO "Ingresá la posición en X: "
+#define STRING_PEDIR_POS_Y_SOLDADO "Ingresá la posición en Y: "
+
+#define STRING_INGRESO_SOLDADO_CAS_NULO "Error casillero nulo."
+#define STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES "La coordenada ingresada no es parte del mapa."
+#define STRING_INGRESO_SOLDADO_ERROR_OBSTACULO "No es posible posicionar un soldado en ese casillero porque está inactivo u ocupado."
+#define STRING_INGRESO_SOLDADO_ERROR_AGUA "No es posible posicionar un soldado en ese casillero porque es del tipo agua."
+
 class BatallaDigital
 {
     private:
@@ -44,6 +55,14 @@ class BatallaDigital
         // Puntero al tablero
         Tablero * tableroJuego;
 
+        // Pre: -
+        // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
+        void crearListaJugadores();
+
+        // Pre: -
+        // Pos: crea un tablero con dimensiones especificadas y lo deja apuntado con el atributo de la clase
+        void crearTablero();
+
     public:
         // Constructor
         // Pre: -
@@ -52,6 +71,8 @@ class BatallaDigital
         BatallaDigital();
 
         //Otro constructor
+        // Pre: recibe cantidad de jugadores y dimensiones del tablero
+        // Pos: genera lista con jugadores con la cantidad recibida y un tablero con las dimensiones especificadas
         BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ);
 
         // Pre: -
@@ -69,16 +90,8 @@ class BatallaDigital
         void ingresarDimensionesTablero();
 
         // Pre: -
-        // Pos: crea un tablero con dimensiones especificadas y lo deja apuntado con el atributo de la clase
-        void crearTablero();
-
-        // Pre: -
         // Pos: muestra la geografía del tablero
         void mostrarGeografiaTablero();
-
-        // Pre: -
-        // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
-        void crearListaJugadores();
 
         // Pre: recibe como argumento un puntero a un casillero y un puntero a una ficha
         //      ambos deben estar apuntando a null
@@ -97,6 +110,11 @@ class BatallaDigital
         // Pos: crea una ficha del tipo solicitado y la vincula con la posicion especificada del tablero
         Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z, int jugador);
 
+        // Segunda implementacion, cambio la posicion del jugador por un puntero al jugador
+        // Pre: recibe como argumentos el tipo de ficha y la posicion a vincular en el tablero
+        // Pos: crea una ficha del tipo solicitado y la vincula con la posicion especificada del tablero
+        Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z, Jugador * jugador);
+
 
         // Pre: recibe como argumentos una ficha, un tipo de movimiento y una cantidad de casilleros a mover
         // Pos: si la trayectoria es limpia la mueve
@@ -111,11 +129,22 @@ class BatallaDigital
         void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 
         void avanzarTurno(Jugador * jugador);
+
+
         void iniciarJuego(void);
 
         // Pre: debe haber una lista de jugadores con sus respectivas fichas
         // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
         bool hayGanador();
+
+        // Pre: -
+        // Pos: pregunta por las fichas iniciales de los jugadores y las posiciona en el mapa
+        void colocarFichasIniciales();
+
+        // Pre: necesita un tipo de casillero para pedir en la coordenada
+        // Pos: le pide al jugador una coordenada (X e Y) y valida que sea del tipo buscado
+        //		retorna la coordenada que el jugador ingrese completando en Z con el nivel max de tierra
+        Coordenada<int> pedirXYJugador(tipoCasillero_t tipoCasillero);
 
         
 };
