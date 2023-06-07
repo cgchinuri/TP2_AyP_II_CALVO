@@ -7,7 +7,7 @@ const int MAX_CANTIDAD_TURNOS_INACTIVO=10;
 
 typedef enum
 {
-	tierra,
+	tierra, // Deberia ser todo mayuscula
 	agua,
 	aire
 }tipoCasillero_t;

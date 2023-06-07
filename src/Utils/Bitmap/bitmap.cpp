@@ -2,7 +2,53 @@
 #include "EasyBMP_1.06/EasyBMP.h"
 #include "EasyBMP_1.06/EasyBMP_Font.h"
 
+#include "../Tablero/tablero.h"
+#include "../Tablero/casillero.h"
+#include "../Ficha/Ficha.h"
+
 #define RESOLUCION 50 // pixeles
+
+struct Imagenes {
+    BMP tableroNivelDelMar;
+    BMP tableroSubterraneo;
+    BMP tableroAereo;
+    BMP pasto;
+    BMP tierra;
+    BMP agua;
+    BMP aguaProfunda;
+    BMP aire;
+    BMP soldadoJugador;
+    BMP soldadoEnemigo;
+    BMP quimicos;
+    BMP minaJugador;
+    BMP minaEnemigo;
+    BMP avionJugador;
+    BMP avionEnemigo;
+    BMP barcoJugador;
+    BMP barcoEnemigo;
+    BMP submarinoJugador;
+    BMP submarinoEnemigo;
+};
+
+void iniciarBitmap(unsigned int anchoTablero, unsigned int altoTablero, struct Imagenes &imagenes) {
+    imagenes.tableroNivelDelMar.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
+    imagenes.tableroSubterraneo.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
+    imagenes.tableroAereo.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
+    imagenes.pasto.ReadFromFile("bitmaps/pasto.bmp");
+    imagenes.tierra.ReadFromFile("bitmaps/tierra.bmp");
+    imagenes.agua.ReadFromFile("bitmaps/agua.bmp");
+    imagenes.soldadoJugador.ReadFromFile("bitmaps/soldadoJugador.bmp");
+    imagenes.soldadoEnemigo.ReadFromFile("bitmaps/soldadoEnemigo.bmp");
+    imagenes.quimicos.ReadFromFile("bitmaps/quimicos.bmp");
+    imagenes.minaJugador.ReadFromFile("bitmaps/minaJugador.bmp");
+    imagenes.minaEnemigo.ReadFromFile("bitmaps/minaEnemigo.bmp");
+    imagenes.avionJugador.ReadFromFile("bitmaps/avionJugador.bmp");
+    imagenes.avionEnemigo.ReadFromFile("bitmaps/avionEnemigo.bmp");
+    imagenes.barcoJugador.ReadFromFile("bitmaps/barcoJugador.bmp");
+    imagenes.barcoEnemigo.ReadFromFile("bitmaps/barcoEnemigo.bmp");
+    imagenes.submarinoJugador.ReadFromFile("bitmaps/submarinoJugador.bmp");
+    imagenes.submarinoEnemigo.ReadFromFile("bitmaps/submarinoEnemigo.bmp");
+}
 
 void dibujar(unsigned int x, unsigned int y, unsigned int altoTablero, BMP &tablero, BMP &elemento)
 {   
@@ -27,55 +73,8 @@ void dibujarTransparente(unsigned int x, unsigned int y, unsigned int altoTabler
         }     
     }
 }
-/*
-int main() {
-    SetEasyBMPwarningsOff();
-    BMP tablero;
-    unsigned int anchoTablero = 25, altoTablero = 50;
-    tablero.SetSize(RESOLUCION * anchoTablero, RESOLUCION*altoTablero);
-    BMP imagenTierra;
-    imagenTierra.ReadFromFile("bitmaps/tierra.bmp");
-    BMP imagenAgua;
-    imagenAgua.ReadFromFile("bitmaps/agua.bmp");
-    BMP imagenSoldadoJugador;
-    imagenSoldadoJugador.ReadFromFile("bitmaps/soldadoJugador.bmp");
-    BMP imagenSoldadoEnemigo;
-    imagenSoldadoEnemigo.ReadFromFile("bitmaps/soldadoEnemigo.bmp");
-    BMP imagenQuimicos;
-    imagenQuimicos.ReadFromFile("bitmaps/quimicos.bmp");
-    BMP imagenMinaJugador;
-    imagenMinaJugador.ReadFromFile("bitmaps/minaJugador.bmp");
-    BMP imagenMinaEnemigo;
-    imagenMinaEnemigo.ReadFromFile("bitmaps/minaEnemigo.bmp");
 
-    for (size_t i = 0; i < 25; i++)
-    {
-        for (size_t j = 0; j < 25; j++)
-        {
-            dibujar(i, j, altoTablero, tablero, imagenTierra);
-        }
-    }
-
-    for (size_t i = 0; i < 25; i++)
-    {
-        for (size_t j = 25; j < 50; j++)
-        {
-            dibujar(i, j, altoTablero, tablero, imagenAgua);
-
-        }
-    }
-
-    for (size_t i = 0; i < 25; i++)
-    {    
-        dibujarTransparente(i, 40, altoTablero, tablero, imagenSoldadoEnemigo);
-        dibujarTransparente(i, 36, altoTablero, tablero, imagenQuimicos);
-        dibujarTransparente(i, 5, altoTablero, tablero, imagenSoldadoJugador);
-        dibujarTransparente(i, 2, altoTablero, tablero, imagenMinaJugador);
-        dibujarTransparente(i, 1, altoTablero, tablero, imagenMinaEnemigo);
-    }
-    
-    RGBApixel colorLetra;
-    colorLetra.Blue = colorLetra.Red = colorLetra.Green = 0;
+void dibujarLetra(unsigned int altoTablero, BMP tablero, RGBApixel colorLetra) {
     unsigned int altoLetra = RESOLUCION/3;
     char numero[3];
     for (size_t i = 0; i < altoTablero; i++)
@@ -84,7 +83,7 @@ int main() {
         PrintString(tablero, numero, i * RESOLUCION + RESOLUCION/2, RESOLUCION * altoTablero - altoLetra, altoLetra, colorLetra);
         PrintLetter(tablero, 'A' + i, 0, (altoTablero - i - 1) * RESOLUCION, altoLetra, colorLetra);
     }
-
-    tablero.WriteToFile("tablero.bmp");
 }
-*/
+
+//SetEasyBMPwarningsOff();    tablero.WriteToFile("tablero.bmp");
+
