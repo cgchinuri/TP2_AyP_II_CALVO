@@ -38,13 +38,15 @@ public:
     Ficha * obtenerFicha(Coordenada<int> & pos);
     Ficha * obtenerFicha(unsigned int pos);
 
+    //Este metodo (quizas deberia ser privado) elimina las fichas que esten inactivas
+    void removerFichasInactivas(void);
+
     int cantidadFichas(void);
     int cantidadFichasSoldado();
 
     /*  Muestra las fichas del jugador por la consola
     */
     void mostrarFichas(void);
-
     void agregarCarta(CartaBatallaDigital * carta);
     CartaBatallaDigital * obtenerCarta(int pos);
     void mostrarCartas();

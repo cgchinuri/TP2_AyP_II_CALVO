@@ -127,6 +127,7 @@ void Jugador::mostrarCartas()   {
 
 int Jugador::cantidadFichasSoldado()
 {
+    this->removerFichasInactivas();//Se eliminan las fichas que esten inactivas
     this->Fichas->reiniciarCursor();
     int cantidadSoldados=0;
     while(Fichas->avanzarCursor())
@@ -139,3 +140,20 @@ int Jugador::cantidadFichasSoldado()
     }
     return cantidadSoldados;
 }
+
+
+
+void Jugador::removerFichasInactivas(void)    {
+    
+    this->Fichas->reiniciarCursor();
+
+    for(size_t i=1;this->Fichas->avanzarCursor();i++) {
+        if(!(this->Fichas->getCursor()->estaActiva())){
+            this->Fichas->remover(i);
+
+            this->Fichas->reiniciarCursor();//Si no se reinicia el cursor y el indice se podria incurrir en un funcionamiento erratico al remover otra ficha
+            i=0;
+        }
+    }
+}
+
