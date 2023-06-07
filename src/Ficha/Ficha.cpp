@@ -52,3 +52,18 @@ void Ficha::setCasilleroFicha(Casillero * casillero) {
 void Ficha::desvincularFichaDeCasillero() {
 	this->casillero = NULL;
 }
+
+
+
+void Ficha::desactivarFicha(void)  {
+    this->activo=false;
+}
+
+void Ficha::activarFicha(void)  {
+    this->activo=true;
+}
+
+
+bool Ficha::estaActiva(void)    {
+    return this->activo;
+}

@@ -47,6 +47,10 @@ public:
     // Pre: -
 	// Pos: cambia la dirección del puntero a casillero a NULL
 	void desvincularFichaDeCasillero();
+
+    void desactivarFicha(void);
+    void activarFicha(void);
+
 };
 
 
