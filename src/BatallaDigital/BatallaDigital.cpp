@@ -329,30 +329,59 @@ bool BatallaDigital::hayGanador()
 
 void BatallaDigital::avanzarTurno(Jugador * jugador)
 {
-
+		//Variables para el turno
 		int x,y,z=0;
-
 		bool mover,jugarCarta=false;
 		int indice=1;
-		//leer coordenada a minar x y z (hacer funcion) feo, cambiar
+
+		//Comienzo preguntando dónde quiere minar el jugador
 		std::string stringCoordenada;
 		getline(std::cin, stringCoordenada);
-
 		minarCasillero(x,y,z,jugador);
 
+		//Le pregunto si quiere mover
+		//mover= jugadorQuiereMover();
 		if(mover==true)
 		{
-			jugador->mostrarFichas();//mostrar en std?
-			//leer 
-			Ficha * ficha=jugador->obtenerFicha(indice);
-			//validar que sea un soldado
-			//moverFicha(ficha,adelante,2);
-		}
+			//MUESTRO SUS FICHAS
+			jugador->mostrarFichas();
 
+			//LE PREGUNTO CUAL QUIERE MOVER
+			Ficha * ficha=jugador->obtenerFicha(indice);
+
+			//LA MUEVO
+			// moverFicha();  esta podría ser la función general y las de arriba las subfunciones
+		}
+		// SI MOVIO GESTIONO EVENTOS
+		// explotarMina(); ?
+		// matarSoldado(); ?
+		// matarOtraFicha(); ?
+		// limpiarFichasInactivas(); ?
+
+
+		//Le pregunto si quiere jugar una carta
+		//jugarCarta = jugadorQuiereUsarCarta();
 		if(jugarCarta==true)
 		{
+
+			//POSIBLES EVENTOS SEGUN LA CARTA USADA
+
+			//ataqueQuimico();
+
+			//avionDeCombate();
+
+			// algun otro??
+
 			return;
 		}
+		// SI SE USO CARTA GESTIONO EVENTOS
+
+
+
+		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
+		//actualizarTablero();
+		//decrementarInactividadCasilleros();
+		//mostrarTablero();
 	
 }
 

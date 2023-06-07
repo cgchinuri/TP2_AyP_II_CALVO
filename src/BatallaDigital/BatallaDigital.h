@@ -6,6 +6,7 @@
 #include "../Ficha/Ficha.h"
 #include "../Utils/LinkedList_T.h"
 #include "../Jugador/Jugador.h"
+#include "../Utils/TipoMovimiento.h"
 
 #define CANT_INICIAL_SOLDADOS_POR_JUGADOR 4
 

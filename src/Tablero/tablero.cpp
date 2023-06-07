@@ -24,7 +24,7 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	Lista<Lista<Casillero*>* >* pisos=NULL;
 	Lista<Casillero*>* columnas=NULL;
 	tipoCasillero_t tipoCasillero=tierra;
-	int nivelDelMar = dimZ/2;
+	int nivelDelMar = NIVEL_MAXIMO_TIERRA;
 
 
 	Lista<Lista<Lista<Casillero*>*>*>* tableroJuego = new Lista<Lista<Lista<Casillero*>*>*>();
@@ -348,7 +348,7 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 void Tablero::generarAguaEnTablero() 
 {
     tipoCasillero_t tipoCasillero = tierra;
-    int nivelDelMar = this->dimZ / 2;
+    int nivelDelMar = NIVEL_MAXIMO_TIERRA;
     
     // Generar una semilla aleatoria para generar números aleatorios
     srand(time(NULL));
