@@ -63,7 +63,8 @@ void Ficha::activarFicha(void)  {
     this->activo=true;
 }
 
-
+/*
 bool Ficha::estaActiva(void)    {
     return this->activo;
 }
+*/

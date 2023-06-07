@@ -11,12 +11,21 @@
 #include "Tablero/tablero.h"
 #include "Jugador/Jugador.h"
 #include "BatallaDigital/BatallaDigital.h"
-
+#include "Utils/Bitmap/bitmap.h"
 
 using namespace std;
 
 int main() 
 {
+	Tablero *tablero = new Tablero(5, 5, 5);
+	struct Imagenes *imagenes = new struct Imagenes;
+	iniciarBitmap(5,5,imagenes);
+	dibujarTablero(tablero, imagenes);
+	delete imagenes;
+	delete tablero;
+
+	// ↑ ESTE main así no tiene errores de memoria
+/*
 	cout << "Inicio" << endl;
 
 
@@ -37,7 +46,7 @@ int main()
 
 	//batallaDigital->imprimirQuienGano();
 	
-
+*/
 	cout << "====..... Fin .....====" << endl;
 	return 0;
 }

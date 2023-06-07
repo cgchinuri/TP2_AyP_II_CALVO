@@ -141,7 +141,7 @@ void dibujarTablero(Tablero *tablero, struct Imagenes *imagenes) {
     unsigned int altoTablero = tablero->getDimY();
 
 	for(int z = 1 ; z <= profundidadTablero ; z++) {
-		dibujarCapa(tablero->getTableroJuego()->get(z), z, anchoTablero, altoTablero, imagenes);
+		dibujarCapa(tablero->tableroJuego->get(z), z, anchoTablero, altoTablero, imagenes);
     }	
 }
 

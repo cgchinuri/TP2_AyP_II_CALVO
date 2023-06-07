@@ -2,7 +2,7 @@ PROGRAM=BATALLADIGITAL
 CC=g++
 CFLAGS=-Wall -std=c++98 -pedantic -ansi -g
 LDFLAGS=
-OBJ=tablero.o bitmap.o casillero.o EasyBMP.o main.o
+OBJ=tablero.o bitmap.o casillero.o EasyBMP.o Ficha.o main.o
 
 all: $(PROGRAM)
 
@@ -15,8 +15,8 @@ tablero.o: Tablero/tablero.h Tablero/casillero.h
 casillero.o: Tablero/casillero.h Utils/Coordenada.h Ficha/Ficha.h
 	$(CC) $(CFLAGS) -c Tablero/casillero.cpp
 
-Ficha.o: Ficha/ficha.h Tablero/casillero
-	$(CC) $(CFLAGS) -c Ficha/ficha.cpp
+Ficha.o: Ficha/Ficha.h
+	$(CC) $(CFLAGS) -c Ficha/Ficha.cpp
 
 bitmap.o: Utils/Bitmap/bitmap.h Ficha/Ficha.h Utils/Bitmap/EasyBMP_1.06/EasyBMP.h Utils/Bitmap/EasyBMP_1.06/EasyBMP_Font.h
 	$(CC) $(CFLAGS) -c Utils/Bitmap/bitmap.cpp
