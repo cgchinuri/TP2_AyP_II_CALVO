@@ -1,4 +1,5 @@
 #include <string>
+#include "bitmap.h"
 #include "EasyBMP_1.06/EasyBMP.h"
 #include "EasyBMP_1.06/EasyBMP_Font.h"
 
@@ -6,48 +7,24 @@
 #include "../Tablero/casillero.h"
 #include "../Ficha/Ficha.h"
 
-#define RESOLUCION 50 // pixeles
-
-struct Imagenes {
-    BMP tableroNivelDelMar;
-    BMP tableroSubterraneo;
-    BMP tableroAereo;
-    BMP pasto;
-    BMP tierra;
-    BMP agua;
-    BMP aguaProfunda;
-    BMP aire;
-    BMP soldadoJugador;
-    BMP soldadoEnemigo;
-    BMP quimicos;
-    BMP minaJugador;
-    BMP minaEnemigo;
-    BMP avionJugador;
-    BMP avionEnemigo;
-    BMP barcoJugador;
-    BMP barcoEnemigo;
-    BMP submarinoJugador;
-    BMP submarinoEnemigo;
-};
-
-void iniciarBitmap(unsigned int anchoTablero, unsigned int altoTablero, struct Imagenes &imagenes) {
-    imagenes.tableroNivelDelMar.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
-    imagenes.tableroSubterraneo.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
-    imagenes.tableroAereo.SetSize(RESOLUCION * anchoTablero, RESOLUCION * altoTablero);
-    imagenes.pasto.ReadFromFile("bitmaps/pasto.bmp");
-    imagenes.tierra.ReadFromFile("bitmaps/tierra.bmp");
-    imagenes.agua.ReadFromFile("bitmaps/agua.bmp");
-    imagenes.soldadoJugador.ReadFromFile("bitmaps/soldadoJugador.bmp");
-    imagenes.soldadoEnemigo.ReadFromFile("bitmaps/soldadoEnemigo.bmp");
-    imagenes.quimicos.ReadFromFile("bitmaps/quimicos.bmp");
-    imagenes.minaJugador.ReadFromFile("bitmaps/minaJugador.bmp");
-    imagenes.minaEnemigo.ReadFromFile("bitmaps/minaEnemigo.bmp");
-    imagenes.avionJugador.ReadFromFile("bitmaps/avionJugador.bmp");
-    imagenes.avionEnemigo.ReadFromFile("bitmaps/avionEnemigo.bmp");
-    imagenes.barcoJugador.ReadFromFile("bitmaps/barcoJugador.bmp");
-    imagenes.barcoEnemigo.ReadFromFile("bitmaps/barcoEnemigo.bmp");
-    imagenes.submarinoJugador.ReadFromFile("bitmaps/submarinoJugador.bmp");
-    imagenes.submarinoEnemigo.ReadFromFile("bitmaps/submarinoEnemigo.bmp");
+void asignarImagenes(unsigned int anchoTablero, unsigned int altoTablero, struct Imagenes *imagenes) {
+    SetEasyBMPwarningsOff();
+    imagenes->tablero.SetSize(anchoTablero, altoTablero);
+    imagenes->pasto.ReadFromFile("bitmaps/pasto.bmp");
+    imagenes->tierra.ReadFromFile("bitmaps/tierra.bmp");
+    imagenes->agua.ReadFromFile("bitmaps/agua.bmp");
+    imagenes->soldadoJugador.ReadFromFile("bitmaps/soldadoJugador.bmp");
+    imagenes->soldadoEnemigo.ReadFromFile("bitmaps/soldadoEnemigo.bmp");
+    imagenes->quimicos.ReadFromFile("bitmaps/quimicos.bmp");
+    imagenes->minaJugador.ReadFromFile("bitmaps/minaJugador.bmp");
+    imagenes->minaEnemigo.ReadFromFile("bitmaps/minaEnemigo.bmp");
+    imagenes->avionJugador.ReadFromFile("bitmaps/avionJugador.bmp");
+    imagenes->avionEnemigo.ReadFromFile("bitmaps/avionEnemigo.bmp");
+    imagenes->barcoJugador.ReadFromFile("bitmaps/barcoJugador.bmp");
+    imagenes->barcoEnemigo.ReadFromFile("bitmaps/barcoEnemigo.bmp");
+    imagenes->submarinoJugador.ReadFromFile("bitmaps/submarinoJugador.bmp");
+    imagenes->submarinoEnemigo.ReadFromFile("bitmaps/submarinoEnemigo.bmp");
+    imagenes->error.ReadFromFile("bitmaps/error.bmp");
 }
 
 void dibujar(unsigned int x, unsigned int y, unsigned int altoTablero, BMP &tablero, BMP &elemento)
@@ -85,5 +62,87 @@ void dibujarLetra(unsigned int altoTablero, BMP tablero, RGBApixel colorLetra) {
     }
 }
 
-//SetEasyBMPwarningsOff();    tablero.WriteToFile("tablero.bmp");
+const char *crearRuta(unsigned int nivelZ) {
+    char ruta[20] = "tableroNivel";
+    char numero[4];
+    sprintf(numero, "%ld", nivelZ);
+    strcat(ruta, numero);
+    strcat(ruta, ".bmp");
+    return ruta;
+}
+
+void dibujarCasillero(unsigned int altoTablero, Casillero *casillero, struct Imagenes *imagenes) {
+    unsigned int posX = casillero->getPosX();
+    unsigned int posY = casillero->getPosY();
+    switch (casillero->getTipoCasillero())
+    {
+    case tierra:
+        if(casillero->getPosZ() < 4) {
+            dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->tierra);
+        }
+        else {
+            dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->pasto);
+        }
+        break;
+    case agua:
+        if(casillero->getPosZ() < 4) {
+            dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->aguaProfunda);
+        }
+        else {
+            dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->agua);
+        }
+    case aire:
+        dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->aire);
+    default:
+        dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->error); // PARA DEBUG
+        break;
+    }
+
+    Ficha *ficha = casillero->getFichaCasillero();
+    if (ficha == NULL) return;
+    switch (ficha->obtenerTipo())
+    {
+    case FICHA_BARCO:
+        dibujarTransparente(posX, posY, altoTablero, imagenes->tablero, imagenes->barcoJugador);
+        break;
+    case FICHA_SOLDADO:
+        dibujarTransparente(posX, posY, altoTablero, imagenes->tablero, imagenes->soldadoJugador);
+        break;
+    case FICHA_AVION:
+        dibujarTransparente(posX, posY, altoTablero, imagenes->tablero, imagenes->avionJugador);
+        break;
+    case FICHA_MINA:
+        dibujarTransparente(posX, posY, altoTablero, imagenes->tablero, imagenes->minaJugador);
+        break;
+    
+    default:
+        dibujar(posX, posY, altoTablero, imagenes->tablero, imagenes->error); // PARA DEBUG
+        break;
+    }
+}
+
+void dibujarCapa(unsigned int nivelZ, Tablero *tablero, struct Imagenes *imagenes) {
+    unsigned int anchoTablero = tablero->getDimX();
+    unsigned int altoTablero = tablero->getDimY();
+    Casillero *casillero = NULL;
+    for (size_t i = 0; i < anchoTablero; i++) {
+        for (size_t j = 0; j < altoTablero; j++) {
+            casillero = tablero->obtenerCasillero(i, j, nivelZ);
+            if (casillero == NULL) {
+                throw "Error de casillero";
+            }
+            dibujarCasillero(altoTablero, casillero, imagenes);
+        }
+        
+    }
+    imagenes->tablero.WriteToFile(crearRuta(nivelZ));
+}
+
+void dibujarTablero(Tablero *tablero, struct Imagenes *imagenes) {
+    unsigned int profundidadTablero = tablero->getDimZ();
+    for (size_t i = 0; i < profundidadTablero; i++) {
+        dibujarCapa(i, tablero, imagenes);
+}
+
+//SetEasyBMPwarningsOff();
 

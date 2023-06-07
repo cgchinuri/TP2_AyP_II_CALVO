@@ -1,4 +1,5 @@
 #include "BatallaDigital.h"
+#include "Utils/Bitmap/bitmap.h"
 
 
 BatallaDigital::BatallaDigital()
@@ -121,7 +122,7 @@ void BatallaDigital::ingresarDimensionesTablero()
 
 }
 
-void BatallaDigital::crearTablero()
+void BatallaDigital::crearTablero(BMP tablero)
 {
 	// generacion del tablero
 	tableroJuego = new Tablero(this->dimensionesTablero[0],this->dimensionesTablero[1],this->dimensionesTablero[2]);

@@ -52,6 +52,12 @@ class Tablero
 		Tablero(int dimX, int dimY, int dimZ);
 
 		// Pre: -
+		// Pos: Devuelve la dimensión X, Y o Z del tablero respectivamente
+		unsigned int getDimX();
+		unsigned int getDimY();
+		unsigned int getDimZ();
+
+		// Pre: -
 		// Pos: imprime el tablero por niveles
 		void imprimirTablero();
 

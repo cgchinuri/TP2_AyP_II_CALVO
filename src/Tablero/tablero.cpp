@@ -58,6 +58,15 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 
 }
 
+unsigned int Tablero::getDimX() {
+	return this->dimX;
+}
+unsigned int Tablero::getDimY() {
+	return this->dimY;
+}
+unsigned int Tablero::getDimZ() {
+	return this->dimZ;
+}
 
 void Tablero::imprimirTablero()
 
