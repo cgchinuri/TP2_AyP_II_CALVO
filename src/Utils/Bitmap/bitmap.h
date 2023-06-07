@@ -2,7 +2,7 @@
 #define BITMAP_H
 
 #include "EasyBMP_1.06/EasyBMP.h"
-#include "../Tablero/tablero.h"
+#include "../../Tablero/tablero.h"
 
 #define RESOLUCION 50 // pixeles
 
