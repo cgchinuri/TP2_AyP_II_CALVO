@@ -281,7 +281,7 @@ Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 	return casilleroReturn;
 }
 
-Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros)
+Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, unsigned int cantidadCasilleros)
 {
 	// Puntero que se retornará al final de la función
 	Casillero * casilleroRetorno = casilleroInicio ;

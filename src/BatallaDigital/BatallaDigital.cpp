@@ -208,7 +208,7 @@ Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z, Jugad
 }
 
 
-void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros)
+bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , unsigned int cantCasilleros)
 {
 	// Casillero de inicio de la trayectoria
 	Casillero * casilleroInicio = fichaMover->getCasilleroFicha();
@@ -222,16 +222,19 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	{
 		// Si el casillero destino es null entonces me fui del mapa
 		std::cout << "Error fuera de mapa" << std::endl;
+		return false;
 	}
 	else if (casilleroInicio->getTipoCasillero() != casilleroDestino->getTipoCasillero())
 	{
 		// Si hay cambio de terreno no puedo mover
 		std::cout << "Error distinto terreno" << std::endl;
+		return false;
 	}
 	else if(!casilleroDestino->estaActivo())
 	{
 		// Si el casillero esta inactivo no puedo hacer el movimiento
 		std::cout << "Casillero inactivo en la trayectoria" << std::endl;
+		return false;
 	}
 	else if(casilleroDestino->estaOcupado())
 	{
@@ -247,6 +250,7 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA)	{
 			casilleroDestino->desactivar();
 		}
+		return false;
 
 	}
 	else
@@ -259,6 +263,7 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 		// Vinculo ficha y casillero destino
 		vincularFichaYCasillero(casilleroDestino, fichaMover);
+		return true;
 	}
 }
 
@@ -436,6 +441,92 @@ void BatallaDigital::colocarFichasIniciales()
 
 }
 
+void desactivarCasillero(Casillero * casillero , int turnosInactividad)
+{
+	Ficha * fichaAux = NULL ;
+
+	fichaAux = casillero->getFichaCasillero();
+
+	if(fichaAux)
+	{
+		fichaAux->desvincularFichaDeCasillero();
+		// Completar con la función que desactiva la ficha
+		//fichaAux->desactivar();
+	}
+
+	// Vacía el casillero
+	casillero->vaciarCasillero();
+
+	// Desactiva el casillero con los turnos que se recibieron como parámetro
+	casillero->desactivar(turnosInactividad);
+
+}
+
+void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion )
+{
+	if(!casilleroCentral)
+	{
+		throw "Error puntero a casillero nulo";
+	}
+	else if(turnosInactividadEpicentro < 3)
+	{
+		throw "Error turnos inactividad invalidos";
+	}
+	else if(radioExplosion < 1 || radioExplosion > 2)
+	{
+		throw "Error radio explosión invalido";
+	}
+
+	desactivarCasillero(casilleroCentral , turnosInactividadEpicentro);
+
+	Casillero * casilleroAntX = casilleroCentral;
+	Casillero * casilleroAntY = casilleroCentral;
+	Casillero * casilleroSigX = casilleroCentral;
+	Casillero * casilleroSigY = casilleroCentral;
+
+	for(int i = 1 ; i < radioExplosion ; i ++)
+	{
+		if(casilleroAntX)
+		{
+			casilleroAntX = casilleroAntX->getAntX();
+			if(casilleroAntX)
+			{
+				desactivarCasillero(casilleroAntX , turnosInactividadEpicentro - i);
+			}
+		}
+
+		if(casilleroSigX)
+		{
+			casilleroSigX = casilleroSigX->getAntX();
+			if(casilleroSigX)
+			{
+				desactivarCasillero(casilleroSigX , turnosInactividadEpicentro - i);
+			}
+
+		}
+
+		if(casilleroAntY)
+		{
+			casilleroAntY = casilleroAntY->getAntX();
+			if(casilleroAntY)
+			{
+				desactivarCasillero(casilleroAntY , turnosInactividadEpicentro - i);
+			}
+		}
+
+		if(casilleroSigY)
+		{
+			casilleroSigY = casilleroSigY->getAntX();
+			if(casilleroSigY)
+			{
+				desactivarCasillero(casilleroSigY , turnosInactividadEpicentro - i);
+			}
+
+		}
+
+	}
+
+}
 
 void BatallaDigital::mostrarTablero(unsigned int numeroJugador)
 {
@@ -458,6 +549,56 @@ unsigned int BatallaDigital::cantidadDeJugadores()
 Jugador * BatallaDigital::obtenerJugadorNumero(unsigned int jugador)
 {
 	return this->listaDeJugadores->get(jugador);
+}
+
+bool BatallaDigital::jugadorQuiereMover()
+{
+	std::string respuesta;
+    std::cout << "¿Deseas moverte? (s/n): ";
+    std::cin >> respuesta;
+	if(respuesta == "s" || respuesta == "si" || respuesta == "Si" || respuesta == "SI")
+	{
+		return true;
+	}
+	else
+    	return false; 
+}
+
+bool BatallaDigital::jugadorQuiereUsarCarta()
+{
+	std::string respuesta;
+    std::cout << "¿Deseas usar una carta? (s/n): ";
+    std::cin >> respuesta;
+	if(respuesta == "s" || respuesta == "si" || respuesta == "Si" || respuesta == "SI")
+	{
+		return true;
+	}
+	else
+    	return false; 
+}
+
+tipoMovimiento_t BatallaDigital::obtenerMovimiento()
+{
+    int seleccion = 0;
+
+    std::cout << "Los posibles movimientos son:" << std::endl;
+    std::cout << "1: Adelante" << std::endl;
+    std::cout << "2: Atras" << std::endl;
+    std::cout << "3: Izquierda" << std::endl;
+    std::cout << "4: Derecha" << std::endl;
+    std::cout << "5: Adelante Izquierda" << std::endl;
+    std::cout << "6: Adelante Derecha" << std::endl;
+    std::cout << "7: Atras Izquierda" << std::endl;
+    std::cout << "8: Atras Derecha" << std::endl;
+
+    while (true) {
+        std::cout << "¿Qué movimiento quiere realizar? ";
+        std::cin >> seleccion;
+
+        if (seleccion >= 1 && seleccion <= 8) {
+            return static_cast<tipoMovimiento_t>(seleccion - 1);
+        }
+    }
 }
 
 
@@ -486,7 +627,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		
 		//Comienzo preguntando dónde quiere minar el jugador
-		
 		std::string stringCoordenada,restoBuffer;
 		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
 
@@ -522,19 +662,36 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			
 		}
 		//Le pregunto si quiere mover
-		//mover= jugadorQuiereMover();
+		mover = jugadorQuiereMover();
 		if(mover==true)
 		{	
 			//MUESTRO SUS FICHAS
 			jugador->mostrarFichas();
+			//LE PREGUNTO CUAL QUIERE MOVER
+			std::cout<<"¿Qué numero de ficha queres mover?"<<std::endl;
 			//Capturar opcion seleccionada
 			std::cin>>seleccion;
-			//LE PREGUNTO CUAL QUIERE MOVER
 			Ficha * ficha=jugador->obtenerFicha(seleccion);
+			bool movimientoExitoso=false;
+			while(movimientoExitoso==false)
+			{
+				//LE PREGUNTO COMO QUIERE MOVERLA
+				tipoMovimiento_t movimiento = obtenerMovimiento();
+				std::cout<<"¿Cuántos casilleros?";
+				unsigned int cantidadCasilleros=0;
+				std::cin>>cantidadCasilleros;
 
-			//LA MUEVO
-			// moverFicha();  esta podría ser la función general y las de arriba las subfunciones
+				//INTENTO MOVERLA
+				if (moverFicha(ficha , movimiento , cantidadCasilleros)==true)
+				{
+					movimientoExitoso=true;
+				}
+				
+			}
+			
 		}
+		mostrarTablero(0);
+
 		// SI MOVIO GESTIONO EVENTOS
 		// explotarMina(); ?
 		// matarSoldado(); ?
@@ -543,7 +700,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 
 		//Le pregunto si quiere jugar una carta
-		//jugarCarta = jugadorQuiereUsarCarta();
+		jugarCarta = jugadorQuiereUsarCarta();
 		if(jugarCarta==true)
 		{
 
@@ -555,7 +712,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 			// algun otro??
 
-			return;
 		}
 		// SI SE USO CARTA GESTIONO EVENTOS
 
@@ -563,9 +719,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
 		//actualizarTablero();
-		//decrementarInactividadCasilleros();
-		//mostrarTablero();
-	
+		//tableroJuego->decrementarInactividadCasilleros();	
 }
 
 

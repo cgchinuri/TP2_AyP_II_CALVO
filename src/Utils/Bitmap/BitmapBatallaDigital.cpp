@@ -7,7 +7,7 @@
 #include "../../Ficha/Ficha.h"
 
 BitmapBatallaDigital::BitmapBatallaDigital(unsigned int resolucionImagenes, RGBApixel colorTransparente, unsigned int anchoTablero, unsigned int altoTablero) {
-    //SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
+    SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
 
     this->resolucionImagenes = resolucionImagenes;
     this->colorTransparente = colorTransparente;

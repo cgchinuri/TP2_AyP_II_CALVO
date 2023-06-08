@@ -43,10 +43,13 @@ int main()
 	unsigned int turno=1;
 	while(batallaDigital->hayGanador()==false)
 	{	
+		std::cout<<std::endl;
+		std::cout<<"Nuevo turno"<<std::endl;
 		batallaDigital->avanzarTurno(batallaDigital->obtenerJugadorNumero(turno));
 		if (turno==batallaDigital->cantidadDeJugadores())
 		{
 			turno=1;
+			batallaDigital->mostrarTablero(0);
 		}
 		else
 		{

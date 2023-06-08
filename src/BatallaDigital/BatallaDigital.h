@@ -123,7 +123,8 @@ class BatallaDigital
         //		si la trayectoria cae fuera del mapa avisa
         // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
         // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
-        void moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , int cantCasilleros);
+        //      devuelve true si se pudo hacer el movimiento y false si se dio alguno de los casos anteriores
+        bool moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , unsigned int cantCasilleros);
 
         //Recibe un puntero al jugador que pone la mina, y una posicion en coordenadas x,y,z
         //Si la posicion es valida entonces coloca la mina. Una posicion es valida si el casillero esta activo
@@ -152,8 +153,33 @@ class BatallaDigital
         // Pos: devuelve la cantidad de jugadores del juego
         unsigned int cantidadDeJugadores();
 
+        // Pre: debe existir un juego iniciado y una lista de jugadores
+        // Pos: devuelve el número del jugador correspondiente en dicha lista
         Jugador * obtenerJugadorNumero(unsigned int jugador);
 
+        // Pre: recibe el casillero a desactivar y los turnos de inactividad para configurar
+        // Pos: desactiva el casillero con los turnos que se pasan como parametro, ademas si tuviera alguna ficha en el la desactiva
+        void desactivarCasillero(Casillero * casillero , int turnosInactividad);
+
+        // Pre: recibe como argumentos un puntero a un casillero, una cantidad de turnos inactivo para el casillero central (min 3)
+        //      y el radio que tendrá la explosión (entre 1 y 2)
+        // Pos: desactiva el casillero indicado con los turnos de inactividad especificados.
+        //      desactiva los casilleros que lo rodean, tantos como indique el radio de explosión
+        //      va decrementando un turno de inactividad por capa
+        //      desactiva fichas involucradas
+        void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion );
+
+        // Pre: -
+        // Post: devuelve true si el jugador ingreso por consola una respuesta afirmativa, de lo contrario devuelve false
+        bool jugadorQuiereMover();
+
+        // Pre: -
+        // Post: devuelve true si el jugador ingreso por consola una respuesta afirmativa, de lo contrario devuelve false
+        bool jugadorQuiereUsarCarta();
+
+        // Pre: -
+        // Post: pregunta al usuario por un tipo de movimiento, devolviendolo si el input es válido
+        tipoMovimiento_t obtenerMovimiento();
 
 
         void avanzarTurno(Jugador * jugador);

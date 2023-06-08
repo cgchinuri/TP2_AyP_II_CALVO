@@ -160,6 +160,11 @@ class Casillero
 		// Pos: retorna la cantidad de casilleros con agua adyacentes al casillero recibido
 		int casillerosAguaAdyacentes(Casillero* casilleroActual);
 
+		
+		// Pre: recibe como argumento la cantidad de turnos por los cuales debe ser desactivado el casillero
+		//Pos: Desactiva el casillero por la cantidad de turnos que se indican
+		void desactivar(int cantidadTurnosInactividad);
+
 		// Destructor
 		~Casillero();
 

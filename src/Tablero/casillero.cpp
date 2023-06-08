@@ -213,3 +213,8 @@ void Casillero::decrementarInactividad(void)	{
 	this->turnosInactivoRestantes--;
 	return;	
 }
+
+void Casillero::desactivar(int cantidadTurnosInactividad)
+{
+	this->turnosInactivoRestantes=cantidadTurnosInactividad;
+}
