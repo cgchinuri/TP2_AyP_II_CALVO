@@ -21,9 +21,6 @@ Ficha.o: Ficha/Ficha.h
 Jugador.o: Jugador/Jugador.h Carta_Mazo/cartaBatallaDigital.h
 	$(CC) $(CFLAGS) -c Jugador/Jugador.cpp
 
-cartaBatallaDigital.o: Jugador/Jugador.h Carta_Mazo/cartaBatallaDigital.h
-	$(CC) $(CFLAGS) -c Jugador/Jugador.cpp
-
 cartaBatallaDigital.o: Carta_Mazo/cartaBatallaDigital.h 
 	$(CC) $(CFLAGS) -c Carta_Mazo/cartaBatallaDigital.cpp
 
@@ -32,6 +29,9 @@ BitmapBatallaDigital.o: Utils/Bitmap/BitmapBatallaDigital.h Ficha/Ficha.h Utils/
 
 EasyBMP.o: Utils/Bitmap/EasyBMP_1.06/EasyBMP.h
 	$(CC) $(CFLAGS) -c Utils/Bitmap/EasyBMP_1.06/EasyBMP.cpp
+
+BatallaDigital.o: BatallaDigital/BatallaDigital.h
+	$(CC) $(CFLAGS) -c BatallaDigital/BatallaDigital.cpp
 
 main.o: Tablero/tablero.h Utils/Bitmap/BitmapBatallaDigital.h
 	$(CC) $(CFLAGS) -c main.cpp
