@@ -7,8 +7,9 @@
 #include "../Utils/LinkedList_T.h"
 #include "../Jugador/Jugador.h"
 #include "../Utils/TipoMovimiento.h"
+#include "../Utils/Bitmap/BitmapBatallaDigital.h"
 
-#define CANT_INICIAL_SOLDADOS_POR_JUGADOR 3
+#define CANT_INICIAL_SOLDADOS_POR_JUGADOR 1
 
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
@@ -128,11 +129,6 @@ class BatallaDigital
         //Si la posicion es valida entonces coloca la mina. Una posicion es valida si el casillero esta activo
         //y el terreno es tierra
         void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
-        
-        void avanzarTurno(Jugador * jugador);
-
-
-        void iniciarJuego(void);
 
         // Pre: debe haber una lista de jugadores con sus respectivas fichas
         // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
@@ -146,6 +142,21 @@ class BatallaDigital
         // Pos: le pide al jugador una coordenada (X e Y) y valida que sea del tipo buscado
         //		retorna la coordenada que el jugador ingrese completando en Z con el nivel max de tierra
         Coordenada<int> pedirXYJugador(tipoCasillero_t tipoCasillero);
+
+        // Pre: debe existir un juego iniciado con un tablero y la geografía que éste posea
+        //      recibe el jugador que puede ver el tablero o toma por defecto que se muestra todo
+        // Pos: genera un bitmap por cada nivel del tablero mostrando las fichas y geografía del jugador que corresponda o todo el tablero
+        void mostrarTablero(unsigned int numeroJugador);
+
+        // Pre: debe existir un juego iniciado con una cantidad dada de jugadores
+        // Pos: devuelve la cantidad de jugadores del juego
+        unsigned int cantidadDeJugadores();
+
+        Jugador * obtenerJugadorNumero(unsigned int jugador);
+
+
+
+        void avanzarTurno(Jugador * jugador);
 
 };
 

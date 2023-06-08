@@ -399,6 +399,12 @@ void Tablero::generarAguaEnTablero()
 }
 
 
+Lista<Lista<Lista<Casillero*>*>*>* Tablero::obtenerTablero()
+{
+	return this->tableroJuego;
+}
+
+
 Tablero::~Tablero()
 {
     // Liberar la memoria de los casilleros

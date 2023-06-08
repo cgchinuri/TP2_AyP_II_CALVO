@@ -90,6 +90,8 @@ class Tablero
 		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
 
 
+		Lista<Lista<Lista<Casillero*>*>*>* obtenerTablero();
+
 		// Destructor
 		~Tablero();
 

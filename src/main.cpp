@@ -11,21 +11,21 @@
 #include "Tablero/tablero.h"
 #include "Jugador/Jugador.h"
 #include "BatallaDigital/BatallaDigital.h"
-#include "Utils/Bitmap/bitmap.h"
+
 
 using namespace std;
 
 int main() 
 {
-	Tablero *tablero = new Tablero(5, 5, 5);
+/*	Tablero *tablero = new Tablero(10, 10, 10);
 	struct Imagenes *imagenes = new struct Imagenes;
 	iniciarBitmap(5,5,imagenes);
 	dibujarTablero(tablero, imagenes);
 	delete imagenes;
 	delete tablero;
+*/
 
 	// ↑ ESTE main así no tiene errores de memoria
-/*
 	cout << "Inicio" << endl;
 
 
@@ -37,16 +37,27 @@ int main()
 	batallaDigital->colocarFichasIniciales();
 
 	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
-	while(batallaDigital->hayGanador!=false)
+	batallaDigital->mostrarTablero(0);
+
+	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
+	unsigned int turno=1;
+	while(batallaDigital->hayGanador()==false)
 	{	
-		//batallaDigital->avanzarTurno();
+		batallaDigital->avanzarTurno(batallaDigital->obtenerJugadorNumero(turno));
+		if (turno==batallaDigital->cantidadDeJugadores())
+		{
+			turno=1;
+		}
+		else
+		{
+			turno++;
+		}
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego
 
 	//batallaDigital->imprimirQuienGano();
-	
-*/
+
 	cout << "====..... Fin .....====" << endl;
 	return 0;
 }

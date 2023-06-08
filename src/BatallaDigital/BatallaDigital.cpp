@@ -311,126 +311,6 @@ bool BatallaDigital::hayGanador()
 	return false;
 }
 
-void BatallaDigital::avanzarTurno(Jugador * jugador)
-{
-		std::cout<<"Turno del jugador "<<jugador->identificador()<<std::endl;
-		//Variables para el turno
-		bool mover,jugarCarta=false;
-		int seleccion=1;
-		
-		jugador->removerFichasInactivas();//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
-
-		//El jugador tiene soldados activos?
-		if(!jugador->cantidadFichasSoldado()){//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
-											  //Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
-											  //Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
-											  //Opcion C: Mismo de opcion B pero desactivando el casillero ademas
-			//jugador->retirarFichas();//opcion C
-			//this->eliminarJugador();
-			return;
-		}
-
-
-
-		
-		//Comienzo preguntando dónde quiere minar el jugador
-		
-		std::string stringCoordenada,restoBuffer;
-		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
-
-		
-		//Lectura y validacion de coordenada (si la coordenada esta en rango)
-		Coordenada<int> * objetivo;
-		bool esCoordenadaValida=false;		
-		while(!esCoordenadaValida)	{
-			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv\nEjemplo: 1,2,1"<<std::endl;
-			getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
-			objetivo=new Coordenada<int>(stringCoordenada,",");
-
-			if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
-			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
-				esCoordenadaValida=true;
-			}	else{
-				delete objetivo;
-				std::cout<<"Coordenada invalida[X]"<<std::endl;
-
-			}
-		}
-
-		
-
-		std::cout<<"Casillero a minar"<<objetivo->toString()<<std::endl;
-
-		
-		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
-		try{
-			minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
-			}
-		catch(char const *){
-			
-		}
-		//Le pregunto si quiere mover
-		//mover= jugadorQuiereMover();
-		if(mover==true)
-		{	
-			//MUESTRO SUS FICHAS
-			jugador->mostrarFichas();
-			//Capturar opcion seleccionada
-			std::cin>>seleccion;
-			//LE PREGUNTO CUAL QUIERE MOVER
-			Ficha * ficha=jugador->obtenerFicha(seleccion);
-
-			//LA MUEVO
-			// moverFicha();  esta podría ser la función general y las de arriba las subfunciones
-		}
-		// SI MOVIO GESTIONO EVENTOS
-		// explotarMina(); ?
-		// matarSoldado(); ?
-		// matarOtraFicha(); ?
-		// limpiarFichasInactivas(); ?
-
-
-		//Le pregunto si quiere jugar una carta
-		//jugarCarta = jugadorQuiereUsarCarta();
-		if(jugarCarta==true)
-		{
-
-			//POSIBLES EVENTOS SEGUN LA CARTA USADA
-
-			//ataqueQuimico();
-
-			//avionDeCombate();
-
-			// algun otro??
-
-			return;
-		}
-		// SI SE USO CARTA GESTIONO EVENTOS
-
-
-
-		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
-		//actualizarTablero();
-		//decrementarInactividadCasilleros();
-		//mostrarTablero();
-	
-}
-
-void BatallaDigital::iniciarJuego(void)	{
-	colocarFichasIniciales();
-	while(!hayGanador())	{
-
-		listaDeJugadores->reiniciarCursor();	
-
-		while(listaDeJugadores->avanzarCursor())	{
-			//mostrarTablero(listaDeJugadores->getCursor());//mostrar el tablero al jugador
-			avanzarTurno(listaDeJugadores->getCursor());
-		}
-
-	}
-
-}
-
 void BatallaDigital::mostrarGeografiaTablero()
 {
 	this->tableroJuego->imprimirGeografia();
@@ -554,6 +434,138 @@ void BatallaDigital::colocarFichasIniciales()
 
 	}
 
+}
+
+
+void BatallaDigital::mostrarTablero(unsigned int numeroJugador)
+{
+	unsigned int x = this->tableroJuego->getDimX();
+	unsigned int y = this->tableroJuego->getDimY();
+	RGBApixel transparente;
+	transparente.Red = transparente.Blue = transparente.Green = 0; // Color blanco ignora fondo negro
+	BitmapBatallaDigital *bitmap = new BitmapBatallaDigital(50, transparente, x, y);
+	bitmap->dibujarTablero(this->tableroJuego);
+	delete bitmap;
+}
+
+unsigned int BatallaDigital::cantidadDeJugadores()
+{
+	return this->cantidadJugadores;
+}
+
+
+
+Jugador * BatallaDigital::obtenerJugadorNumero(unsigned int jugador)
+{
+	return this->listaDeJugadores->get(jugador);
+}
+
+
+void BatallaDigital::avanzarTurno(Jugador * jugador)
+{
+		std::cout<<"Turno del jugador "<<jugador->identificador()<<std::endl;
+		//Variables para el turno
+		bool mover,jugarCarta=false;
+		int seleccion=1;
+		
+		jugador->removerFichasInactivas();//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
+
+		//El jugador tiene soldados activos?
+		if(!jugador->cantidadFichasSoldado())
+		{
+		//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
+		  //Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
+		  //Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
+		  //Opcion C: Mismo de opcion B pero desactivando el casillero ademas
+			//jugador->retirarFichas();//opcion C
+			//this->eliminarJugador();
+			return;
+		}
+
+
+
+		
+		//Comienzo preguntando dónde quiere minar el jugador
+		
+		std::string stringCoordenada,restoBuffer;
+		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
+
+		
+		//Lectura y validacion de coordenada (si la coordenada esta en rango)
+		Coordenada<int> * objetivo;
+		bool esCoordenadaValida=false;		
+		while(!esCoordenadaValida)	{
+			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv\nEjemplo: 1,2,1"<<std::endl;
+			getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
+			objetivo=new Coordenada<int>(stringCoordenada,",");
+
+			if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
+			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
+				esCoordenadaValida=true;
+			}	else{
+				delete objetivo;
+				std::cout<<"Coordenada invalida[X]"<<std::endl;
+
+			}
+		}
+
+		
+
+		std::cout<<"Casillero a minar"<<objetivo->toString()<<std::endl;
+
+		
+		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
+		try{
+			minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+			}
+		catch(char const *){
+			
+		}
+		//Le pregunto si quiere mover
+		//mover= jugadorQuiereMover();
+		if(mover==true)
+		{	
+			//MUESTRO SUS FICHAS
+			jugador->mostrarFichas();
+			//Capturar opcion seleccionada
+			std::cin>>seleccion;
+			//LE PREGUNTO CUAL QUIERE MOVER
+			Ficha * ficha=jugador->obtenerFicha(seleccion);
+
+			//LA MUEVO
+			// moverFicha();  esta podría ser la función general y las de arriba las subfunciones
+		}
+		// SI MOVIO GESTIONO EVENTOS
+		// explotarMina(); ?
+		// matarSoldado(); ?
+		// matarOtraFicha(); ?
+		// limpiarFichasInactivas(); ?
+
+
+		//Le pregunto si quiere jugar una carta
+		//jugarCarta = jugadorQuiereUsarCarta();
+		if(jugarCarta==true)
+		{
+
+			//POSIBLES EVENTOS SEGUN LA CARTA USADA
+
+			//ataqueQuimico();
+
+			//avionDeCombate();
+
+			// algun otro??
+
+			return;
+		}
+		// SI SE USO CARTA GESTIONO EVENTOS
+
+
+
+		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
+		//actualizarTablero();
+		//decrementarInactividadCasilleros();
+		//mostrarTablero();
+	
 }
 
 
