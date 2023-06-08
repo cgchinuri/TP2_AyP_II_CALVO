@@ -241,16 +241,17 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 		// Si el casillero esta ocupado hay que tomar alguna accion pero no se puede completar el movimiento
 		std::cout << "Casillero ocupado en la trayectoria" << std::endl;
 
+		//ACA HABRIA QUE LLAMAR A UNA FUNCION QUE HAGA UN MANEJO DE EVENTOS SEGUN QUÉ HABIA EN EL CASILLERO DESTINO
+		//NO ESTARIA BIEN QUE moverFicha SE ENCARGUE DE MOVER Y GESTIONAR LOS EVENTOS QUE SE PRODUZCAN
 
-		fichaMover->desactivarFicha();//Ficha a mover se elimina (en realidad se deshabilita)
-		casilleroDestino->getFichaCasillero()->desactivarFicha();//Ficha que ocupaba el casillero se elimina (en realidad se deshabilita)
-		casilleroDestino->vaciarCasillero();//Se libera ese casillero 
-
-		
-		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA)	{
+		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA || casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_SOLDADO)	
+		{
+			fichaMover->desactivarFicha();//Ficha a mover se elimina (en realidad se deshabilita)
+			casilleroDestino->getFichaCasillero()->desactivarFicha();//Ficha que ocupaba el casillero se elimina (en realidad se deshabilita)
+			casilleroDestino->vaciarCasillero();//Se libera ese casillero 
 			casilleroDestino->desactivar();
-		}
-		return false;
+		}		
+		return true;
 
 	}
 	else

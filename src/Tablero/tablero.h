@@ -7,6 +7,14 @@
 
 #define NIVEL_MAXIMO_TIERRA 5
 
+/* 	Modificar según si se quiere un tablero mas oceánico o no
+	Algunos valores de referencia:
+	PROB < 250: Tablero muy terrenal
+ 	250 < PROB < 275: Equilibrado
+ 	PROB > 300: Tablero muy oceánico
+*/
+#define PROB_AGUA_EN_TABLERO 250
+
 class Tablero
 {
 	private:
@@ -87,7 +95,7 @@ class Tablero
 		//		Si encontró un cambio de terreno, devuelve dicho casillero, sin terminar la trayectoria
 		//		Si encontró un casillero vacío en el recorrido, devuelve el mismo, sin terminar la trayectoria
 		// 		Si el mapa se acabó, devuelve null.
-		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, int cantidadCasilleros);
+		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, unsigned int cantidadCasilleros);
 
 
 		Lista<Lista<Lista<Casillero*>*>*>* obtenerTablero();

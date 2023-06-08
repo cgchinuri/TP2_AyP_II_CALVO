@@ -379,15 +379,15 @@ void Tablero::generarAguaEnTablero()
                 }
                 else if (z == nivelDelMar)
                 {
-                    // Generar un número aleatorio entre 0 y 199
-                    int randomNum = rand() % 200;
+                    // Generar un número aleatorio entre 0 y 499
+                    int randomNum = rand() % 500;
 
                     // Verificar casillas adyacentes
                     int tieneAguaAdyacente = casillero->casillerosAguaAdyacentes(casillero);
-                    randomNum = randomNum + tieneAguaAdyacente*30;
+                    randomNum = randomNum + tieneAguaAdyacente* PROB_AGUA_EN_TABLERO;
 
                     // Establecer el casillero como agua si tiene agua adyacente
-                    if (randomNum >= 180) 
+                    if (randomNum >= 490) 
                     {
                         casillero->setTipoCasillero(agua);
                     }

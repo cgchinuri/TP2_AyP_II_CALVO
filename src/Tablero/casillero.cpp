@@ -181,8 +181,9 @@ int Casillero::casillerosAguaAdyacentes(Casillero* casilleroActual)
 			casillerosConAgua++;
 		}
 	}
-
 	return casillerosConAgua;
+	
+
 }
 
 Casillero::~Casillero()
