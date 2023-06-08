@@ -240,7 +240,22 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 
 		// Aca tenemos que hacer la logica de explosion o lo que fuere
+		//Si esta ocupada deberan eliminarse ambas fichas(deshabilitarse)
 
+		fichaMover->desactivarFicha();//Ficha a mover se elimina (en realidad se deshabilita)
+		casilleroDestino->getFichaCasillero()->desactivarFicha();//Ficha que ocupaba el casillero se elimina (en realidad se deshabilita)
+		casilleroDestino->vaciarCasillero();//Se libera ese casillero 
+
+		//Dependiendo de que se esta moviendo pueden ocurrir los siguientes escenarios:
+		//Se estaba moviendo un barco: El agua solo puede estar ocupado por otro barco, Ya se deshabilitaron ambos y se libero el casillero => No hay mas que hacer
+		//Se estaba moviendo un avion: El aire solo puede estar ocupado por otro avion, Ya se deshabilitaron ambos y se libero el casillero => No hay mas que hacer
+		//Se estaba moviendo un soldado:
+			//Si habia otro soldado  ya se deshabilitaron ambos soldados y se libero el casillero=> no hay nada mas que hacer
+			//Si habia una mina, se deshabilitaron ambas fichas y se libero el casillero=> resta desactivar el casillero;
+		
+		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA)	{
+			casilleroDestino->desactivar();
+		}
 
 	}
 	else
@@ -256,8 +271,7 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	}
 }
 
-//Deberia chequear el estado del casillero a minar: Si esta minado, explota? Si hay un jugador lo mata
-//si esta envenenado? Si esta inactivo .... etc.
+
 void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
 
 	Casillero * objetivo= this->tableroJuego->obtenerCasillero(x,y,z);
@@ -270,35 +284,14 @@ void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int
 		 throw "Solo se puede minar un casillero de tipo tierra";
 	}
 
+//El casillero puede estar ocupado por un soldado o una ficha, en ambos casos se desactiva la ficha (se la da de baja), se vacia e inactiva el casillero
 	if(objetivo->estaOcupado()){
 		Ficha * fichaOcupante=objetivo->getFichaCasillero();
-		/*
-		opcion1 si las fichas tienen un id de a que jugador pertenece
-		Jugador * jugadorOcupante=NULL;
-		int idJugador= fichaOcupante->getDueño();
-		
-		while(this->listaDeJugadores->avanzarCursor())	{
-			if(this->listaDeJugadores->getCursor()->identificador()==idJugador)	{
-				jugadorOcupante=this->listaDeJugadores->getCursor();
-				this->listaDeJugadores->reiniciarCursor();
-				break;
-			}
-		}
-		*/
-		//Opcion 2:si no tengo el id de jugador en la ficha :Recorrer la lista de jugadores, para cada jugador recorrer la lista de sus fichas... un poco feo
-	
-		while(this->listaDeJugadores->avanzarCursor())	{
-			if(this->listaDeJugadores->getCursor()->eliminarFicha(*objetivo->getCoordenada())==true)	{
-				this->listaDeJugadores->reiniciarCursor();
-				break;
-			}
-		}
-
-
+		fichaOcupante->desactivarFicha();
 		objetivo->vaciarCasillero();
-		//objetivo->desactivar();//primitiva para inactivar un casillero cuando una mina explota
+		objetivo->desactivar();
 	}	else {
-		
+//Si el casillero estaba desocupado, se crea la mina, se la posiciona en el tablero y se la agrega a al jugador
 		Ficha * mina=new Ficha(FICHA_MINA,x,y,z);
 		objetivo->setFichaCasillero(mina);
 		mina->setCasilleroFicha(objetivo);
@@ -330,24 +323,43 @@ bool BatallaDigital::hayGanador()
 void BatallaDigital::avanzarTurno(Jugador * jugador)
 {
 		//Variables para el turno
-		int x,y,z=0;
 		bool mover,jugarCarta=false;
-		int indice=1;
+		int seleccion=1;
+		
+		jugador->removerFichasInactivas();//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
 
+		//El jugador tiene soldados activos?
+		if(!jugador->cantidadFichasSoldado()){//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
+											  //Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
+											  //Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
+											  //Opcion C: Mismo de opcion B pero desactivando el casillero ademas
+			//jugador->retirarFichas();//opcion C
+			//this->eliminarJugador();
+			return;
+		}
+
+
+
+		
 		//Comienzo preguntando dónde quiere minar el jugador
+		//Se lee desde el stdin una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
 		std::string stringCoordenada;
 		getline(std::cin, stringCoordenada);
-		minarCasillero(x,y,z,jugador);
+		Coordenada<int> * objetivo=new Coordenada<int>(stringCoordenada,",");
+		
+		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
+		minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
 
 		//Le pregunto si quiere mover
 		//mover= jugadorQuiereMover();
 		if(mover==true)
-		{
+		{	
 			//MUESTRO SUS FICHAS
 			jugador->mostrarFichas();
-
+			//Capturar opcion seleccionada
+			std::cin>>seleccion;
 			//LE PREGUNTO CUAL QUIERE MOVER
-			Ficha * ficha=jugador->obtenerFicha(indice);
+			Ficha * ficha=jugador->obtenerFicha(seleccion);
 
 			//LA MUEVO
 			// moverFicha();  esta podría ser la función general y las de arriba las subfunciones
@@ -524,4 +536,6 @@ void BatallaDigital::colocarFichasIniciales()
 	}
 
 }
+
+
 

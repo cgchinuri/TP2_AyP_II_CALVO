@@ -48,8 +48,17 @@ public:
 	// Pos: cambia la dirección del puntero a casillero a NULL
 	void desvincularFichaDeCasillero();
 
+    // Pre: -
+	// Pos: Desactiva la ficha 
     void desactivarFicha(void);
+
+    // Pre: -
+	// Pos: activa la ficha 
     void activarFicha(void);
+
+    // Pre: -
+	// Pos: retorna true si la ficha esta activa
+    bool estaActiva(void);
 
 };
 

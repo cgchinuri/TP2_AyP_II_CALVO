@@ -18,44 +18,6 @@ int Jugador::identificador(void)    {
     return this->idJugador;
 }
 
-/*  Recibe una posicion de origen y de destino, si hay alguna ficha con la posicion de origen => 
-establece su posicion con las coordenadas del destino. Retorna true si pudo mover, false si no.
-*/
-/*bool Jugador::moverFicha(int origenX,int origenY,int origenZ,int destinoX,int destinoY,int destinoZ) {
-    Coordenada origen(origenX,origenY,origenZ);
-    Coordenada destino(destinoX,destinoY,destinoZ);
-
-    Ficha * ficha;
-
-    if(this->Fichas->vacia())   {
-        throw std::invalid_argument("Fichas no disponibles");
-    }
-
-    while(this->Fichas->avanzarCursor())   {
-        if(Fichas->getCursor()->obtenerCoordenada()->iguales(origen)==true) {
-            Fichas->getCursor()->obtenerCoordenada()->sumar(destino);
-            Fichas->reiniciarCursor();
-            return true;
-        }
-    }
-
-    Fichas->reiniciarCursor();
-    return false;
-
-}
-
-void Jugador::moverFicha(int indiceFicha,int destinoX,int destinoY,int destinoZ)    {
-    if(indiceFicha>this->Fichas->contarElementos()){
-        throw std::invalid_argument("Opcion invalida");
-        }
-
-    Coordenada destino(destinoX,destinoY,destinoZ);
-    this->Fichas->get(indiceFicha)->obtenerCoordenada()->sumar(destino);
-
-}
-*/
-
-
 void Jugador::agregarFicha(Ficha * nuevaFicha)  
 {
     this->Fichas->add(nuevaFicha);
@@ -74,12 +36,12 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
     return NULL;
 }
 
-Ficha * Jugador::obtenerFicha(unsigned int pos) {
-    if(pos>this->Fichas->contarElementos()){
+Ficha * Jugador::obtenerFicha(unsigned int indice) {
+    if(indice>this->Fichas->contarElementos()){
         throw std::invalid_argument("Opcion invalida");
     }
 
-    return this->Fichas->get(pos);
+    return this->Fichas->get(indice);
 }
 
 int Jugador::cantidadFichas(void)   {
@@ -127,7 +89,6 @@ void Jugador::mostrarCartas()   {
 
 int Jugador::cantidadFichasSoldado()
 {
-    this->removerFichasInactivas();//Se eliminan las fichas que esten inactivas
     this->Fichas->reiniciarCursor();
     int cantidadSoldados=0;
     while(Fichas->avanzarCursor())
@@ -155,5 +116,24 @@ void Jugador::removerFichasInactivas(void)    {
             i=0;
         }
     }
+}
+
+//Esta funcion recorre la lista de fichas del jugador, para cada ficha obtiene el casillero asociado, lo inactiva (si la ficha a retirar es una mina) y vacia el casillero
+
+void Jugador::retirarFichas(void)   {
+    this->Fichas->reiniciarCursor();
+
+    while(this->Fichas->avanzarCursor()){
+        Ficha * fichaRetirada=this->Fichas->getCursor();
+        fichaRetirada->getCasilleroFicha()->vaciarCasillero();
+        fichaRetirada->desactivarFicha();
+        if(fichaRetirada->obtenerTipo()==FICHA_MINA)    {
+            fichaRetirada->getCasilleroFicha()->desactivar();
+        }
+    }
+    //En este punto ya todas las fichas restantes estan desvinculadas en el tablero
+    //Deberia entonces destruirse la lista de fichas.
+    this->removerFichasInactivas();
+
 }
 

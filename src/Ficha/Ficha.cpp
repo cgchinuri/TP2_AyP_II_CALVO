@@ -53,8 +53,6 @@ void Ficha::desvincularFichaDeCasillero() {
 	this->casillero = NULL;
 }
 
-
-
 void Ficha::desactivarFicha(void)  {
     this->activo=false;
 }
@@ -63,8 +61,7 @@ void Ficha::activarFicha(void)  {
     this->activo=true;
 }
 
-/*
+//Sin esta funcion el jugador no puede saber que fichas eliminar de su lista de fichas
 bool Ficha::estaActiva(void)    {
     return this->activo;
 }
-*/

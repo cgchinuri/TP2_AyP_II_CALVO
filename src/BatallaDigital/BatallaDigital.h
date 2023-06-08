@@ -147,7 +147,6 @@ class BatallaDigital
         //		retorna la coordenada que el jugador ingrese completando en Z con el nivel max de tierra
         Coordenada<int> pedirXYJugador(tipoCasillero_t tipoCasillero);
 
-        
 };
 
 
