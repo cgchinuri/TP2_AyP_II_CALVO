@@ -239,19 +239,10 @@ void BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 		std::cout << "Casillero ocupado en la trayectoria" << std::endl;
 
 
-		// Aca tenemos que hacer la logica de explosion o lo que fuere
-		//Si esta ocupada deberan eliminarse ambas fichas(deshabilitarse)
-
 		fichaMover->desactivarFicha();//Ficha a mover se elimina (en realidad se deshabilita)
 		casilleroDestino->getFichaCasillero()->desactivarFicha();//Ficha que ocupaba el casillero se elimina (en realidad se deshabilita)
 		casilleroDestino->vaciarCasillero();//Se libera ese casillero 
 
-		//Dependiendo de que se esta moviendo pueden ocurrir los siguientes escenarios:
-		//Se estaba moviendo un barco: El agua solo puede estar ocupado por otro barco, Ya se deshabilitaron ambos y se libero el casillero => No hay mas que hacer
-		//Se estaba moviendo un avion: El aire solo puede estar ocupado por otro avion, Ya se deshabilitaron ambos y se libero el casillero => No hay mas que hacer
-		//Se estaba moviendo un soldado:
-			//Si habia otro soldado  ya se deshabilitaron ambos soldados y se libero el casillero=> no hay nada mas que hacer
-			//Si habia una mina, se deshabilitaron ambas fichas y se libero el casillero=> resta desactivar el casillero;
 		
 		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA)	{
 			casilleroDestino->desactivar();
@@ -322,6 +313,7 @@ bool BatallaDigital::hayGanador()
 
 void BatallaDigital::avanzarTurno(Jugador * jugador)
 {
+		std::cout<<"Turno del jugador "<<jugador->identificador()<<std::endl;
 		//Variables para el turno
 		bool mover,jugarCarta=false;
 		int seleccion=1;
@@ -342,14 +334,41 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		
 		//Comienzo preguntando dónde quiere minar el jugador
-		//Se lee desde el stdin una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
-		std::string stringCoordenada;
-		getline(std::cin, stringCoordenada);
-		Coordenada<int> * objetivo=new Coordenada<int>(stringCoordenada,",");
+		
+		std::string stringCoordenada,restoBuffer;
+		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
+
+		
+		//Lectura y validacion de coordenada (si la coordenada esta en rango)
+		Coordenada<int> * objetivo;
+		bool esCoordenadaValida=false;		
+		while(!esCoordenadaValida)	{
+			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv\nEjemplo: 1,2,1"<<std::endl;
+			getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
+			objetivo=new Coordenada<int>(stringCoordenada,",");
+
+			if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
+			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
+				esCoordenadaValida=true;
+			}	else{
+				delete objetivo;
+				std::cout<<"Coordenada invalida[X]"<<std::endl;
+
+			}
+		}
+
+		
+
+		std::cout<<"Casillero a minar"<<objetivo->toString()<<std::endl;
+
 		
 		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
-		minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
-
+		try{
+			minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+			}
+		catch(char const *){
+			
+		}
 		//Le pregunto si quiere mover
 		//mover= jugadorQuiereMover();
 		if(mover==true)
@@ -398,8 +417,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 }
 
 void BatallaDigital::iniciarJuego(void)	{
-	//posicionarSoldados();//Funcion que posiciona los soldados al inicio del juego para cada jugador
-
+	colocarFichasIniciales();
 	while(!hayGanador())	{
 
 		listaDeJugadores->reiniciarCursor();	
@@ -440,7 +458,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 			std::cin >> x ;
 
 
-			if(x < 1 || x > this->dimensionesTablero[0])
+			if(x < 1 || x > this->tableroJuego->getDimX())
 			{
 				// Si fue ingresada una posicion externa a las dimensiones del mapa
 				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
@@ -461,7 +479,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 			std::cin >> y ;
 
 
-			if(y < 1 || y > this->dimensionesTablero[1])
+			if(y < 1 || y > this->tableroJuego->getDimY())
 			{
 				// Si fue ingresada una posicion externa a las dimensiones del mapa
 				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
@@ -516,15 +534,16 @@ void BatallaDigital::colocarFichasIniciales()
 	// Recorro la lista de jugadores
 	while(this->listaDeJugadores->avanzarCursor())
 	{
+		Jugador * jugadorActual=this->listaDeJugadores->getCursor();
 		// ¡¡ Imprimir nombre del jugador !!
-
+		std::cout<<"Colocar fichas iniciales:"<<jugadorActual->Nombre()<<std::endl;
 		for(int i = 0 ; i < CANT_INICIAL_SOLDADOS_POR_JUGADOR ; i++)
 		{
 			std::cout << STRING_INGRESO_SOLDADO << std::endl;
 
 			Coordenada<int> coordenada = pedirXYJugador(tierra);
 
-			fichaAux = crearFicha(FICHA_SOLDADO, coordenada.obtenerX(), coordenada.obtenerY(), coordenada.obtenerZ(), this->listaDeJugadores->getCursor());
+			fichaAux = crearFicha(FICHA_SOLDADO, coordenada.obtenerX(), coordenada.obtenerY(), coordenada.obtenerZ(), jugadorActual);
 
 			casilleroAux = fichaAux->getCasilleroFicha();
 

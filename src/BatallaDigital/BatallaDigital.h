@@ -8,7 +8,7 @@
 #include "../Jugador/Jugador.h"
 #include "../Utils/TipoMovimiento.h"
 
-#define CANT_INICIAL_SOLDADOS_POR_JUGADOR 4
+#define CANT_INICIAL_SOLDADOS_POR_JUGADOR 3
 
 #define CANT_MIN_JUGADORES 2
 #define CANT_MAX_JUGADORES 5
@@ -128,7 +128,7 @@ class BatallaDigital
         //Si la posicion es valida entonces coloca la mina. Una posicion es valida si el casillero esta activo
         //y el terreno es tierra
         void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
-
+        
         void avanzarTurno(Jugador * jugador);
 
 

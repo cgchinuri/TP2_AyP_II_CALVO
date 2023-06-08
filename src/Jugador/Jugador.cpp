@@ -105,7 +105,7 @@ int Jugador::cantidadFichasSoldado()
 
 
 void Jugador::removerFichasInactivas(void)    {
-    
+
     this->Fichas->reiniciarCursor();
 
     for(size_t i=1;this->Fichas->avanzarCursor();i++) {
@@ -116,6 +116,7 @@ void Jugador::removerFichasInactivas(void)    {
             i=0;
         }
     }
+
 }
 
 //Esta funcion recorre la lista de fichas del jugador, para cada ficha obtiene el casillero asociado, lo inactiva (si la ficha a retirar es una mina) y vacia el casillero
