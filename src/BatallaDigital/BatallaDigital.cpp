@@ -659,7 +659,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		try{
 			minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
 			}
-		catch(char const *){
+		catch(...){
 			
 		}
 		//Le pregunto si quiere mover
