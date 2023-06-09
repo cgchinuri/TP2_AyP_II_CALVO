@@ -726,7 +726,7 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 	int cantidadCasillerosAdyacentes=1;
 	int x,y,z;
 
-	Lista<Casillero*> * casillerosEscaneados=new Lista<Casillero*>();
+	Lista<Casillero*> * casillerosEnemigos=new Lista<Casillero*>();//Lista de casilleros ocupados por fichas enemigas
 	x=avionRadar->obtenerCoordenada()->obtenerX();
 	y=avionRadar->obtenerCoordenada()->obtenerY();
 	z=5;//Altura maxima del terreno
@@ -737,17 +737,26 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 		throw "El mapa solo puede ser escaneado por un avion radar";
 	}
 
+	//Doble ciclo para visitar los casilleros a escanear
 	for(int i=-cantidadCasillerosAdyacentes;	i<cantidadCasillerosAdyacentes+1;i++)	{
 		for(int j=-cantidadCasillerosAdyacentes;	j<cantidadCasillerosAdyacentes+1;j++)	{
 
 			if(_esPosicionValida(x+i,y+j,z)){
-			casillerosEscaneados->add(this->tableroJuego->obtenerCasillero(x+i,y+j,z));
+
+				if(this->tableroJuego->obtenerCasillero(x+i,y+j,z)->estaOcupado()){
+					Coordenada<int> * coordenadaEscaneada=this->tableroJuego->obtenerCasillero(x+i,y+j,z)->getCoordenada();
+					if(jugador->obtenerFicha(*coordenadaEscaneada)==NULL)	{//Si el casillero esta ocupado y no es una ficha perteneciente al jugador=> es enemiga
+						casillerosEnemigos->add(this->tableroJuego->obtenerCasillero(x+i,y+j,z));
+						std::cout<<"Enemigo detectado en posicion:"<<coordenadaEscaneada->toString()<<std::endl;
+					}
+				}
+			
 			} else	{
 				std::cerr<<"No se agregó un casillero a los vigilados por ser una posicion invalida\n";
 			}
 		}
 	}
-	return casillerosEscaneados;
+	return casillerosEnemigos;
 }
 
 
@@ -758,5 +767,4 @@ bool BatallaDigital::_esPosicionValida(int x,int y, int z){
 	}	else	{
 		false;
 	}
-
 }

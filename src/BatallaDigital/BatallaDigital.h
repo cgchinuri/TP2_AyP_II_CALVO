@@ -186,8 +186,8 @@ class BatallaDigital
         void avanzarTurno(Jugador * jugador);
 
 
-        //Pre: El jugador no puede ser nulo
-        //Post:Se ejecuta un turno en el juego
+        //Pre: Jugador y avionRadar no pueden ser nulos
+        //Post:Retorna una lista de casilleros donde se detectaron enemigos
         Lista<Casillero *> * EscanearTerreno(Jugador * jugador,Ficha * avionRadar);
 
         //Pre: Recibe una coordenada x y z

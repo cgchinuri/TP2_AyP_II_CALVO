@@ -27,7 +27,7 @@ public:
     std::string & Nombre(void);
     int identificador(void);
     
-
+    //Recibe un puntero a una ficha y la agrega sus fichas
     void agregarFicha(Ficha * nuevaFicha);
     void eliminarFicha(unsigned int indice);
     bool eliminarFicha(Coordenada<int> & pos);
