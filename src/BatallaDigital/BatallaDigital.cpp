@@ -625,8 +625,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		}
 
 
-
-		
 		//Comienzo preguntando dónde quiere minar el jugador
 		std::string stringCoordenada,restoBuffer;
 		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
@@ -639,9 +637,10 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv\nEjemplo: 1,2,1"<<std::endl;
 			getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
 			objetivo=new Coordenada<int>(stringCoordenada,",");
-
+			
+			//Validacion de Coordenada
 			if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
-			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
+			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){	
 				esCoordenadaValida=true;
 			}	else{
 				delete objetivo;
@@ -652,16 +651,14 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		
 
-		std::cout<<"Casillero a minar"<<objetivo->toString()<<std::endl;
+		std::cout<<"Casillero a minar:"<<objetivo->toString()<<std::endl;
 
 		
 		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
-		try{
-			minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
-			}
-		catch(...){
-			
-		}
+
+		minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+
+		
 		//Le pregunto si quiere mover
 		mover = jugadorQuiereMover();
 		if(mover==true)
@@ -724,4 +721,42 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 }
 
 
+Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * avionRadar)	{
 
+	int cantidadCasillerosAdyacentes=1;
+	int x,y,z;
+
+	Lista<Casillero*> * casillerosEscaneados=new Lista<Casillero*>();
+	x=avionRadar->obtenerCoordenada()->obtenerX();
+	y=avionRadar->obtenerCoordenada()->obtenerY();
+	z=5;//Altura maxima del terreno
+
+
+
+	if(avionRadar->obtenerTipo()!=FICHA_AVION){
+		throw "El mapa solo puede ser escaneado por un avion radar";
+	}
+
+	for(int i=-cantidadCasillerosAdyacentes;	i<cantidadCasillerosAdyacentes+1;i++)	{
+		for(int j=-cantidadCasillerosAdyacentes;	j<cantidadCasillerosAdyacentes+1;j++)	{
+
+			if(_esPosicionValida(x+i,y+j,z)){
+			casillerosEscaneados->add(this->tableroJuego->obtenerCasillero(x+i,y+j,z));
+			} else	{
+				std::cerr<<"No se agregó un casillero a los vigilados por ser una posicion invalida\n";
+			}
+		}
+	}
+	return casillerosEscaneados;
+}
+
+
+bool BatallaDigital::_esPosicionValida(int x,int y, int z){
+	
+	if(((x>0&&x<this->tableroJuego->getDimX())&&(y>0&&y<this->tableroJuego->getDimY()))&&(z>0&&z<this->tableroJuego->getDimZ()))	{
+		return true;
+	}	else	{
+		false;
+	}
+
+}

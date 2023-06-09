@@ -181,9 +181,19 @@ class BatallaDigital
         // Post: pregunta al usuario por un tipo de movimiento, devolviendolo si el input es válido
         tipoMovimiento_t obtenerMovimiento();
 
-
+        //Pre: El jugador no puede ser nulo
+        //Post:Se ejecuta un turno en el juego
         void avanzarTurno(Jugador * jugador);
 
+
+        //Pre: El jugador no puede ser nulo
+        //Post:Se ejecuta un turno en el juego
+        Lista<Casillero *> * EscanearTerreno(Jugador * jugador,Ficha * avionRadar);
+
+        //Pre: Recibe una coordenada x y z
+        //Post:Si la coordenada es valida para las dimensiones del tablero retorna true
+        //MetodoPrivado
+        bool _esPosicionValida(int x,int y, int z);
 };
 
 
