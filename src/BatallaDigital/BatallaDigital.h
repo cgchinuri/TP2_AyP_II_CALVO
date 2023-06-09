@@ -194,6 +194,10 @@ class BatallaDigital
         //Post:Si la coordenada es valida para las dimensiones del tablero retorna true
         //MetodoPrivado
         bool _esPosicionValida(int x,int y, int z);
+
+        //Pre: -
+        //Pos: valida la coordena a ingresar por el usuario
+        void validarCoordenada(Coordenada<int>* &objetivo);
 };
 
 

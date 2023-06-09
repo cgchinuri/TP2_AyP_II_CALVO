@@ -768,3 +768,28 @@ bool BatallaDigital::_esPosicionValida(int x,int y, int z){
 		false;
 	}
 }
+
+// Ejemplo de uso: se puede reemplazar desde la linea 635 hasta la 650 por esto:
+// validarCoordenada(objetivo);
+void BatallaDigital::validarCoordenada(Coordenada<int>* &objetivo) {
+	std::string stringCoordenada,restoBuffer;
+	getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
+
+	//Lectura y validacion de coordenada (si la coordenada esta en rango)
+	bool esCoordenadaValida=false;		
+	while(!esCoordenadaValida)	{
+		std::cout<<"Ingrese la coordenada del casillero en formato csv\nEjemplo: 1,2,1"<<std::endl;
+		getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada. Ejemplo:	1,2,4
+		objetivo=new Coordenada<int>(stringCoordenada,",");
+
+		if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
+		(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
+			esCoordenadaValida=true;
+		}	else{
+			delete objetivo;
+			std::cout<<"Coordenada invalida[X]"<<std::endl;
+
+		}
+	}
+
+}
