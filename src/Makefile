@@ -38,3 +38,4 @@ main.o: Tablero/tablero.h Utils/Bitmap/BitmapBatallaDigital.h
 
 clean:
 	rm -vf *.o $(PROGRAM)
+	rm -vf tableroNivel*

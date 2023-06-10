@@ -22,7 +22,7 @@ int main()
 
 	// Creo la clase del juego batalla digital
 	BatallaDigital * batallaDigital = new BatallaDigital();
-
+	batallaDigital->mostrarTablero(NULL);
 
 	// Una vez que genero el tablero se colocan las fichas al comienzo del juego
 	batallaDigital->colocarFichasIniciales();;
