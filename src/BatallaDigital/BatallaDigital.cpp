@@ -786,8 +786,7 @@ void BatallaDigital::validarCoordenada(Coordenada<int>* &objetivo) {
 		getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada. Ejemplo:	1,2,4
 		objetivo=new Coordenada<int>(stringCoordenada,",");
 
-		if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
-		(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){
+		if((this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())) != NULL){
 			esCoordenadaValida=true;
 		}	else{
 			delete objetivo;
