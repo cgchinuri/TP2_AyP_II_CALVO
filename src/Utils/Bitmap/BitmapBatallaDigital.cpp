@@ -7,30 +7,31 @@
 #include "../../Ficha/Ficha.h"
 
 BitmapBatallaDigital::BitmapBatallaDigital(unsigned int resolucionImagenes, RGBApixel colorTransparente, unsigned int anchoTablero, unsigned int altoTablero) {
-    SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
+    //SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
 
     this->resolucionImagenes = resolucionImagenes;
     this->colorTransparente = colorTransparente;
 
     this->imagenTablero.SetSize(anchoTablero * resolucionImagenes, altoTablero * resolucionImagenes);
 
-    this->imagenPasto.ReadFromFile("Utils/Bitmap/bitmaps/pasto.bmp");
-    this->imagenTierra.ReadFromFile("Utils/Bitmap/bitmaps/tierra.bmp");
-    this->imagenAgua.ReadFromFile("Utils/Bitmap/bitmaps/agua.bmp");
-    this->imagenAguaProfunda.ReadFromFile("Utils/Bitmap/bitmaps/aguaProfunda.bmp");
-    this->imagenAire.ReadFromFile("Utils/Bitmap/bitmaps/aire.bmp");
-    this->imagenSoldadoJugador.ReadFromFile("Utils/Bitmap/bitmaps/soldadoJugador.bmp");
-    this->imagenSoldadoEnemigo.ReadFromFile("Utils/Bitmap/bitmaps/soldadoEnemigo.bmp");
-    this->imagenQuimicos.ReadFromFile("Utils/Bitmap/bitmaps/quimicos.bmp");
-    this->imagenMinaJugador.ReadFromFile("Utils/Bitmap/bitmaps/minaJugador.bmp");
-    this->imagenMinaEnemigo.ReadFromFile("Utils/Bitmap/bitmaps/minaEnemigo.bmp");
-    this->imagenAvionJugador.ReadFromFile("Utils/Bitmap/bitmaps/avionJugador.bmp");
-    this->imagenAvionEnemigo.ReadFromFile("Utils/Bitmap/bitmaps/avionEnemigo.bmp");
-    this->imagenBarcoJugador.ReadFromFile("Utils/Bitmap/bitmaps/barcoJugador.bmp");
-    this->imagenBarcoEnemigo.ReadFromFile("Utils/Bitmap/bitmaps/barcoEnemigo.bmp");
-    this->imagenSubmarinoJugador.ReadFromFile("Utils/Bitmap/bitmaps/submarinoJugador.bmp");
-    this->imagenSubmarinoEnemigo.ReadFromFile("Utils/Bitmap/bitmaps/submarinoEnemigo.bmp");
-    this->imagenError.ReadFromFile("Utils/Bitmap/bitmaps/error.bmp");
+    this->imagenPasto.ReadFromFile("Utils/Bitmap/texturasBMP/pasto.bmp");
+    this->imagenTierra.ReadFromFile("Utils/Bitmap/texturasBMP/tierra.bmp");
+    this->imagenAgua.ReadFromFile("Utils/Bitmap/texturasBMP/agua.bmp");
+    this->imagenAguaProfunda.ReadFromFile("Utils/Bitmap/texturasBMP/aguaProfunda.bmp");
+    this->imagenAire.ReadFromFile("Utils/Bitmap/texturasBMP/aire.bmp");
+    this->imagenSoldadoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/soldadoJugador.bmp");
+    this->imagenSoldadoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/soldadoEnemigo.bmp");
+    this->imagenQuimicos.ReadFromFile("Utils/Bitmap/texturasBMP/quimicos.bmp");
+    this->imagenMinaJugador.ReadFromFile("Utils/Bitmap/texturasBMP/minaJugador.bmp");
+    this->imagenMinaEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/minaEnemigo.bmp");
+    this->imagenAvionJugador.ReadFromFile("Utils/Bitmap/texturasBMP/avionJugador.bmp");
+    this->imagenAvionEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/avionEnemigo.bmp");
+    this->imagenBarcoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/barcoJugador.bmp");
+    this->imagenBarcoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/barcoEnemigo.bmp");
+    this->imagenSubmarinoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/submarinoJugador.bmp");
+    this->imagenSubmarinoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/submarinoEnemigo.bmp");
+    this->imagenNiebla.ReadFromFile("Utils/Bitmap/texturasBMP/niebla.bmp");
+    this->imagenError.ReadFromFile("Utils/Bitmap/texturasBMP/error.bmp");
 }
 
 void BitmapBatallaDigital::dibujar(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero)
@@ -97,9 +98,12 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
         break;
     }
 
-    Ficha *ficha = casillero->getFichaCasillero();
-    if (ficha == NULL) return;
-    switch (ficha->obtenerTipo())
+    if (!casillero->estaActivo()) {
+        dibujarTransparente(posX, posY, this->imagenNiebla, altoTablero);
+    }
+    
+    if (!casillero->estaOcupado()) return;
+    switch (casillero->getFichaCasillero()->obtenerTipo())
     {
     case FICHA_BARCO:
         dibujarTransparente(posX, posY, this->imagenBarcoJugador, altoTablero);
@@ -120,7 +124,6 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
     }
 }
 
-#include <iostream>
 void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
     unsigned int anchoTablero = tablero->getDimX();
     unsigned int altoTablero = tablero->getDimY();

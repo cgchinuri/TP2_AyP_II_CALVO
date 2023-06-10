@@ -1,3 +1,10 @@
+/*
+ * BitmapBatallaDigital - Logica de EasyBMP_1.06 para Batalla Digital V2
+ *
+ *  Created on: 24 May. 2023
+ *      Author: Facundo Baratta
+ */
+
 #ifndef BITMAP_H
 #define BITMAP_H
 
@@ -26,6 +33,7 @@ private:
     BMP imagenBarcoEnemigo;
     BMP imagenSubmarinoJugador;
     BMP imagenSubmarinoEnemigo;
+    BMP imagenNiebla;
     BMP imagenError;
 
     void dibujar(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero);
