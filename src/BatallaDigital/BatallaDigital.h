@@ -36,10 +36,27 @@
 #define STRING_PEDIR_POS_X_SOLDADO "Ingresá la posición en X: "
 #define STRING_PEDIR_POS_Y_SOLDADO "Ingresá la posición en Y: "
 
+#define STRING_INGRESO_COORDENADA_ERROR_DIMENSIONES "La coordenada ingresada es inválida."
+
 #define STRING_INGRESO_SOLDADO_CAS_NULO "Error casillero nulo."
-#define STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES "La coordenada ingresada no es parte del mapa."
 #define STRING_INGRESO_SOLDADO_ERROR_OBSTACULO "No es posible posicionar un soldado en ese casillero porque está inactivo u ocupado."
 #define STRING_INGRESO_SOLDADO_ERROR_AGUA "No es posible posicionar un soldado en ese casillero porque es del tipo agua."
+
+#define STRING_INGRESO_MINA_ERROR_AGUA "El casillero que se intentó minar es del tipo agua. "
+#define STRING_INGRESO_MINA_ERROR_AIRE "El casillero que se intentó minar es del tipo aire. "
+
+
+
+#define STRING_TURNO_DE_P1 " - - - - - - - - - - - Es el turno de: "
+#define STRING_TURNO_DE_P2 ".  - - - - - - - - - - -"
+
+#define RADIO_EXPLOSION_POR_CHOQUE_SOLDADOS 1
+#define RADIO_EXPLOSION_POR_CHOQUE_MINA_SOLDADO 2
+#define RADIO_EXPLOSION_POR_CHOQUE_MINAS 3
+
+#define TURNOS_INACTIVIDAD_POR_EXPLOSION_SOLDADOS 3
+#define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO 4
+#define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINAS 5
 
 class BatallaDigital
 {
@@ -129,11 +146,6 @@ class BatallaDigital
         //      devuelve true si se pudo hacer el movimiento y false si se dio alguno de los casos anteriores
         bool moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , unsigned int cantCasilleros);
 
-        //Recibe un puntero al jugador que pone la mina, y una posicion en coordenadas x,y,z
-        //Si la posicion es valida entonces coloca la mina. Una posicion es valida si el casillero esta activo
-        //y el terreno es tierra
-        void minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
-
         // Pre: debe haber una lista de jugadores con sus respectivas fichas
         // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
         bool hayGanador();
@@ -165,12 +177,18 @@ class BatallaDigital
         void desactivarCasillero(Casillero * casillero , int turnosInactividad);
 
         // Pre: recibe como argumentos un puntero a un casillero, una cantidad de turnos inactivo para el casillero central (min 3)
-        //      y el radio que tendrá la explosión (entre 1 y 2)
+        //      y el radio que tendrá la explosión (entre 1 y 3)
         // Pos: desactiva el casillero indicado con los turnos de inactividad especificados.
         //      desactiva los casilleros que lo rodean, tantos como indique el radio de explosión
         //      va decrementando un turno de inactividad por capa
         //      desactiva fichas involucradas
         void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion );
+
+
+        // Recibe un puntero al casillero a minar y otro al jugador dueño de la mina
+        // Coloca la mina si el casillero estaba vacio o genera una explosión si había algo en él
+        void minarCasillero(Casillero * casillero ,Jugador * jugador);
+
 
         // Pre: -
         // Post: devuelve true si el jugador ingreso por consola una respuesta afirmativa, de lo contrario devuelve false
@@ -184,9 +202,13 @@ class BatallaDigital
         // Post: pregunta al usuario por un tipo de movimiento, devolviendolo si el input es válido
         tipoMovimiento_t obtenerMovimiento();
 
+        // Pre: -
+        // Pos: pregunta al usuario la cantidad de casilleros a mover, devolvíendolo si el input es válido
+        int obtenerCantidadCasilleros();
+
         //Pre: El jugador no puede ser nulo
         //Post:Se ejecuta un turno en el juego
-        void avanzarTurno(Jugador * jugador, unsigned int &turno);
+        void avanzarTurno(Jugador * jugador);
 
 
         //Pre: Jugador y avionRadar no pueden ser nulos
@@ -201,6 +223,10 @@ class BatallaDigital
         //Pre: -
         //Pos: valida la coordena a ingresar por el usuario
         void validarCoordenada(Coordenada<int>* &objetivo);
+
+        // Pre: recibe como argumento un puntero a un jugador
+        // Pos: imprime por consola un mensaje indicando que es su turno
+        void imprimirTurnoDe(Jugador * jugador);
 };
 
 

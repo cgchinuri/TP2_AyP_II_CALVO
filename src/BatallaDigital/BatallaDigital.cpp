@@ -139,13 +139,24 @@ void BatallaDigital::crearListaJugadores()
 	// generacion lista jugadores
 	this->listaDeJugadores = new Lista<Jugador*>();
 
+
+
 	for(unsigned int i = 0; i < this->cantidadJugadores; i++)
 	{
-		int aux = i + 1;
-		std::string nombre = "Jugador " + aux;//FALTA ACA LO DEL ID DEL JUGADOR
-		Jugador* jugador = new Jugador(i+1, nombre);
-		this->listaDeJugadores->add(jugador);
+		int idJugador = i + 1;
+
+		std::cout << "Ingrese el nombre del jugador: " ;
+
+		std::string nombreJugador;
+
+		std::cin >> nombreJugador;
+
+		std::cout << std::endl;
+
+		Jugador * nuevoJugador=new Jugador(idJugador+1,nombreJugador);
+		this->listaDeJugadores->add(nuevoJugador);
 	}
+
 	std::cout << "Se generó una lista de "<< this->listaDeJugadores->contarElementos()<< " jugadores" << std::endl;
 }
 
@@ -274,33 +285,6 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 }
 
 
-void BatallaDigital::minarCasillero(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
-
-	Casillero * objetivo= this->tableroJuego->obtenerCasillero(x,y,z);
-	
-	if(!objetivo->estaActivo()){
-        throw "El casillero esta inactivo";
-	}
-
-	if(objetivo->getTipoCasillero()!=tierra)	{
-		 throw "Solo se puede minar un casillero de tipo tierra";
-	}
-
-//El casillero puede estar ocupado por un soldado o una ficha, en ambos casos se desactiva la ficha (se la da de baja), se vacia e inactiva el casillero
-	if(objetivo->estaOcupado()){
-		Ficha * fichaOcupante=objetivo->getFichaCasillero();
-		fichaOcupante->desactivarFicha();
-		objetivo->vaciarCasillero();
-		objetivo->desactivar();
-	}	else {
-//Si el casillero estaba desocupado, se crea la mina, se la posiciona en el tablero y se la agrega a al jugador
-		Ficha * mina=new Ficha(FICHA_MINA,x,y,z);
-		objetivo->setFichaCasillero(mina);
-		mina->setCasilleroFicha(objetivo);
-		jugador->agregarFicha(mina);
-	}
-	return;
-}
 
 bool BatallaDigital::hayGanador()
 {
@@ -352,7 +336,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 			if(x < 1 || x > this->tableroJuego->getDimX())
 			{
 				// Si fue ingresada una posicion externa a las dimensiones del mapa
-				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
+				std::cout << STRING_INGRESO_COORDENADA_ERROR_DIMENSIONES << std::endl;
 			}
 			else
 			{
@@ -373,7 +357,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 			if(y < 1 || y > this->tableroJuego->getDimY())
 			{
 				// Si fue ingresada una posicion externa a las dimensiones del mapa
-				std::cout << STRING_INGRESO_SOLDADO_ERROR_DIMENSIONES << std::endl;
+				std::cout << STRING_INGRESO_COORDENADA_ERROR_DIMENSIONES << std::endl;
 			}
 			else
 			{
@@ -425,9 +409,13 @@ void BatallaDigital::colocarFichasIniciales()
 	// Recorro la lista de jugadores
 	while(this->listaDeJugadores->avanzarCursor())
 	{
+		// Obtengo el jugador actual de la lista
 		Jugador * jugadorActual=this->listaDeJugadores->getCursor();
-		// ¡¡ Imprimir nombre del jugador !!
-		std::cout<<"Colocar fichas iniciales:"<<jugadorActual->Nombre()<<std::endl;
+
+		// Imprimo turno del jugador
+		imprimirTurnoDe(jugadorActual);
+
+		// Entro en un bucle para que ingrese la cantidad de soldados que van a jugar
 		for(int i = 0 ; i < CANT_INICIAL_SOLDADOS_POR_JUGADOR ; i++)
 		{
 			std::cout << STRING_INGRESO_SOLDADO << std::endl;
@@ -443,24 +431,29 @@ void BatallaDigital::colocarFichasIniciales()
 			casilleroAux->imprimirPos();
 		}
 
-	}
+		// \n
+		std::cout << std::endl;
 
+	}
 }
 
-void desactivarCasillero(Casillero * casillero , int turnosInactividad)
+void BatallaDigital::desactivarCasillero(Casillero * casillero , int turnosInactividad)
 {
 	Ficha * fichaAux = NULL ;
 
 	fichaAux = casillero->getFichaCasillero();
 
+	// Si el casillero estaba ocupado
 	if(fichaAux)
 	{
+		// Desvinculo la ficha del casillero
 		fichaAux->desvincularFichaDeCasillero();
-		// Completar con la función que desactiva la ficha
-		//fichaAux->desactivar();
+
+		// Desactivo la ficha
+		fichaAux->desactivarFicha();
 	}
 
-	// Vacía el casillero
+	// Vacío el casillero
 	casillero->vaciarCasillero();
 
 	// Desactiva el casillero con los turnos que se recibieron como parámetro
@@ -468,7 +461,7 @@ void desactivarCasillero(Casillero * casillero , int turnosInactividad)
 
 }
 
-void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion )
+void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion )
 {
 	if(!casilleroCentral)
 	{
@@ -478,10 +471,13 @@ void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpi
 	{
 		throw "Error turnos inactividad invalidos";
 	}
-	else if(radioExplosion < 1 || radioExplosion > 2)
+	else if(radioExplosion < 1 || radioExplosion > 3)
 	{
 		throw "Error radio explosión invalido";
 	}
+
+
+	std::cout << "Se generó una explosión de radio " << radioExplosion << " con epicentro en el casillero " << casilleroCentral->getCoordenada()->toString() << std::endl;
 
 	desactivarCasillero(casilleroCentral , turnosInactividadEpicentro);
 
@@ -601,23 +597,50 @@ tipoMovimiento_t BatallaDigital::obtenerMovimiento()
     }
 }
 
-
-void BatallaDigital::avanzarTurno(Jugador * jugador, unsigned int &turno)
+int BatallaDigital::obtenerCantidadCasilleros()
 {
-		std::cout<<"Turno del jugador "<<jugador->identificador()<<std::endl;
+    int seleccion = 0;
+
+    while (seleccion < 0 ) {
+    	std::cout << "La cantidad de casillero a desplazar: ";
+        std::cin >> seleccion;
+
+        if (seleccion < 0 ) {
+            std::cout << "Error. Ingresar un número positivo. ";
+        }
+    }
+
+
+    return seleccion ;
+}
+
+
+
+void BatallaDigital::avanzarTurno(Jugador * jugador)
+{
+		if(!jugador)
+		{
+			throw "Error puntero a jugador nulo";
+		}
+
 		//Variables para el turno
 		bool mover,jugarCarta=false;
 		int seleccion=1;
+		Casillero * casilleroMinar = NULL;
 		
-		jugador->removerFichasInactivas();//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
+		// Imprimo de quién es el turno
+		imprimirTurnoDe(jugador);
+
+		//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
+		jugador->removerFichasInactivas();
 
 		//El jugador tiene soldados activos?
-		if(!jugador->cantidadFichasSoldado())
+		if(jugador->cantidadFichasSoldado() < 1)
 		{
-		//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
-		  //Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
-		  //Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
-		  //Opcion C: Mismo de opcion B pero desactivando el casillero ademas
+			//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
+			//Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
+			//Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
+			//Opcion C: Mismo de opcion B pero desactivando el casillero ademas
 			//jugador->retirarFichas();//opcion C
 			//this->eliminarJugador();
 			return;
@@ -626,57 +649,81 @@ void BatallaDigital::avanzarTurno(Jugador * jugador, unsigned int &turno)
 
 		//Comienzo preguntando dónde quiere minar el jugador
 		std::string stringCoordenada,restoBuffer;
-		getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
 
-		
+		//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
+		getline(std::cin,restoBuffer);
+
 		//Lectura y validacion de coordenada (si la coordenada esta en rango)
 		Coordenada<int> * objetivo;
+
 		bool esCoordenadaValida=false;		
-		while(!esCoordenadaValida)	{
-			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv\nEjemplo: 1,2,1"<<std::endl;
-			getline(std::cin, stringCoordenada);//Se lee desde la consola una cadena csv indicando la coordenada a minar. Ejemplo:	1,2,4
+
+		while(!esCoordenadaValida)
+		{
+			// Imprimo por consola que se ingrese la coordenada
+			std::cout<<"Ingrese la coordenada del casillero a minar en formato csv (Ejemplo: 1,2,1): "<<std::endl;
+
+			//Se lee desde la consola una cadena csv indicando la coordenada a minar
+			getline(std::cin, stringCoordenada);
+
+			// Creo la coordenada
 			objetivo=new Coordenada<int>(stringCoordenada,",");
 			
-			//Validacion de Coordenada
-			if(((objetivo->obtenerX()<this->tableroJuego->getDimX()&&objetivo->obtenerX()>0)&&(objetivo->obtenerY()<this->tableroJuego->getDimY()&&objetivo->obtenerY()>0))&&
-			(objetivo->obtenerZ()<this->tableroJuego->getDimZ()&&objetivo->obtenerZ()>0)){	
-				esCoordenadaValida=true;
-			}	else{
-				delete objetivo;
-				std::cout<<"Coordenada invalida[X]"<<std::endl;
+			// Obtengo el casillero
+			casilleroMinar = this->tableroJuego->obtenerCasillero(objetivo);
 
+			//Validacion de Coordenada
+			if(!casilleroMinar)
+			{
+				std::cout<<STRING_INGRESO_COORDENADA_ERROR_DIMENSIONES<<std::endl;
 			}
+			else if(casilleroMinar->getTipoCasillero()==agua)
+			{
+				std::cout<< STRING_INGRESO_MINA_ERROR_AGUA << std::endl;
+			}
+			else if(casilleroMinar->getTipoCasillero()==aire)
+			{
+				std::cout<< STRING_INGRESO_MINA_ERROR_AIRE << std::endl;
+			}
+			else
+			{
+				esCoordenadaValida=true;
+			}
+
+			delete objetivo;
 		}
 
-		
-
-		std::cout<<"Casillero a minar:"<<objetivo->toString()<<std::endl;
-
-		
-		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
-
-		minarCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+		std::cout<<"Casillero a minar ->";
+		casilleroMinar->imprimirPos();
 
 		
+		// Se mina el casillero
+		minarCasillero(casilleroMinar,jugador);
+
 		//Le pregunto si quiere mover
 		mover = jugadorQuiereMover();
-		if(mover==true)
+
+		if(mover)
 		{	
 			//MUESTRO SUS FICHAS
 			jugador->mostrarFichas();
+
 			//LE PREGUNTO CUAL QUIERE MOVER
 			std::cout<<"¿Qué numero de ficha queres mover?"<<std::endl;
+
 			//Capturar opcion seleccionada
 			std::cin>>seleccion;
 			Ficha * ficha=jugador->obtenerFicha(seleccion);
+
 			bool movimientoExitoso=false;
-			while(movimientoExitoso==false)
+
+			while(!movimientoExitoso)
 			{
 				//LE PREGUNTO COMO QUIERE MOVERLA
 				tipoMovimiento_t movimiento = obtenerMovimiento();
-				std::cout<<"¿Cuántos casilleros?";
-				unsigned int cantidadCasilleros=0;
-				std::cin>>cantidadCasilleros;
+
+				//LE PREGUNTO CUANTO QUIERE MOVERLA
+				int cantidadCasilleros = obtenerCantidadCasilleros();
 
 				//INTENTO MOVERLA
 				if (moverFicha(ficha , movimiento , cantidadCasilleros)==true)
@@ -685,14 +732,8 @@ void BatallaDigital::avanzarTurno(Jugador * jugador, unsigned int &turno)
 				}
 				
 			}
-			
 		}
-
-		// SI MOVIO GESTIONO EVENTOS
-		// explotarMina(); ?
-		// matarSoldado(); ?
-		// matarOtraFicha(); ?
-		// limpiarFichasInactivas(); ?
+		mostrarTablero(0);
 
 
 		//Le pregunto si quiere jugar una carta
@@ -716,13 +757,8 @@ void BatallaDigital::avanzarTurno(Jugador * jugador, unsigned int &turno)
 		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
 		//actualizarTablero();
 		//tableroJuego->decrementarInactividadCasilleros();	
-
-		// Si el numero de turno es igual a la cantidad de jugadores
-		// Da la vuelta al primer jugador. Sino, prosigue al siguiente
-		turno == this->cantidadDeJugadores() ? turno = 1 : turno++;
-
-		delete objetivo;
 }
+
 
 
 Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * avionRadar)	{
@@ -795,4 +831,49 @@ void BatallaDigital::validarCoordenada(Coordenada<int>* &objetivo) {
 		}
 	}
 
+}
+
+void BatallaDigital::minarCasillero(Casillero * casillero ,Jugador * jugador) {
+
+	if(!casillero)
+	{
+		throw "Error: Puntero a casillero nulo";
+	}
+
+	if(!jugador)
+	{
+		throw "Error: puntero a jugador nulo";
+	}
+
+	//Si el casillero esta ocupado genero una explosion
+	if(casillero->estaOcupado())
+	{
+		// Puntero a la ficha que ocupa el casillero
+		Ficha * fichaOcupante = casillero->getFichaCasillero();
+
+		if(fichaOcupante->getTipoFicha() == FICHA_MINA)
+		{
+			explosionEnTablero(casillero, TURNOS_INACTIVIDAD_POR_EXPLOSION_MINAS , RADIO_EXPLOSION_POR_CHOQUE_MINAS);
+		}
+		else
+		{
+			explosionEnTablero(casillero, TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO , RADIO_EXPLOSION_POR_CHOQUE_MINA_SOLDADO);
+		}
+	}
+	else
+	{
+		//Si el casillero estaba desocupado, se crea la mina, se la posiciona en el tablero y se la agrega a al jugador
+		Ficha * mina =new Ficha(FICHA_MINA,casillero->getPosX(), casillero->getPosY(), casillero->getPosZ());
+		casillero->setFichaCasillero(mina);
+		mina->setCasilleroFicha(casillero);
+		jugador->agregarFicha(mina);
+	}
+
+}
+
+
+
+void BatallaDigital::imprimirTurnoDe(Jugador * jugador)
+{
+	std::cout << STRING_TURNO_DE_P1 << jugador->getNombre() << STRING_TURNO_DE_P2 << std::endl << std::endl;
 }

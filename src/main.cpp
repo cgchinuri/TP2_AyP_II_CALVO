@@ -35,7 +35,7 @@ int main()
 		std::cout<<"Nuevo turno"<<std::endl;
 		Jugador *jugadorTurnoActual = batallaDigital->obtenerJugadorNumero(turno);
 		batallaDigital->mostrarTablero(jugadorTurnoActual);
-		batallaDigital->avanzarTurno(jugadorTurnoActual, turno);
+		batallaDigital->avanzarTurno(jugadorTurnoActual);
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego
