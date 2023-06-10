@@ -30,10 +30,10 @@ private:
 
     void dibujar(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero);
     void dibujarTransparente(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero);
-    void dibujarLetra(RGBApixel colorLetra, unsigned int altoTablero);
+    void dibujarCoordenadas(RGBApixel colorLetra, unsigned int altoTablero);
     void dibujarCasillero(Casillero *casillero, unsigned int altoTablero);
     void dibujarCapa(Tablero *tablero, unsigned int nivelZ);
-
+    void dibujarInactivo(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero);
 
 public:
 
