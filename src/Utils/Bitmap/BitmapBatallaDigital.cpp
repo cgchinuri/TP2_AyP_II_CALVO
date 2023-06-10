@@ -7,7 +7,7 @@
 #include "../../Ficha/Ficha.h"
 
 BitmapBatallaDigital::BitmapBatallaDigital(unsigned int resolucionImagenes, RGBApixel colorTransparente, unsigned int anchoTablero, unsigned int altoTablero) {
-    //SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
+    SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
 
     this->resolucionImagenes = resolucionImagenes;
     this->colorTransparente = colorTransparente;
@@ -55,24 +55,7 @@ void BitmapBatallaDigital::dibujarTransparente(unsigned int x, unsigned int y, B
     }
 }
 
-void BitmapBatallaDigital::dibujarInactivo(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero) {
-    BMP elementoEscalaGrises = elemento;
-    for( int j=0 ; j < elementoEscalaGrises.TellHeight() ; j++)
-    {
-        for( int i=0 ; i < elementoEscalaGrises.TellWidth() ; i++)
-        {
-            int Temp = (int) floor( 0.299*elementoEscalaGrises(i,j)->Red + 0.587*elementoEscalaGrises(i,j)->Green + 0.114*elementoEscalaGrises(i,j)->Blue );
-            ebmpBYTE TempBYTE = (ebmpBYTE) Temp;
-            elementoEscalaGrises(i,j)->Red = TempBYTE;
-            elementoEscalaGrises(i,j)->Green = TempBYTE;
-            elementoEscalaGrises(i,j)->Blue = TempBYTE;
-        }
-    }
-
-    dibujar(x, y, elementoEscalaGrises, altoTablero);
-}
-
-void BitmapBatallaDigital::dibujarCoordenadas(RGBApixel colorLetra, unsigned int altoTablero) {
+void BitmapBatallaDigital::dibujarLetra(RGBApixel colorLetra, unsigned int altoTablero) {
     unsigned int altoLetra = (this->resolucionImagenes)/3;
     char numero[3];
     for (size_t i = 0; i < altoTablero; i++)
@@ -87,44 +70,36 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
     unsigned int posX = casillero->getCoordenada()->obtenerX() - 1;
     unsigned int posY = casillero->getCoordenada()->obtenerY() - 1;
     unsigned int posZ = casillero->getCoordenada()->obtenerZ();
-    BMP elemento;
 
     switch (casillero->getTipoCasillero())
     {
     case tierra:
         if(posZ < NIVEL_MAXIMO_TIERRA) {
-            elemento = this->imagenTierra;
+            dibujar(posX, posY, this->imagenTierra, altoTablero);
         }
         else {
-            elemento = this->imagenPasto;
+            dibujar(posX, posY, this->imagenPasto, altoTablero);
         }
         break;
     case agua:
         if(posZ < NIVEL_MAXIMO_TIERRA) {
-            elemento = this->imagenAguaProfunda;
+            dibujar(posX, posY, this->imagenAguaProfunda, altoTablero);
         }
         else {
-            elemento = this->imagenAgua;
+            dibujar(posX, posY, this->imagenAgua, altoTablero);
         }
         break;
     case aire:
-        elemento = this->imagenAire;
+        dibujar(posX, posY, this->imagenAire, altoTablero);
         break;
     default:
-        elemento = this->imagenError; // PARA DEBUG
+        dibujar(posX, posY, this->imagenError, altoTablero); // PARA DEBUG
         break;
     }
 
-    if(!casillero->estaActivo())  {
-        dibujarInactivo(posX, posY, elemento, altoTablero);
-    }
-
-    else {
-        dibujar(posX, posY, this->imagenPasto, altoTablero);
-    }
-
-    if (!casillero->estaOcupado()) return;
-    switch (casillero->getFichaCasillero()->obtenerTipo())
+    Ficha *ficha = casillero->getFichaCasillero();
+    if (ficha == NULL) return;
+    switch (ficha->obtenerTipo())
     {
     case FICHA_BARCO:
         dibujarTransparente(posX, posY, this->imagenBarcoJugador, altoTablero);
@@ -145,6 +120,7 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
     }
 }
 
+#include <iostream>
 void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
     unsigned int anchoTablero = tablero->getDimX();
     unsigned int altoTablero = tablero->getDimY();
@@ -178,7 +154,7 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
         colorLetra.Red = colorLetra.Blue = colorLetra.Green = 255; // BLANCO
     }
 
-    dibujarCoordenadas(colorLetra, altoTablero);
+    dibujarLetra(colorLetra, altoTablero);
 
     // ESTO ESCIBRE EL NOMBRE DE LA CAPA
     char ruta[20] = "tableroNivel";
