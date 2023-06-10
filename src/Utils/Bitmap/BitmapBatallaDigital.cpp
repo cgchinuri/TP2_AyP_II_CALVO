@@ -3,14 +3,19 @@
 #include "EasyBMP_1.06/EasyBMP.h"
 #include "EasyBMP_1.06/EasyBMP_Font.h"
 
+#include "../../Jugador/Jugador.h"
 #include "../../Tablero/tablero.h"
 #include "../../Ficha/Ficha.h"
 
-BitmapBatallaDigital::BitmapBatallaDigital(unsigned int resolucionImagenes, RGBApixel colorTransparente, unsigned int anchoTablero, unsigned int altoTablero) {
+#define RESOLUCION 50
+
+BitmapBatallaDigital::BitmapBatallaDigital( unsigned int anchoTablero, unsigned int altoTablero) {
     //SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
 
-    this->resolucionImagenes = resolucionImagenes;
-    this->colorTransparente = colorTransparente;
+    this->resolucionImagenes = RESOLUCION;
+    RGBApixel transparente;
+	transparente.Red = transparente.Blue = transparente.Green = 0; // Negro
+    this->colorTransparente = transparente;
 
     this->imagenTablero.SetSize(anchoTablero * resolucionImagenes, altoTablero * resolucionImagenes);
 
@@ -56,7 +61,7 @@ void BitmapBatallaDigital::dibujarTransparente(unsigned int x, unsigned int y, B
     }
 }
 
-void BitmapBatallaDigital::dibujarLetra(RGBApixel colorLetra, unsigned int altoTablero) {
+void BitmapBatallaDigital::dibujarCoordenadas(RGBApixel colorLetra, unsigned int altoTablero) {
     unsigned int altoLetra = (this->resolucionImagenes)/3;
     char numero[3];
     for (size_t i = 0; i < altoTablero; i++)
@@ -67,7 +72,7 @@ void BitmapBatallaDigital::dibujarLetra(RGBApixel colorLetra, unsigned int altoT
     }
 }
 
-void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int altoTablero) {
+void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugador, unsigned int altoTablero) {
     unsigned int posX = casillero->getCoordenada()->obtenerX() - 1;
     unsigned int posY = casillero->getCoordenada()->obtenerY() - 1;
     unsigned int posZ = casillero->getCoordenada()->obtenerZ();
@@ -101,8 +106,15 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
     if (!casillero->estaActivo()) {
         dibujarTransparente(posX, posY, this->imagenNiebla, altoTablero);
     }
+
+    // Si no esta ocupado no se hace nada mas
+    if(!casillero->estaOcupado()) return;
     
-    if (!casillero->estaOcupado()) return;
+    if(jugador != NULL) {   // Si hay una ficha verifico que le pertenezca al jugador del turno
+        if (jugador->obtenerFicha(*(casillero->getCoordenada())) == NULL) return;
+    }
+
+    // Busco el tipo de ficha
     switch (casillero->getFichaCasillero()->obtenerTipo())
     {
     case FICHA_BARCO:
@@ -124,7 +136,7 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, unsigned int a
     }
 }
 
-void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
+void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsigned int nivelZ) {
     unsigned int anchoTablero = tablero->getDimX();
     unsigned int altoTablero = tablero->getDimY();
 
@@ -136,9 +148,11 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
                 imagenTablero.WriteToFile("ERROR");
                 throw "Error al obtener casillero";
             }
-            dibujarCasillero(casillero, altoTablero);
+            dibujarCasillero(casillero, jugador, altoTablero);
         }
     }
+
+
 
     RGBApixel colorLetra;
     if (nivelZ < NIVEL_MAXIMO_TIERRA) { // SUBTERRANEO - AZUL
@@ -157,7 +171,7 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
         colorLetra.Red = colorLetra.Blue = colorLetra.Green = 255; // BLANCO
     }
 
-    dibujarLetra(colorLetra, altoTablero);
+    dibujarCoordenadas(colorLetra, altoTablero);
 
     // ESTO ESCIBRE EL NOMBRE DE LA CAPA
     char ruta[20] = "tableroNivel";
@@ -168,11 +182,11 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, unsigned int nivelZ) {
     this->imagenTablero.WriteToFile(ruta);
 }
 
-void BitmapBatallaDigital::dibujarTablero(Tablero *tablero) {
+void BitmapBatallaDigital::dibujarTablero(Tablero *tablero, Jugador *jugador) {
     unsigned int profundidadTablero = tablero->getDimZ();
 
     for(unsigned int z = 1 ; z <= profundidadTablero ; z++) {
-        dibujarCapa(tablero, z);
+        dibujarCapa(tablero, jugador, z);
     }   
 }
 

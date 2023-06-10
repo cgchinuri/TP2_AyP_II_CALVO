@@ -23,6 +23,9 @@ BatallaDigital::BatallaDigital()
 
 	// Se crea el tablero
 	crearTablero();
+
+	// Se crea la instancia de logica de bitmap
+	this->bitmap = new BitmapBatallaDigital(this->dimensionesTablero[0], this->dimensionesTablero[1]);
 }
 
 //Constructor de batalla digital con parametros
@@ -46,6 +49,8 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 		oss.clear();
 	}
 
+	// Se crea la instancia de logica de bitmap
+	this->bitmap = new BitmapBatallaDigital(dimX, dimY);
 }
 
 
@@ -529,15 +534,9 @@ void explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpi
 
 }
 
-void BatallaDigital::mostrarTablero(unsigned int numeroJugador)
+void BatallaDigital::mostrarTablero(Jugador *jugador)
 {
-	unsigned int x = this->tableroJuego->getDimX();
-	unsigned int y = this->tableroJuego->getDimY();
-	RGBApixel transparente;
-	transparente.Red = transparente.Blue = transparente.Green = 0; // Color blanco ignora fondo negro
-	BitmapBatallaDigital *bitmap = new BitmapBatallaDigital(50, transparente, x, y);
-	bitmap->dibujarTablero(this->tableroJuego);
-	delete bitmap;
+	bitmap->dibujarTablero(this->tableroJuego, jugador);
 }
 
 unsigned int BatallaDigital::cantidadDeJugadores()
@@ -603,7 +602,7 @@ tipoMovimiento_t BatallaDigital::obtenerMovimiento()
 }
 
 
-void BatallaDigital::avanzarTurno(Jugador * jugador)
+void BatallaDigital::avanzarTurno(Jugador * jugador, unsigned int &turno)
 {
 		std::cout<<"Turno del jugador "<<jugador->identificador()<<std::endl;
 		//Variables para el turno
@@ -688,7 +687,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			}
 			
 		}
-		mostrarTablero(0);
 
 		// SI MOVIO GESTIONO EVENTOS
 		// explotarMina(); ?
@@ -718,6 +716,12 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
 		//actualizarTablero();
 		//tableroJuego->decrementarInactividadCasilleros();	
+
+		// Si el numero de turno es igual a la cantidad de jugadores
+		// Da la vuelta al primer jugador. Sino, prosigue al siguiente
+		turno == this->cantidadDeJugadores() ? turno = 1 : turno++;
+
+		delete objetivo;
 }
 
 

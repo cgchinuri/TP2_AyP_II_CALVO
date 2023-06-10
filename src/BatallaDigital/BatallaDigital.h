@@ -57,6 +57,9 @@ class BatallaDigital
         // Puntero al tablero
         Tablero * tableroJuego;
 
+        // Puntero a la instancia de logica de bitmap
+        BitmapBatallaDigital *bitmap;
+
         // Pre: -
         // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
         void crearListaJugadores();
@@ -147,7 +150,7 @@ class BatallaDigital
         // Pre: debe existir un juego iniciado con un tablero y la geografía que éste posea
         //      recibe el jugador que puede ver el tablero o toma por defecto que se muestra todo
         // Pos: genera un bitmap por cada nivel del tablero mostrando las fichas y geografía del jugador que corresponda o todo el tablero
-        void mostrarTablero(unsigned int numeroJugador);
+        void mostrarTablero(Jugador *jugador);
 
         // Pre: debe existir un juego iniciado con una cantidad dada de jugadores
         // Pos: devuelve la cantidad de jugadores del juego
@@ -183,7 +186,7 @@ class BatallaDigital
 
         //Pre: El jugador no puede ser nulo
         //Post:Se ejecuta un turno en el juego
-        void avanzarTurno(Jugador * jugador);
+        void avanzarTurno(Jugador * jugador, unsigned int &turno);
 
 
         //Pre: Jugador y avionRadar no pueden ser nulos

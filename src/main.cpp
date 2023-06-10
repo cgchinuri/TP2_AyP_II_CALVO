@@ -17,15 +17,6 @@ using namespace std;
 
 int main() 
 {
-/*	Tablero *tablero = new Tablero(10, 10, 10);
-	struct Imagenes *imagenes = new struct Imagenes;
-	iniciarBitmap(5,5,imagenes);
-	dibujarTablero(tablero, imagenes);
-	delete imagenes;
-	delete tablero;
-*/
-
-	// ↑ ESTE main así no tiene errores de memoria
 	cout << "Inicio" << endl;
 
 
@@ -34,27 +25,17 @@ int main()
 
 
 	// Una vez que genero el tablero se colocan las fichas al comienzo del juego
-	batallaDigital->colocarFichasIniciales();
+	batallaDigital->colocarFichasIniciales();;
 
 	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
-	batallaDigital->mostrarTablero(0);
-
-	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
-	unsigned int turno=1;
+	unsigned int turno = 1;
 	while(batallaDigital->hayGanador()==false)
 	{	
 		std::cout<<std::endl;
 		std::cout<<"Nuevo turno"<<std::endl;
-		batallaDigital->avanzarTurno(batallaDigital->obtenerJugadorNumero(turno));
-		if (turno==batallaDigital->cantidadDeJugadores())
-		{
-			turno=1;
-			batallaDigital->mostrarTablero(0);
-		}
-		else
-		{
-			turno++;
-		}
+		Jugador *jugadorTurnoActual = batallaDigital->obtenerJugadorNumero(turno);
+		batallaDigital->mostrarTablero(jugadorTurnoActual);
+		batallaDigital->avanzarTurno(jugadorTurnoActual, turno);
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego
