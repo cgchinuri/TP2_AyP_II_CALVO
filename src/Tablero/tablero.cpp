@@ -281,6 +281,22 @@ Casillero * Tablero::obtenerCasillero(int x, int y, int z)
 	return casilleroReturn;
 }
 
+Casillero * Tablero::obtenerCasillero(Coordenada<int> * coordenada)
+{
+	Casillero * casilleroReturn = NULL;
+
+	int x = coordenada->obtenerX();
+	int y = coordenada->obtenerY();
+	int z = coordenada->obtenerZ() ;
+
+	if(x >=1 && x <=this->dimX && y >=1 && y <=this->dimY  && z >=1 && z <=this->dimZ)
+	{
+		casilleroReturn = this->tableroJuego->get(z)->get(y)->get(x);
+	}
+
+	return casilleroReturn;
+}
+
 Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, unsigned int cantidadCasilleros)
 {
 	// Puntero que se retornará al final de la función

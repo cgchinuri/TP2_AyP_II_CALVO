@@ -87,6 +87,11 @@ class Tablero
 		//		devuelve null si no está dentro de las dimensiones del tablero
 		Casillero * obtenerCasillero(int x, int y, int z);
 
+		// Pre: recibe como argumento un puntero a tda coordenada
+		// Pos: devuelve un puntero a un casillero si existe con las coordenadas especificadas
+		//		devuelve null en caso contrario
+		Casillero * obtenerCasillero(Coordenada<int> * coordenada);
+
 		// Pre: se ingresa como argumento un casillero inicial para el movimiento, un tipo de movimiento que puede ser
 		//		vertical horizontal o diagonal, y una cantidad de casilleros a desplazar
 		// Pos: el algoritmo navega por el tablero pasando por los casilleros de su trayectoria.

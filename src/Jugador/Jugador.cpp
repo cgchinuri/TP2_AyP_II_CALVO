@@ -10,7 +10,7 @@ Jugador::Jugador(int id,const std::string s)
 }  
 
 
-std::string & Jugador::Nombre(void)  {
+std::string & Jugador::getNombre(void)  {
     return *(this->nombre);
 }
 

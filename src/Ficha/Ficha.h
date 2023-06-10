@@ -20,7 +20,8 @@ private:
     Casillero * casillero;
 public: 
 
-    //pre: tipo debe ser un valor de t_ficha
+    // CONSTRUCTOR 1
+    //pre: recibe como argumento ficha y coordenadas de la misma
     //post: crea una ficha con el tipo y coordenadas indicadas
     Ficha(t_ficha tipo,int x, int y, int z);
 
@@ -59,6 +60,10 @@ public:
     // Pre: -
 	// Pos: retorna true si la ficha esta activa
     bool estaActiva(void);
+
+    // Pre: -
+    // Pos: retorna el tipo de ficha
+    t_ficha getTipoFicha();
 
 };
 

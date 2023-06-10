@@ -65,3 +65,9 @@ void Ficha::activarFicha(void)  {
 bool Ficha::estaActiva(void)    {
     return this->activo;
 }
+
+
+t_ficha Ficha::getTipoFicha()
+{
+	return this->tipo;
+}
