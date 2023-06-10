@@ -605,7 +605,7 @@ int BatallaDigital::obtenerCantidadCasilleros()
     	std::cout << "La cantidad de casillero a desplazar: ";
         std::cin >> seleccion;
 
-        if (seleccion < 0 ) {
+        if (seleccion < 1 ) {
             std::cout << "Error. Ingresar un número positivo. ";
         }
     }
