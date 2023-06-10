@@ -601,7 +601,7 @@ int BatallaDigital::obtenerCantidadCasilleros()
 {
     int seleccion = 0;
 
-    while (seleccion < 0 ) {
+    while (seleccion < 1 ) {
     	std::cout << "La cantidad de casillero a desplazar: ";
         std::cin >> seleccion;
 
@@ -733,6 +733,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 				
 			}
 		}
+
 		mostrarTablero(0);
 
 
