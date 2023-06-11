@@ -910,9 +910,10 @@ void BatallaDigital::ubicarBarco(unsigned int x, unsigned int y, unsigned int z,
 
 void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
 		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadFichasBarco() == 0) {
+		//Esta validacion hay que cambiarla por otra que cuente las cartas y no las fichas
+		/* if (jugador->cantidadFichasBarco() == 0) {
 				throw "El jugador no tiene barcos";
-		}
+		} */
 		std::cout << "Ubicar barco : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1001,9 +1002,10 @@ void BatallaDigital::ubicarAvion(unsigned int x, unsigned int y, unsigned int z,
 
 void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
 		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadFichasAvion() == 0) {
+		//Esta validacion hay que cambiarla por otra que cuente las cartas y no las fichas
+		/* if (jugador->cantidadFichasAvion() == 0) {
 				throw "El jugador no tiene aviones";
-		}
+		} */
 		std::cout << "Ubicar avion : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1058,9 +1060,10 @@ void BatallaDigital::ubicarSubmarino(unsigned int x, unsigned int y, unsigned in
 
 void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
 		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadFichasSubmarino() == 0) {
+		//Esta validacion hay que cambiarla por otra que cuente las cartas y no las fichas
+	/* 	if (jugador->cantidadFichasSubmarino() == 0) {
 				throw "El jugador no tiene submarinos";
-		}
+		} */
 		std::cout << "Ubicar submarino : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
