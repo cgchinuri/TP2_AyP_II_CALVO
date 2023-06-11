@@ -17,24 +17,6 @@ using namespace std;
 
 int main() 
 {
-	/*
-	std::cout << "Bienvenido al juego Batalla Digital V2.0!" << std::endl;
-
-	std::cin.clear();
-	std::cout << "Antes de comenzar a jugar, necesitamos que se ingrese la cantidad de jugadores que jugarán: ";
-
-	int num = 0 ;
-
-	std::cin >> num ;
-
-	std::cout << "El numero ingresado es: " << num ;
-
-
-
-	return 0 ;
-	 */
-
-
 	// Creo la clase del juego batalla digital
 	BatallaDigital * batallaDigital = new BatallaDigital();
 
@@ -48,20 +30,26 @@ int main()
 	// Obtengo el primer jugador de la lista
 	Jugador *jugadorTurnoActual = batallaDigital->obtenerPrimerJugador();
 
+	// Variables para gestionar los turnos de los jugadores
 	int idJugadorTurno = jugadorTurnoActual->getIdentificador();
 	int idJugadorTurnoAnterior = 0;
 
+	// Ciclo del juego
+	// Se jugará hasta que haya un ganador
 	while(!batallaDigital->hayGanador())
 	{	
-
 		//batallaDigital->mostrarTablero(jugadorTurnoActual);
+
+		// Turno del jugador actual
 		batallaDigital->avanzarTurno(jugadorTurnoActual);
 
-		std::cout << "Avanzo turno " << std::endl;
-
+		// Almaceno el ID del jugador actual como anterior
 		idJugadorTurnoAnterior = idJugadorTurno;
+
+		// Guardo en el puntero a jugador el jugador que va a jugar el próximo turno
 		jugadorTurnoActual = batallaDigital->obtenerSiguienteJugador(idJugadorTurnoAnterior);
 
+		// Guardo el ID en la variable
 		idJugadorTurno = jugadorTurnoActual->getIdentificador();
 	}
 
