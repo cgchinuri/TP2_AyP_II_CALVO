@@ -1027,3 +1027,71 @@ void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
 			std::cout<<"No se pudo ubicar el avion en el casillero "<<objetivo->toString()<<std::endl;
 		}
 }
+
+void BatallaDigital::ubicarSubmarino(unsigned int x, unsigned int y, unsigned int z, Jugador *jugador) {
+	
+	Casillero * objetivoCasillero= this->tableroJuego->obtenerCasillero(x,y,z);
+	
+	if(!objetivoCasillero->estaActivo()){
+				throw "El casillero esta inactivo";
+	}
+
+	if(objetivoCasillero->getTipoCasillero()!=agua)	{
+		 throw "Solo se puede ubicar un submarino en un casillero de tipo agua";
+	}
+
+	//El casillero puede estar ocupado por otra ficha, se desactiva la ficha (se la da de baja), se vacia e inactiva el casillero
+	if(objetivoCasillero->estaOcupado()){
+		Ficha * fichaOcupante=objetivoCasillero->getFichaCasillero();
+		fichaOcupante->desactivarFicha();
+		objetivoCasillero->vaciarCasillero();
+		objetivoCasillero->desactivar();
+	}	else {
+	//Si el casillero estaba desocupado, se ubica el submarino en el tablero
+		Ficha * submarino=new Ficha(FICHA_SUBMARINO,x,y,z);
+		objetivoCasillero->setFichaCasillero(submarino);
+		submarino->setCasilleroFicha(objetivoCasillero);
+		jugador->agregarFicha(submarino);
+	}
+	
+}
+
+void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
+		Jugador *jugador = obtenerJugadorNumero(idJugador);
+		if (jugador->cantidadFichasSubmarino() == 0) {
+				throw "El jugador no tiene submarinos";
+		}
+		std::cout << "Ubicar submarino : " << std::endl;
+		Coordenada<int> *objetivo;
+		validarCoordenada(objetivo);
+
+		std::cout<<"Casillero a ubicar el submarino "<<objetivo->toString()<<std::endl;
+
+		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de AGUA
+		try{
+			ubicarSubmarino(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+			}
+		catch(...){
+		}
+		// Si pudo ubicar correctamente el submarino
+		if(this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->estaOcupado()){
+			std::cout<<"Submarino ubicado en el casillero "<<objetivo->toString()<<std::endl;
+			Coordenada<int> * destinoTorpedo;
+			std::cout<<"Destino del torpedo:"<<std::endl;
+			validarCoordenada(destinoTorpedo);
+			std::cout<<"Casillero a atacar con torpedo "<<destinoTorpedo->toString()<<std::endl;
+			if(this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_SUBMARINO){
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->desactivarFicha();
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->vaciarCasillero();
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->desactivar();
+				std::cout<<"Submarino eliminado"<<std::endl;
+			}
+			else if(this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_BARCO){
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->desactivarFicha();
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->vaciarCasillero();
+				this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->desactivar();
+				std::cout<<"Barco eliminado"<<std::endl;
+			} else	{
+				std::cout<<"No habia objetivos a eliminar en la coordenada con el torpedo "<<std::endl;
+			}
+}

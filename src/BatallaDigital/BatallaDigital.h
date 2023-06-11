@@ -245,10 +245,20 @@ class BatallaDigital
         void ubicarAvion(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 
         //Pre: recibe como parametro el id del jugador que va a jugar la carta
-        //Pos: juega la carta barco, puede disparar un misil o un torpedo
+        //Pos: juega la carta avion, puede disparar un misil o un torpedo
         //     misil puede eliminar un aviones, barcos o soldados esten atrincherados o no
         //     torpedo puede eliminar solo submarinos
         void jugarCartaAvion(unsigned int idJugador);
+
+        //Recibe un puntero al jugador que ubica el submarino, y una posicion en coordenadas x,y,z
+        //Si la posicion es valida entonces coloca el submarino. Una posicion es valida si el casillero esta activo
+        //y el terreno es agua
+        void ubicarSubmarino(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
+
+        //Pre: recibe como parametro el id del jugador que va a jugar la carta
+        //Pos: juega la carta submarino, puede disparar un torpedo
+        //     torpedo puede eliminar solo submarinos o barcos
+        void jugarCartaSubmarino(unsigned int idJugador);
 };
 
 
