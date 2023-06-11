@@ -42,9 +42,10 @@ public:
     
     int cantidadFichas(void);
     int cantidadFichasSoldado();
-    int cantidadFichasBarco();
-    int cantidadFichasAvion();
-    int cantidadFichasSubmarino();
+    int cantidadCartasBarco();
+    int cantidadCartasAvion();
+    int cantidadCartasSubmarino();
+    int cantidadCartasRefuerzos();
 
     // Pre:
     // Pos: Muestra las fichas del jugador por la consola
