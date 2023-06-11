@@ -20,6 +20,7 @@ private:
     std::string *nombre;
     int idJugador;
     Lista <Ficha *> * Fichas;
+    Lista<Casillero *> * enemigosDetectados;
     Mazo <CartaBatallaDigital*> * Cartas;
 
 public:
@@ -48,6 +49,7 @@ public:
     void agregarCarta(CartaBatallaDigital * carta);
     CartaBatallaDigital * obtenerCarta(int pos);
     void mostrarCartas();
+    void setEnemigosDetectados(Lista<Casillero *> * enemigos);
 
 };
 

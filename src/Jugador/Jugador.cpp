@@ -7,6 +7,7 @@ Jugador::Jugador(int id,const std::string s)
     this->nombre=new std::string(s);
     this->Fichas= new Lista <Ficha *>();
     this->Cartas=new Mazo<CartaBatallaDigital*>();
+    this->enemigosDetectados=new Lista<Casillero*>();
 }  
 
 
@@ -164,4 +165,8 @@ int Jugador::cantidadFichasAvion() {
             }
     }
     return cantidadAviones;
+}
+
+void Jugador::setEnemigosDetectados(Lista<Casillero *> * enemigos) {
+    this->enemigosDetectados=enemigos;
 }

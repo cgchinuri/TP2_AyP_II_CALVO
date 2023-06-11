@@ -970,3 +970,60 @@ void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
 		}
 
 }
+
+void BatallaDigital::ubicarAvion(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
+
+	Casillero * objetivoCasillero= this->tableroJuego->obtenerCasillero(x,y,z);
+	
+	if(!objetivoCasillero->estaActivo()){
+				throw "El casillero esta inactivo";
+	}
+
+	if(objetivoCasillero->getTipoCasillero()!=aire)	{
+		 throw "Solo se puede ubicar un avion en un casillero de tipo aire";
+	}
+
+	//El casillero puede estar ocupado por otra ficha, se desactiva la ficha (se la da de baja), se vacia e inactiva el casillero
+	if(objetivoCasillero->estaOcupado()){
+		Ficha * fichaOcupante=objetivoCasillero->getFichaCasillero();
+		fichaOcupante->desactivarFicha();
+		objetivoCasillero->vaciarCasillero();
+		objetivoCasillero->desactivar();
+	}	else {
+	//Si el casillero estaba desocupado, se ubica el avion en el tablero
+		Ficha * avion=new Ficha(FICHA_AVION,x,y,z);
+		objetivoCasillero->setFichaCasillero(avion);
+		avion->setCasilleroFicha(objetivoCasillero);
+		jugador->agregarFicha(avion);
+	}
+	
+}
+
+void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
+		Jugador *jugador = obtenerJugadorNumero(idJugador);
+		if (jugador->cantidadFichasAvion() == 0) {
+				throw "El jugador no tiene aviones";
+		}
+		std::cout << "Ubicar avion : " << std::endl;
+		Coordenada<int> *objetivo;
+		validarCoordenada(objetivo);
+
+		std::cout<<"Casillero a ubicar el avion "<<objetivo->toString()<<std::endl;
+
+		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de AIRE
+		try{
+			ubicarAvion(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+			}
+		catch(...){
+		}
+		// Si pudo ubicar correctamente el avion
+		if(this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->estaOcupado()){
+			std::cout<<"Avion ubicado en el casillero "<<objetivo->toString()<<std::endl;
+			std::cout<<"Escaneando terreno..."<<std::endl;
+			jugador->setEnemigosDetectados(this->EscanearTerreno(jugador,this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->getFichaCasillero()));
+			std::cout<<"...terreno escaneado"<<std::endl;
+		}
+		else	{
+			std::cout<<"No se pudo ubicar el avion en el casillero "<<objetivo->toString()<<std::endl;
+		}
+}
