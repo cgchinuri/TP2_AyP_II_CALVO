@@ -9,7 +9,8 @@ enum t_ficha    {
     FICHA_SOLDADO,
     FICHA_AVION,
     FICHA_MINA,
-    FICHA_SUBMARINO
+    FICHA_SUBMARINO,
+    FICHA_TRINCHERA
 };
 
 class Ficha {
