@@ -138,3 +138,16 @@ void Jugador::retirarFichas(void)   {
 
 }
 
+int Jugador::cantidadFichasBarco() {
+    this->Fichas->reiniciarCursor();
+    int cantidadBarcos=0;
+    while(Fichas->avanzarCursor())
+    {
+        Ficha* fichaCursor=Fichas->getCursor();
+            if (fichaCursor->obtenerTipo()==FICHA_BARCO)
+            {
+                cantidadBarcos++;
+            }
+    }
+    return cantidadBarcos;
+}
