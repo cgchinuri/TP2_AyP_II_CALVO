@@ -66,11 +66,9 @@ unsigned int Jugador::mostrarFichas()   {
 		// Imprimo tipo de ficha
 		std::cout << Fichas->getCursor()->toStringTipo()  ;
 		// Imprimo posición de la ficha
-		std::cout << " en "<<Fichas->getCursor()->obtenerCoordenada()->toString() ;
+		std::cout << " en "<< Fichas->getCursor()->getCasilleroFicha()->getCoordenada()->toString()  ;
 		// Salto de linea
 		std::cout << std::endl;
-
-
 	}
 
 	return indiceFicha;
