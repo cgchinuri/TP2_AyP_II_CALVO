@@ -268,6 +268,12 @@ class BatallaDigital
         //Pre: recibe como parametro el id del jugador que va a jugar la carta
         //Pos: juega la carta refuerzo, agrega un refuerzo al jugador
         void jugarCartaRefuerzoSoldado(unsigned int idJugador);
+
+        //Pre: recibe como parametro el id del jugador que va a jugar la carta
+        //Pos: juega la carta trinchera, atrinchera un soldado
+        void jugarCartaTrinchera(unsigned int idJugador);
+
+        void ubicarTrinchera(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 };
 
 

@@ -51,6 +51,10 @@ public:
     CartaBatallaDigital * obtenerCarta(int pos);
     void mostrarCartas();
     void setEnemigosDetectados(Lista<Casillero *> * enemigos);
+    
+    //pre:
+    //pos: recorre la lista de fichas y devuelve true si hay una ficha en la coordenada con el tipo indicado en el parametro.
+    bool hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, unsigned int z);
 
 };
 

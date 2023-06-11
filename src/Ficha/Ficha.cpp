@@ -71,3 +71,8 @@ t_ficha Ficha::getTipoFicha()
 {
 	return this->tipo;
 }
+
+void Ficha::setTipoFicha(t_ficha tipo)
+{
+    this->tipo = tipo;
+}

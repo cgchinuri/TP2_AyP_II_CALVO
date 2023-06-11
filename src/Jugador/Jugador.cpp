@@ -184,3 +184,16 @@ int Jugador::cantidadFichasSubmarino() {
     }
     return cantidadSubmarinos;
 }
+
+bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, unsigned int z) {
+    this->Fichas->reiniciarCursor();
+    while(Fichas->avanzarCursor())
+    {
+        Ficha* fichaCursor=Fichas->getCursor();
+            if (fichaCursor->obtenerTipo()==tipo && fichaCursor->obtenerCoordenada()->iguales(Coordenada<int>(x,y,z)))
+            {
+                return true;
+            }
+    }
+    return false;
+}

@@ -1157,3 +1157,22 @@ void BatallaDigital::ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsig
 			std::cout<<"No se pudo ubicar el soldado en el casillero "<<objetivo->toString()<<std::endl;
 		}
 	}
+
+void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
+		Jugador *jugador = obtenerJugadorNumero(idJugador);
+		if (jugador->cantidadFichasSoldado() == 0) {
+				throw "El jugador no tiene soldados a atrincherar";
+		}
+		std::cout << "Ubicar trinchera : " << std::endl;
+		Coordenada<int> *objetivo;
+		validarCoordenada(objetivo);
+		//Verifica si el jugador tiene un soldado que le pertenezca en la coordenada ingresada
+		if(jugador->hayTipoEnCoordenada(FICHA_SOLDADO,objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())){
+			this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->getFichaCasillero()->setTipoFicha(FICHA_TRINCHERA);
+			std::cout<<"Soldado atrincherado. "<<objetivo->toString()<<std::endl;
+		}
+		else	{
+			std::cout<<"No hay soldado en la coordenada ingresada "<<objetivo->toString()<<std::endl;
+		}
+		
+}

@@ -67,6 +67,10 @@ public:
     // Pos: retorna el tipo de ficha
     t_ficha getTipoFicha();
 
+    // Pre: el tipo de ficha debe ser válido
+    // Pos: modifica el tipo de ficha por un nuevo tipo
+    void setTipoFicha(t_ficha tipo);
+
 };
 
 
