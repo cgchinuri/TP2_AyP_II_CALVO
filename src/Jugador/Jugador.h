@@ -45,8 +45,11 @@ public:
     int cantidadFichasBarco();
     int cantidadFichasAvion();
     int cantidadFichasSubmarino();
-    //Muestra las fichas del jugador por la consola
-    void mostrarFichas(void);
+
+    // Pre:
+    // Pos: Muestra las fichas del jugador por la consola
+    // 		Retorna la cantidad de fichas que mostró
+    unsigned int mostrarFichas(void);
     void agregarCarta(CartaBatallaDigital * carta);
     CartaBatallaDigital * obtenerCarta(int pos);
     void mostrarCartas();

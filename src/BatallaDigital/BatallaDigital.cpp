@@ -772,14 +772,25 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		if(mover)
 		{	
+
 			//MUESTRO SUS FICHAS
-			jugador->mostrarFichas();
+			// Guardo en la variable indiceMax la cantidad de fichas mostradas
+			unsigned int indiceMax = jugador->mostrarFichas();
 
 			//LE PREGUNTO CUAL QUIERE MOVER
-			std::cout<<"¿Qué numero de ficha queres mover?"<<std::endl;
+			int seleccion = 0;
 
-			//Capturar opcion seleccionada
-			std::cin>>seleccion;
+			while (seleccion < 1 || seleccion > indiceMax)
+			{
+				seleccion = ingresoNumeroEnteroPositivoConsola("¿Qué numero de ficha queres mover?");
+
+				if(seleccion < 1 || seleccion > indiceMax)
+				{
+					std::cout << "Error. Por favor ingrese una opción válida." << std::endl;
+				}
+
+			}
+
 			Ficha * ficha=jugador->obtenerFicha(seleccion);
 
 			bool movimientoExitoso=false;

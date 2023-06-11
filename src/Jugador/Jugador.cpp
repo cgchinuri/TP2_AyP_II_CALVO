@@ -48,13 +48,34 @@ Ficha * Jugador::obtenerFicha(unsigned int indice) {
 int Jugador::cantidadFichas(void)   {
     return this->Fichas->contarElementos();
 }
-void Jugador::mostrarFichas()   {
-    std::cout<<"Fichas Disponibles:"<<std::endl;
+unsigned int Jugador::mostrarFichas()   {
 
-    for(size_t i=1; Fichas->avanzarCursor();i++)    {
-        std::cout<<'['<<i<<']'<<Fichas->getCursor()->toStringTipo()<<Fichas->getCursor()->obtenerCoordenada()->toString()<<std::endl;
-    }
+	std::cout<<"Fichas Disponibles:"<<std::endl;
+
+	size_t indiceFicha = 0 ;
+
+	Fichas->reiniciarCursor();
+
+	while(Fichas->avanzarCursor())
+	{
+		// Incremento el indicador de posición
+		indiceFicha++;
+
+		// Imprimo indice de ficha
+		std::cout<<'['<<indiceFicha<<']'<<" - ";
+		// Imprimo tipo de ficha
+		std::cout << Fichas->getCursor()->toStringTipo()  ;
+		// Imprimo posición de la ficha
+		std::cout << " en "<<Fichas->getCursor()->obtenerCoordenada()->toString() ;
+		// Salto de linea
+		std::cout << std::endl;
+
+
+	}
+
+	return indiceFicha;
 }
+
 void Jugador::eliminarFicha(unsigned int pos)   {
     this->Fichas->remover(pos);
 }
