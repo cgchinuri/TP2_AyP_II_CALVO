@@ -151,3 +151,17 @@ int Jugador::cantidadFichasBarco() {
     }
     return cantidadBarcos;
 }
+
+int Jugador::cantidadFichasAvion() {
+    this->Fichas->reiniciarCursor();
+    int cantidadAviones=0;
+    while(Fichas->avanzarCursor())
+    {
+        Ficha* fichaCursor=Fichas->getCursor();
+            if (fichaCursor->obtenerTipo()==FICHA_AVION)
+            {
+                cantidadAviones++;
+            }
+    }
+    return cantidadAviones;
+}
