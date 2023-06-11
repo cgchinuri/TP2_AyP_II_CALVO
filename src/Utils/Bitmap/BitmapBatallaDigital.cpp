@@ -9,8 +9,8 @@
 
 #define RESOLUCION 50
 
-BitmapBatallaDigital::BitmapBatallaDigital( unsigned int anchoTablero, unsigned int altoTablero) {
-    //SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
+BitmapBatallaDigital::BitmapBatallaDigital(unsigned int anchoTablero, unsigned int altoTablero) {
+    SetEasyBMPwarningsOff(); //APAGA ADVERTENCIAS RELACIONADAS A LAS IMAGENES BMP
 
     this->resolucionImagenes = RESOLUCION;
     RGBApixel transparente;

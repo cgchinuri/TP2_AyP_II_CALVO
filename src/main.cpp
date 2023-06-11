@@ -21,7 +21,7 @@ int main()
 	BatallaDigital * batallaDigital = new BatallaDigital();
 
 
-	//batallaDigital->mostrarTablero(NULL);
+	batallaDigital->mostrarTablero(NULL);
 
 	// Una vez que genero el tablero se colocan las fichas al comienzo del juego
 	batallaDigital->colocarFichasIniciales();;
@@ -38,7 +38,7 @@ int main()
 	// Se jugará hasta que haya un ganador
 	while(!batallaDigital->hayGanador())
 	{	
-		//batallaDigital->mostrarTablero(jugadorTurnoActual);
+		batallaDigital->mostrarTablero(jugadorTurnoActual);
 
 		// Turno del jugador actual
 		batallaDigital->avanzarTurno(jugadorTurnoActual);
