@@ -44,6 +44,7 @@ public:
     int cantidadFichasSoldado();
     int cantidadFichasBarco();
     int cantidadFichasAvion();
+    int cantidadFichasSubmarino();
     //Muestra las fichas del jugador por la consola
     void mostrarFichas(void);
     void agregarCarta(CartaBatallaDigital * carta);

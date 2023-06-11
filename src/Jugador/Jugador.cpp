@@ -170,3 +170,17 @@ int Jugador::cantidadFichasAvion() {
 void Jugador::setEnemigosDetectados(Lista<Casillero *> * enemigos) {
     this->enemigosDetectados=enemigos;
 }
+
+int Jugador::cantidadFichasSubmarino() {
+    this->Fichas->reiniciarCursor();
+    int cantidadSubmarinos=0;
+    while(Fichas->avanzarCursor())
+    {
+        Ficha* fichaCursor=Fichas->getCursor();
+            if (fichaCursor->obtenerTipo()==FICHA_SUBMARINO)
+            {
+                cantidadSubmarinos++;
+            }
+    }
+    return cantidadSubmarinos;
+}
