@@ -259,6 +259,15 @@ class BatallaDigital
         //Pos: juega la carta submarino, puede disparar un torpedo
         //     torpedo puede eliminar solo submarinos o barcos
         void jugarCartaSubmarino(unsigned int idJugador);
+
+        //Recibe un puntero al jugador que ubica el refuerzo, y una posicion en coordenadas x,y,z
+        //Si la posicion es valida entonces coloca el refuerzo. Una posicion es valida si el casillero esta activo
+        //y el terreno es tierra
+        void ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
+
+        //Pre: recibe como parametro el id del jugador que va a jugar la carta
+        //Pos: juega la carta refuerzo, agrega un refuerzo al jugador
+        void jugarCartaRefuerzoSoldado(unsigned int idJugador);
 };
 
 

@@ -1097,4 +1097,63 @@ void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
 			} else	{
 				std::cout<<"No habia objetivos a eliminar en la coordenada con el torpedo "<<std::endl;
 			}
+	}
+
+
+	
 }
+
+
+void BatallaDigital::ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
+	
+	Casillero * objetivoCasillero= this->tableroJuego->obtenerCasillero(x,y,z);
+	
+	if(!objetivoCasillero->estaActivo()){
+				throw "El casillero esta inactivo";
+	}
+
+	if(objetivoCasillero->getTipoCasillero()!=tierra)	{
+		 throw "Solo se puede ubicar un soldado en un casillero de tipo tierra";
+	}
+
+	//El casillero puede estar ocupado por otra ficha, se desactiva la ficha (se la da de baja), se vacia e inactiva el casillero
+	if(objetivoCasillero->estaOcupado()){
+		Ficha * fichaOcupante=objetivoCasillero->getFichaCasillero();
+		fichaOcupante->desactivarFicha();
+		objetivoCasillero->vaciarCasillero();
+		objetivoCasillero->desactivar();
+	}	else {
+	//Si el casillero estaba desocupado, se ubica el soldado en el tablero
+		Ficha * soldado=new Ficha(FICHA_SOLDADO,x,y,z);
+		objetivoCasillero->setFichaCasillero(soldado);
+		soldado->setCasilleroFicha(objetivoCasillero);
+		jugador->agregarFicha(soldado);
+	}
+}
+
+	void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
+		Jugador *jugador = obtenerJugadorNumero(idJugador);
+		//Esta validacion hay que cambiarla por otra que cuente las cartas y no las fichas
+		/* if (jugador->cantidadFichasSoldado() == 0) {
+				throw "El jugador no tiene soldados";
+		} */
+		std::cout << "Ubicar soldado : " << std::endl;
+		Coordenada<int> *objetivo;
+		validarCoordenada(objetivo);
+
+		std::cout<<"Casillero a ubicar el soldado "<<objetivo->toString()<<std::endl;
+
+		//Esta funcion puede fallar: Si el casillero esta inactivo o si el tipo de casillero es distinto de TIERRA
+		try{
+			ubicarRefuerzoSoldado(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
+			}
+		catch(...){
+		}
+		// Si pudo ubicar correctamente el soldado
+		if(this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->estaOcupado()){
+			std::cout<<"Soldado ubicado en el casillero "<<objetivo->toString()<<std::endl;
+		}
+		else	{
+			std::cout<<"No se pudo ubicar el soldado en el casillero "<<objetivo->toString()<<std::endl;
+		}
+	}
