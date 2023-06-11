@@ -227,6 +227,17 @@ class BatallaDigital
         // Pre: recibe como argumento un puntero a un jugador
         // Pos: imprime por consola un mensaje indicando que es su turno
         void imprimirTurnoDe(Jugador * jugador);
+
+        //Recibe un puntero al jugador que ubica el barco, y una posicion en coordenadas x,y,z
+        //Si la posicion es valida entonces coloca el barco. Una posicion es valida si el casillero esta activo
+        //y el terreno es agua
+        void ubicarBarco(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
+
+        //Pre: recibe como parametro el id del jugador que va a jugar la carta
+        //Pos: juega la carta barco, puede disparar un misil o un torpedo
+        //     misil puede eliminar un aviones, barcos o soldados esten atrincherados o no
+        //     torpedo puede eliminar solo submarinos
+        void jugarCartaBarco(unsigned int idJugador);
 };
 
 
