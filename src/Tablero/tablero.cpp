@@ -377,7 +377,7 @@ void Tablero::generarAguaEnTablero()
     
     // Generar una semilla aleatoria para generar números aleatorios
     srand(time(NULL));
-    
+
     for (int z = nivelDelMar; z > 0; z--)
     {
         Lista<Lista<Casillero*>*>* pisos = this->tableroJuego->get(z);

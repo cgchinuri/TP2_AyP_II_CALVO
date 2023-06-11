@@ -53,6 +53,35 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 	this->bitmap = new BitmapBatallaDigital(dimX, dimY);
 }
 
+int BatallaDigital::ingresoNumeroEnteroPositivoConsola(std::string oracionPedido)
+{
+	int num = 0;
+
+	// Limpio buffer
+	std::cin.clear();
+
+	// Imprimo frase para pedir el numero
+	std::cout << oracionPedido ;
+
+	// Pido numero
+	std::cin >> num;
+
+	// Valido error
+	if(std::cin.fail())
+	{
+		std::cin.clear();
+
+		std::cin.ignore(100, '\n');
+
+		num = -1;
+	}
+
+	// Retorno valor leido
+	return num;
+
+
+}
+
 
 void BatallaDigital::ingresarNumeroJugadores()
 {
@@ -60,15 +89,16 @@ void BatallaDigital::ingresarNumeroJugadores()
 
 	while(num < CANT_MIN_JUGADORES || num > CANT_MAX_JUGADORES)
 	{
-		std::cout  << STRING_INGRESE_CANT_JUGADORES ;
-		std::cin >> num ;
-		std::cout  << std::endl;
+		num = ingresoNumeroEnteroPositivoConsola(STRING_INGRESE_CANT_JUGADORES);
 
 		if(num < CANT_MIN_JUGADORES || num > CANT_MAX_JUGADORES)
 		{
 			std::cout  << STRING_ERROR_CANT << CANT_MIN_JUGADORES <<" y " << CANT_MAX_JUGADORES << std::endl;
+
+			num = 0;
 		}
 	}
+
 
 	this->cantidadJugadores = (unsigned int)num;
 
@@ -81,9 +111,7 @@ void BatallaDigital::ingresarDimensionesTablero()
 
 	while(num < DIM_MIN_X_Y)
 	{
-		std::cout  << STRING_DIM_X ;
-		std::cin >> num ;
-		std::cout  << std::endl;
+		num = ingresoNumeroEnteroPositivoConsola(STRING_DIM_X);
 
 		if(num < DIM_MIN_X_Y)
 		{
@@ -96,9 +124,7 @@ void BatallaDigital::ingresarDimensionesTablero()
 
 	while(num < DIM_MIN_X_Y)
 	{
-		std::cout  << STRING_DIM_Y ;
-		std::cin >> num ;
-		std::cout  << std::endl;
+		num = ingresoNumeroEnteroPositivoConsola(STRING_DIM_Y);
 
 		if(num < DIM_MIN_X_Y)
 		{
@@ -111,9 +137,7 @@ void BatallaDigital::ingresarDimensionesTablero()
 
 	while(num < DIM_MIN_Z)
 	{
-		std::cout  << STRING_DIM_Z ;
-		std::cin >> num ;
-		std::cout  << std::endl;
+		num = ingresoNumeroEnteroPositivoConsola(STRING_DIM_Z);
 
 		if(num < DIM_MIN_Z)
 		{
@@ -160,6 +184,44 @@ void BatallaDigital::crearListaJugadores()
 	std::cout << "Se generó una lista de "<< this->listaDeJugadores->contarElementos()<< " jugadores" << std::endl;
 }
 
+Jugador * BatallaDigital::obtenerPrimerJugador()
+{
+	Jugador * jugador = NULL ;
+
+	this->listaDeJugadores->reiniciarCursor();
+
+	this->listaDeJugadores->avanzarCursor();
+
+	jugador = this->listaDeJugadores->getCursor();
+
+	return jugador;
+}
+
+Jugador * BatallaDigital::obtenerSiguienteJugador(int identificadorJugadorAnterior)
+{
+	// Reinicializo la lista
+	this->listaDeJugadores->reiniciarCursor();
+
+
+	// Avanzo la lista
+	while(this->listaDeJugadores->avanzarCursor())
+	{
+		// Comparo el identificador del jugador con er anterior
+		if(this->listaDeJugadores->getCursor()->getIdentificador() > identificadorJugadorAnterior)
+		{
+			// Si el identificador del siguiente jugador es mayor al anterior
+			// lo retorno
+			return this->listaDeJugadores->getCursor();
+		}
+	}
+
+	// Si se acabó la lista y no encontré un ID mayor al anterior, quiere decir que estaba al final de la lista
+	// retorno el primer jugador
+	return obtenerPrimerJugador();
+}
+
+
+
 void BatallaDigital::imprimirMensajeBienvenida()
 {
 	std::cout <<  STRING_BIENVENIDA << std::endl;
@@ -200,7 +262,7 @@ Ficha * BatallaDigital::crearFicha(t_ficha tipoFicha, int x, int y, int z, int j
 	while(listaDeJugadores->avanzarCursor())
 	{
 		Jugador* cursorJugador = listaDeJugadores->getCursor();
-		if(cursorJugador->identificador()==jugador)
+		if(cursorJugador->getIdentificador()==jugador)
 		{
 			cursorJugador->agregarFicha(nuevaFicha);
 		}
@@ -237,42 +299,43 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	if(!casilleroDestino)
 	{
 		// Si el casillero destino es null entonces me fui del mapa
-		std::cout << "Error fuera de mapa" << std::endl;
+		std::cout << "El destino se encuentra fuera del mapa. No se puede realizar ese movimiento." << std::endl;
 		return false;
 	}
 	else if (casilleroInicio->getTipoCasillero() != casilleroDestino->getTipoCasillero())
 	{
 		// Si hay cambio de terreno no puedo mover
-		std::cout << "Error distinto terreno" << std::endl;
+		std::cout << "Cambio de terreno en la trayectoria. No se puede realizar ese movimiento." << std::endl;
 		return false;
 	}
 	else if(!casilleroDestino->estaActivo())
 	{
 		// Si el casillero esta inactivo no puedo hacer el movimiento
-		std::cout << "Casillero inactivo en la trayectoria" << std::endl;
+		std::cout << "Casillero inactivo en la trayectoria. No se puede realizar ese movimiento." << std::endl;
 		return false;
 	}
 	else if(casilleroDestino->estaOcupado())
 	{
-		// Si el casillero esta ocupado hay que tomar alguna accion pero no se puede completar el movimiento
-		std::cout << "Casillero ocupado en la trayectoria" << std::endl;
+		// Si habia ocupación genero una explosión
+		Ficha * fichaOcupante = NULL;
 
-		//ACA HABRIA QUE LLAMAR A UNA FUNCION QUE HAGA UN MANEJO DE EVENTOS SEGUN QUÉ HABIA EN EL CASILLERO DESTINO
-		//NO ESTARIA BIEN QUE moverFicha SE ENCARGUE DE MOVER Y GESTIONAR LOS EVENTOS QUE SE PRODUZCAN
-
-		if(casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_MINA || casilleroDestino->getFichaCasillero()->obtenerTipo()==FICHA_SOLDADO)	
+		if(fichaOcupante->obtenerTipo()==FICHA_MINA)
 		{
-			fichaMover->desactivarFicha();//Ficha a mover se elimina (en realidad se deshabilita)
-			casilleroDestino->getFichaCasillero()->desactivarFicha();//Ficha que ocupaba el casillero se elimina (en realidad se deshabilita)
-			casilleroDestino->vaciarCasillero();//Se libera ese casillero 
-			casilleroDestino->desactivar();
+			explosionEnTablero ( casilleroDestino , TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO , RADIO_EXPLOSION_POR_CHOQUE_MINA_SOLDADO );
 		}		
-		return true;
+		else
+		{
+			explosionEnTablero ( casilleroDestino , TURNOS_INACTIVIDAD_POR_EXPLOSION_SOLDADOS , RADIO_EXPLOSION_POR_CHOQUE_SOLDADOS );
+		}
 
+		fichaMover->desactivarFicha();
 	}
 	else
 	{
 		// Si no se cumplen las condiciones anteriores entonces puedo mover la ficha
+		std::cout << "Muevo la ficha de " << fichaMover->getCasilleroFicha()->getCoordenada()->toString() ;
+		std::cout << " hasta " << casilleroDestino->getCoordenada()->toString();
+
 
 		// Desvinculo ficha y casillero anterior
 		fichaMover->desvincularFichaDeCasillero();
@@ -280,8 +343,11 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 		// Vinculo ficha y casillero destino
 		vincularFichaYCasillero(casilleroDestino, fichaMover);
-		return true;
+
+		std::cout << "Y termina en " << fichaMover->getCasilleroFicha()->getCoordenada()->toString() ;
 	}
+
+	return true;
 }
 
 
@@ -329,9 +395,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 		// Ingreso de la coordenada X
 		while(!coordenadaOK)
 		{
-			std::cout << STRING_PEDIR_POS_X_SOLDADO ;
-			std::cin >> x ;
-
+			x = ingresoNumeroEnteroPositivoConsola(STRING_PEDIR_POS_X_SOLDADO);
 
 			if(x < 1 || x > this->tableroJuego->getDimX())
 			{
@@ -350,8 +414,7 @@ Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 		// Ingreso de la coordenada Y
 		while(!coordenadaOK)
 		{
-			std::cout << STRING_PEDIR_POS_Y_SOLDADO ;
-			std::cin >> y ;
+			y = ingresoNumeroEnteroPositivoConsola(STRING_PEDIR_POS_Y_SOLDADO);
 
 
 			if(y < 1 || y > this->tableroJuego->getDimY())
@@ -432,8 +495,6 @@ void BatallaDigital::colocarFichasIniciales()
 		}
 
 		// \n
-		std::cout << std::endl;
-
 	}
 }
 
@@ -587,14 +648,17 @@ tipoMovimiento_t BatallaDigital::obtenerMovimiento()
     std::cout << "7: Atras Izquierda" << std::endl;
     std::cout << "8: Atras Derecha" << std::endl;
 
-    while (true) {
-        std::cout << "¿Qué movimiento quiere realizar? ";
-        std::cin >> seleccion;
+    while (seleccion < 1 || seleccion > 8)
+    {
+    	seleccion = ingresoNumeroEnteroPositivoConsola("¿Qué tipo de movimiento quiere realizar? ");
 
-        if (seleccion >= 1 && seleccion <= 8) {
-            return static_cast<tipoMovimiento_t>(seleccion - 1);
+        if (seleccion < 1 || seleccion > 8)
+        {
+            std::cout << "Error. Ingrese un tipo de movimiento válido. " << std::endl;
         }
     }
+
+    return static_cast<tipoMovimiento_t>(seleccion - 1);
 }
 
 int BatallaDigital::obtenerCantidadCasilleros()
@@ -602,10 +666,11 @@ int BatallaDigital::obtenerCantidadCasilleros()
     int seleccion = 0;
 
     while (seleccion < 1 ) {
-    	std::cout << "La cantidad de casillero a desplazar: ";
-        std::cin >> seleccion;
 
-        if (seleccion < 1 ) {
+    	seleccion = ingresoNumeroEnteroPositivoConsola("La cantidad de casillero a desplazar: ");
+
+        if (seleccion < 1 )
+        {
             std::cout << "Error. Ingresar un número positivo. ";
         }
     }
@@ -685,6 +750,10 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			{
 				std::cout<< STRING_INGRESO_MINA_ERROR_AIRE << std::endl;
 			}
+			else if(!(casilleroMinar->estaActivo()))
+			{
+				std::cout<< STRING_INGRESO_MINA_ERROR_CAS_INACTIVO << std::endl;
+			}
 			else
 			{
 				esCoordenadaValida=true;
@@ -693,10 +762,8 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			delete objetivo;
 		}
 
-		std::cout<<"Casillero a minar ->";
-		casilleroMinar->imprimirPos();
+		std::cout<<"Casillero a minar -> " << casilleroMinar->getCoordenada()->toString() << std::endl;
 
-		
 		// Se mina el casillero
 		minarCasillero(casilleroMinar,jugador);
 
@@ -726,7 +793,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 				int cantidadCasilleros = obtenerCantidadCasilleros();
 
 				//INTENTO MOVERLA
-				if (moverFicha(ficha , movimiento , cantidadCasilleros)==true)
+				if (moverFicha(ficha , movimiento , cantidadCasilleros))
 				{
 					movimientoExitoso=true;
 				}
@@ -734,7 +801,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			}
 		}
 
-		mostrarTablero(0);
+		//mostrarTablero(0);
 
 
 		//Le pregunto si quiere jugar una carta
@@ -803,10 +870,13 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 
 bool BatallaDigital::_esPosicionValida(int x,int y, int z){
 	
-	if(((x>0&&x<this->tableroJuego->getDimX())&&(y>0&&y<this->tableroJuego->getDimY()))&&(z>0&&z<this->tableroJuego->getDimZ()))	{
+	if(((x>0&&x<this->tableroJuego->getDimX())&&(y>0&&y<this->tableroJuego->getDimY()))&&(z>0&&z<this->tableroJuego->getDimZ()))
+	{
 		return true;
-	}	else	{
-		false;
+	}
+	else
+	{
+		return false;
 	}
 }
 

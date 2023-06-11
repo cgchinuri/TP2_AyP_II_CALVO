@@ -26,7 +26,7 @@ private:
 public:
     Jugador(int id, const std::string s);
     std::string & getNombre(void);
-    int identificador(void);
+    int getIdentificador(void);
     
     //Recibe un puntero a una ficha y la agrega sus fichas
     void agregarFicha(Ficha * nuevaFicha);

@@ -17,25 +17,50 @@ using namespace std;
 
 int main() 
 {
-	cout << "Inicio" << endl;
+	/*
+	std::cout << "Bienvenido al juego Batalla Digital V2.0!" << std::endl;
+
+	std::cin.clear();
+	std::cout << "Antes de comenzar a jugar, necesitamos que se ingrese la cantidad de jugadores que jugarán: ";
+
+	int num = 0 ;
+
+	std::cin >> num ;
+
+	std::cout << "El numero ingresado es: " << num ;
+
+
+
+	return 0 ;
+	 */
 
 
 	// Creo la clase del juego batalla digital
 	BatallaDigital * batallaDigital = new BatallaDigital();
-	batallaDigital->mostrarTablero(NULL);
+	//batallaDigital->mostrarTablero(NULL);
 
 	// Una vez que genero el tablero se colocan las fichas al comienzo del juego
 	batallaDigital->colocarFichasIniciales();;
 
-	// Una vez colocadas las fichas de todos los jugadores procedemos al ciclo del juego
-	unsigned int turno = 1;
-	while(batallaDigital->hayGanador()==false)
+
+	// Obtengo el primer jugador de la lista
+	Jugador *jugadorTurnoActual = batallaDigital->obtenerPrimerJugador();
+
+	int idJugadorTurno = jugadorTurnoActual->getIdentificador();
+	int idJugadorTurnoAnterior = 0;
+
+	while(!batallaDigital->hayGanador())
 	{	
-		std::cout<<std::endl;
-		std::cout<<"Nuevo turno"<<std::endl;
-		Jugador *jugadorTurnoActual = batallaDigital->obtenerJugadorNumero(turno);
-		batallaDigital->mostrarTablero(jugadorTurnoActual);
+
+		//batallaDigital->mostrarTablero(jugadorTurnoActual);
 		batallaDigital->avanzarTurno(jugadorTurnoActual);
+
+		std::cout << "Avanzo turno " << std::endl;
+
+		idJugadorTurnoAnterior = idJugadorTurno;
+		jugadorTurnoActual = batallaDigital->obtenerSiguienteJugador(idJugadorTurnoAnterior);
+
+		idJugadorTurno = jugadorTurnoActual->getIdentificador();
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego

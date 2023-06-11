@@ -45,6 +45,8 @@
 #define STRING_INGRESO_MINA_ERROR_AGUA "El casillero que se intentó minar es del tipo agua. "
 #define STRING_INGRESO_MINA_ERROR_AIRE "El casillero que se intentó minar es del tipo aire. "
 
+#define STRING_INGRESO_MINA_ERROR_CAS_INACTIVO "El casillero que se intentó minar se encuentra inactivo."
+
 
 
 #define STRING_TURNO_DE_P1 " - - - - - - - - - - - Es el turno de: "
@@ -97,6 +99,11 @@ class BatallaDigital
         // Pos: genera lista con jugadores con la cantidad recibida y un tablero con las dimensiones especificadas
         BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ);
 
+        // Pre: recibe una  frase para imprimir por consola
+        // Pos: imprime la frase por consola y recibe una entrada por cin
+        //		devuelve -1 si es errónea o el numero entero positivo si está ok
+        int ingresoNumeroEnteroPositivoConsola(std::string oracionPedido);
+
         // Pre: -
         // Pos: imprime un mensaje de bienvenida
         void imprimirMensajeBienvenida();
@@ -105,6 +112,14 @@ class BatallaDigital
         //		minimo y maximo en macros
         // Pos: carga el atributo de la clase
         void ingresarNumeroJugadores();
+
+        // Pre: debe haber una lista de jugadores creada
+        // Pos: devuelve el primer elemento de la lista
+        Jugador * obtenerPrimerJugador();
+
+        // Pre: debe haber una lista de jugadores creada
+        // Pos: devuelve el elemento siguiente relativo al ID que se envió, o el primero si estaba en el último
+        Jugador * obtenerSiguienteJugador(int identificadorJugadorAnterior);
 
         // Pre: se deben ingresar por consola las dimensiones del tablero
         // 		minimo en macros

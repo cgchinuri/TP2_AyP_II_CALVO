@@ -15,7 +15,7 @@ std::string & Jugador::getNombre(void)  {
     return *(this->nombre);
 }
 
-int Jugador::identificador(void)    {
+int Jugador::getIdentificador(void)    {
     return this->idJugador;
 }
 
