@@ -19,24 +19,24 @@ BitmapBatallaDigital::BitmapBatallaDigital( unsigned int anchoTablero, unsigned 
 
     this->imagenTablero.SetSize(anchoTablero * resolucionImagenes, altoTablero * resolucionImagenes);
 
-    this->imagenPasto.ReadFromFile("Utils/Bitmap/texturasBMP/pasto.bmp");
-    this->imagenTierra.ReadFromFile("Utils/Bitmap/texturasBMP/tierra.bmp");
-    this->imagenAgua.ReadFromFile("Utils/Bitmap/texturasBMP/agua.bmp");
-    this->imagenAguaProfunda.ReadFromFile("Utils/Bitmap/texturasBMP/aguaProfunda.bmp");
-    this->imagenAire.ReadFromFile("Utils/Bitmap/texturasBMP/aire.bmp");
-    this->imagenSoldadoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/soldadoJugador.bmp");
-    this->imagenSoldadoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/soldadoEnemigo.bmp");
-    this->imagenQuimicos.ReadFromFile("Utils/Bitmap/texturasBMP/quimicos.bmp");
-    this->imagenMinaJugador.ReadFromFile("Utils/Bitmap/texturasBMP/minaJugador.bmp");
-    this->imagenMinaEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/minaEnemigo.bmp");
-    this->imagenAvionJugador.ReadFromFile("Utils/Bitmap/texturasBMP/avionJugador.bmp");
-    this->imagenAvionEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/avionEnemigo.bmp");
-    this->imagenBarcoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/barcoJugador.bmp");
-    this->imagenBarcoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/barcoEnemigo.bmp");
-    this->imagenSubmarinoJugador.ReadFromFile("Utils/Bitmap/texturasBMP/submarinoJugador.bmp");
-    this->imagenSubmarinoEnemigo.ReadFromFile("Utils/Bitmap/texturasBMP/submarinoEnemigo.bmp");
-    this->imagenNiebla.ReadFromFile("Utils/Bitmap/texturasBMP/niebla.bmp");
-    this->imagenError.ReadFromFile("Utils/Bitmap/texturasBMP/error.bmp");
+    this->imagenPasto.ReadFromFile("res/texturasBMP/pasto.bmp");
+    this->imagenTierra.ReadFromFile("res/texturasBMP/tierra.bmp");
+    this->imagenAgua.ReadFromFile("res/texturasBMP/agua.bmp");
+    this->imagenAguaProfunda.ReadFromFile("res/texturasBMP/aguaProfunda.bmp");
+    this->imagenAire.ReadFromFile("res/texturasBMP/aire.bmp");
+    this->imagenSoldadoJugador.ReadFromFile("res/texturasBMP/soldadoJugador.bmp");
+    this->imagenSoldadoEnemigo.ReadFromFile("res/texturasBMP/soldadoEnemigo.bmp");
+    this->imagenQuimicos.ReadFromFile("res/texturasBMP/quimicos.bmp");
+    this->imagenMinaJugador.ReadFromFile("res/texturasBMP/minaJugador.bmp");
+    this->imagenMinaEnemigo.ReadFromFile("res/texturasBMP/minaEnemigo.bmp");
+    this->imagenAvionJugador.ReadFromFile("res/texturasBMP/avionJugador.bmp");
+    this->imagenAvionEnemigo.ReadFromFile("res/texturasBMP/avionEnemigo.bmp");
+    this->imagenBarcoJugador.ReadFromFile("res/texturasBMP/barcoJugador.bmp");
+    this->imagenBarcoEnemigo.ReadFromFile("res/texturasBMP/barcoEnemigo.bmp");
+    this->imagenSubmarinoJugador.ReadFromFile("res/texturasBMP/submarinoJugador.bmp");
+    this->imagenSubmarinoEnemigo.ReadFromFile("res/texturasBMP/submarinoEnemigo.bmp");
+    this->imagenNiebla.ReadFromFile("res/texturasBMP/niebla.bmp");
+    this->imagenError.ReadFromFile("res/texturasBMP/error.bmp");
 }
 
 void BitmapBatallaDigital::dibujar(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero)
