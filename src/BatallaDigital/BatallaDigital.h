@@ -273,7 +273,6 @@ class BatallaDigital
         //Pos: juega la carta trinchera, atrinchera un soldado
         void jugarCartaTrinchera(unsigned int idJugador);
 
-        void ubicarTrinchera(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 };
 
 
