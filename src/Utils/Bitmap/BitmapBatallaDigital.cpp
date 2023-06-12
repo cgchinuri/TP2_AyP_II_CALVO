@@ -136,13 +136,12 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
     }
 }
 
-// Funcion auxiliar para convertir entero a string y eso a un const char * que pide la funcion de libreria
-const char *escribirRuta(unsigned int nivelZ)
+// Funcion auxiliar para convertir entero a string y escribir ruta
+std:: string escribirRuta(unsigned int nivelZ)
 {
     std::stringstream temp;
     temp<<nivelZ;
-    std::string ruta = "TableroNivel" + temp.str() + ".bmp";
-    return ruta.c_str();
+    return "Tablero Nivel " + temp.str() + ".bmp";
 }
 
 void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsigned int nivelZ) {
@@ -180,8 +179,8 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsig
 
     dibujarCoordenadas(colorLetra, altoTablero);
 
-    // ESTO ESCIBRE EL NOMBRE DE LA CAPA
-    this->imagenTablero.WriteToFile(escribirRuta(nivelZ));
+    // ESTO ESCIBRE EL NOMBRE DE LA CAPA. Hay que pasarlo a const char* con c_str
+    this->imagenTablero.WriteToFile(escribirRuta(nivelZ).c_str());
 }
 
 void BitmapBatallaDigital::dibujarTablero(Tablero *tablero, Jugador *jugador) {
