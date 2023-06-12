@@ -10,7 +10,7 @@ BatallaDigital::BatallaDigital()
 	this->listaDeJugadores = NULL;
 	
 	this->cartasDisponibles=new Mazo<CartaBatallaDigital *>();
-	this->cartasJugadas=NULL;
+	this->cartasJugadas=new Mazo<CartaBatallaDigital *>();
 
 	// Se imprime por consola el mensaje de bienvenida
 	imprimirMensajeBienvenida();
@@ -827,19 +827,29 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		//mostrarTablero(0);
 
+		if(this->cartasDisponibles->contarCartas()==0){
+			reiniciarMazo();
+		}
 
-		//Le pregunto si quiere jugar una carta
+		CartaBatallaDigital * cartaObtenida=this->cartasDisponibles->pop();
+		jugador->agregarCarta(cartaObtenida);
+		
 		jugarCarta = jugadorQuiereUsarCarta();
 		if(jugarCarta==true)
 		{
 
 			//POSIBLES EVENTOS SEGUN LA CARTA USADA
-
 			//ataqueQuimico();
-
 			//avionDeCombate();
+			std::cout<<"Jugando carta:"<<std::endl;
 
-			// algun otro??
+			std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
+						std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
+
+			this->cartasJugadas->agregarCarta(cartaObtenida);//en realidad esto deberia hacerlo la funcion que juega la carta
+						std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
+
+
 
 		}
 		// SI SE USO CARTA GESTIONO EVENTOS
@@ -1296,13 +1306,18 @@ void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 		this->cartasDisponibles->agregarCarta(cartaRefuerzos);
 	}
 
+	this->cartasDisponibles->mezclar();
+
 	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->cartasDisponibles->contarCartas()<<std::endl;
 
 }	
 
 
 void BatallaDigital::reiniciarMazo(void){
+	Mazo<CartaBatallaDigital *> * aux;
+	aux=this->cartasDisponibles;
 	this->cartasDisponibles=this->cartasJugadas;
-	this->cartasJugadas=NULL;
+	this->cartasJugadas=aux;
+	this->cartasDisponibles->mezclar();
 	return;
 }
