@@ -1,4 +1,4 @@
-#include <string>
+#include <sstream>
 #include "BitmapBatallaDigital.h"
 #include "EasyBMP_1.06/EasyBMP.h"
 #include "EasyBMP_1.06/EasyBMP_Font.h"
@@ -136,6 +136,15 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
     }
 }
 
+// Funcion auxiliar para convertir entero a string y eso a un const char * que pide la funcion de libreria
+const char *escribirRuta(unsigned int nivelZ)
+{
+    std::stringstream temp;
+    temp<<nivelZ;
+    std::string ruta = "TableroNivel" + temp.str() + ".bmp";
+    return ruta.c_str();
+}
+
 void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsigned int nivelZ) {
     unsigned int anchoTablero = tablero->getDimX();
     unsigned int altoTablero = tablero->getDimY();
@@ -151,8 +160,6 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsig
             dibujarCasillero(casillero, jugador, altoTablero);
         }
     }
-
-
 
     RGBApixel colorLetra;
     if (nivelZ < NIVEL_MAXIMO_TIERRA) { // SUBTERRANEO - AZUL
@@ -174,12 +181,7 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsig
     dibujarCoordenadas(colorLetra, altoTablero);
 
     // ESTO ESCIBRE EL NOMBRE DE LA CAPA
-    char ruta[20] = "tableroNivel";
-    char numero[4];
-    sprintf(numero, "%d", nivelZ);
-    strcat(ruta, numero);
-    strcat(ruta, ".bmp");
-    this->imagenTablero.WriteToFile(ruta);
+    this->imagenTablero.WriteToFile(escribirRuta(nivelZ));
 }
 
 void BitmapBatallaDigital::dibujarTablero(Tablero *tablero, Jugador *jugador) {
