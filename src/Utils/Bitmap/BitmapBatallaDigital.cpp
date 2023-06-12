@@ -35,8 +35,18 @@ BitmapBatallaDigital::BitmapBatallaDigital(unsigned int anchoTablero, unsigned i
     this->imagenBarcoEnemigo.ReadFromFile("res/texturasBMP/barcoEnemigo.bmp");
     this->imagenSubmarinoJugador.ReadFromFile("res/texturasBMP/submarinoJugador.bmp");
     this->imagenSubmarinoEnemigo.ReadFromFile("res/texturasBMP/submarinoEnemigo.bmp");
-    this->imagenNiebla.ReadFromFile("res/texturasBMP/niebla.bmp");
+    this->imagenTrincheraJugador.ReadFromFile("res/texturasBMP/trincheraJugador.bmp");
+    this->imagenTrincheraEnemigo.ReadFromFile("res/texturasBMP/trincheraEnemigo.bmp");
+    this->imagenFuego.ReadFromFile("res/texturasBMP/fuego.bmp");
     this->imagenError.ReadFromFile("res/texturasBMP/error.bmp");
+}
+
+// Funcion auxiliar para convertir entero a string
+std::string intToString(unsigned int n)
+{
+    std::stringstream temp;
+    temp<<n;
+    return temp.str();
 }
 
 void BitmapBatallaDigital::dibujar(unsigned int x, unsigned int y, BMP &elemento, unsigned int altoTablero)
@@ -63,16 +73,23 @@ void BitmapBatallaDigital::dibujarTransparente(unsigned int x, unsigned int y, B
 
 void BitmapBatallaDigital::dibujarCoordenadas(RGBApixel colorLetra, unsigned int altoTablero) {
     unsigned int altoLetra = (this->resolucionImagenes)/3;
-    char numero[3];
-    for (size_t i = 0; i < altoTablero; i++)
-    {
-        sprintf(numero, "%ld", i + 1);
+
+    PrintLetter(this->imagenTablero, 'X', this->resolucionImagenes/2, this->resolucionImagenes * altoTablero - altoLetra, altoLetra, colorLetra);
+    PrintLetter(this->imagenTablero, 'Y', 0, (altoTablero - 1) * this->resolucionImagenes, altoLetra, colorLetra);
+
+    char *numero;
+    for (size_t i = 1; i < altoTablero; i++) {
+        numero = (char *)intToString(i + 1).c_str();
         PrintString(this->imagenTablero, numero, i * this->resolucionImagenes + this->resolucionImagenes/2, this->resolucionImagenes * altoTablero - altoLetra, altoLetra, colorLetra);
-        PrintLetter(this->imagenTablero, 'A' + i, 0, (altoTablero - i - 1) * this->resolucionImagenes, altoLetra, colorLetra);
+        PrintString(this->imagenTablero, numero, 0, (altoTablero - i - 1) * this->resolucionImagenes, altoLetra, colorLetra);
     }
 }
 
 void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugador, unsigned int altoTablero) {
+    if (casillero == NULL) {
+        throw "El casillero no puede ser nulo";
+    }
+
     unsigned int posX = casillero->getCoordenada()->obtenerX() - 1;
     unsigned int posY = casillero->getCoordenada()->obtenerY() - 1;
     unsigned int posZ = casillero->getCoordenada()->obtenerZ();
@@ -100,48 +117,52 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
         break;
     default:
         dibujar(posX, posY, this->imagenError, altoTablero); // PARA DEBUG
-        break;
+        throw "Error al encontrar tipo de terreno casillero";
     }
 
     if (!casillero->estaActivo()) {
-        dibujarTransparente(posX, posY, this->imagenNiebla, altoTablero);
+        dibujarTransparente(posX, posY, this->imagenFuego, altoTablero);
     }
 
     // Si no esta ocupado no se hace nada mas
     if(!casillero->estaOcupado()) return;
     
+    bool fichaPropia = true;
     if(jugador != NULL) {   // Si hay una ficha verifico que le pertenezca al jugador del turno
-        if (jugador->obtenerFicha(*(casillero->getCoordenada())) == NULL) return;
+        if (jugador->obtenerFicha(*(casillero->getCoordenada())) == NULL) {
+            fichaPropia = false; // No es del jugador. Prosigo a verificar que sea una ficha enemiga detectada
+            //if (jugador->obtenerFichaDetectada(*(casillero->getCoordenada())) == NULL) {
+                return; // Si no es del jugador ni esta detectada return porque no la grafico
+            //}
+        }
     }
 
     // Busco el tipo de ficha
     switch (casillero->getFichaCasillero()->obtenerTipo())
     {
     case FICHA_BARCO:
-        dibujarTransparente(posX, posY, this->imagenBarcoJugador, altoTablero);
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenBarcoJugador : this->imagenBarcoEnemigo, altoTablero);
         break;
     case FICHA_SOLDADO:
-        dibujarTransparente(posX, posY, this->imagenSoldadoJugador, altoTablero);
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenSoldadoJugador : this->imagenSoldadoEnemigo, altoTablero);
         break;
     case FICHA_AVION:
-        dibujarTransparente(posX, posY, this->imagenAvionJugador, altoTablero);
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenAvionJugador : this->imagenAvionEnemigo, altoTablero);
         break;
     case FICHA_MINA:
-        dibujarTransparente(posX, posY, this->imagenMinaJugador, altoTablero);
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenMinaJugador : this->imagenMinaEnemigo, altoTablero);
+        break;
+    case FICHA_SUBMARINO:
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenSubmarinoJugador : this->imagenSubmarinoEnemigo, altoTablero);
+        break;
+    case FICHA_TRINCHERA:
+        dibujarTransparente(posX, posY, fichaPropia ? this->imagenTrincheraJugador : this->imagenTrincheraEnemigo, altoTablero);
         break;
 
     default:
         dibujar(posX, posY, this->imagenError, altoTablero); // PARA DEBUG
-        break;
+        throw "Error al encontrar tipo de ficha";
     }
-}
-
-// Funcion auxiliar para convertir entero a string y escribir ruta
-std:: string escribirRuta(unsigned int nivelZ)
-{
-    std::stringstream temp;
-    temp<<nivelZ;
-    return "Tablero Nivel " + temp.str() + ".bmp";
 }
 
 void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsigned int nivelZ) {
@@ -152,10 +173,6 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsig
     for(unsigned int y = 1 ; y <= altoTablero ; y++) {
         for(unsigned int x = 1 ; x <= anchoTablero ; x++) {
             casillero = tablero->obtenerCasillero(x, y, nivelZ);
-            if (casillero == NULL) {
-                imagenTablero.WriteToFile("ERROR");
-                throw "Error al obtener casillero";
-            }
             dibujarCasillero(casillero, jugador, altoTablero);
         }
     }
@@ -180,15 +197,18 @@ void BitmapBatallaDigital::dibujarCapa(Tablero *tablero, Jugador *jugador, unsig
     dibujarCoordenadas(colorLetra, altoTablero);
 
     // ESTO ESCIBRE EL NOMBRE DE LA CAPA. Hay que pasarlo a const char* con c_str
-    this->imagenTablero.WriteToFile(escribirRuta(nivelZ).c_str());
+    std::string ruta = "Tablero Nivel " + intToString(nivelZ) + ".bmp";
+    this->imagenTablero.WriteToFile(ruta.c_str());
 }
 
-void BitmapBatallaDigital::dibujarTablero(Tablero *tablero, Jugador *jugador) {
+void BitmapBatallaDigital::dibujarTablero(Tablero *tablero, Jugador *jugador) {  
+    if (tablero == NULL) {
+        throw "El tablero no puede ser nulo";
+    }
+
     unsigned int profundidadTablero = tablero->getDimZ();
 
     for(unsigned int z = 1 ; z <= profundidadTablero ; z++) {
         dibujarCapa(tablero, jugador, z);
     }   
 }
-
-BitmapBatallaDigital::~BitmapBatallaDigital() {}
