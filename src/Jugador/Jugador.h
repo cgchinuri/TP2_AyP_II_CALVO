@@ -53,6 +53,9 @@ public:
     unsigned int mostrarFichas(void);
     void agregarCarta(CartaBatallaDigital * carta);
     CartaBatallaDigital * obtenerCarta(int pos);
+    //Devuelve la primera ocurrencia de una carta del tipo especificado, si no hay ninguna carta
+    //de ese tipo retorna NULL
+    CartaBatallaDigital * obtenerCarta(carta_t tipo);
     void mostrarCartas();
     void setEnemigosDetectados(Lista<Casillero *> * enemigos);
     

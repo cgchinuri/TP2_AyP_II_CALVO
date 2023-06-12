@@ -9,8 +9,8 @@ BatallaDigital::BatallaDigital()
 
 	this->listaDeJugadores = NULL;
 	
-	this->mazoJuego=new Mazo<CartaBatallaDigital *>();
-
+	this->cartasDisponibles=new Mazo<CartaBatallaDigital *>();
+	this->cartasJugadas=NULL;
 
 	// Se imprime por consola el mensaje de bienvenida
 	imprimirMensajeBienvenida();
@@ -45,7 +45,7 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 	this->cantidadJugadores=cantidadJugadores;
 	this->tableroJuego=new Tablero(dimX,dimY,dimZ);
 	this->listaDeJugadores=new Lista<Jugador*>();
-	this->mazoJuego=new Mazo<CartaBatallaDigital *>();
+	this->cartasDisponibles=new Mazo<CartaBatallaDigital *>();
 
 
 
@@ -999,7 +999,7 @@ void BatallaDigital::ubicarBarco(unsigned int x, unsigned int y, unsigned int z,
 		barco->setCasilleroFicha(objetivoCasillero);
 		jugador->agregarFicha(barco);
 	}
-	
+
 }
 
 void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
@@ -1063,6 +1063,9 @@ void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
 			std::cout<<"No habia objetivos a eliminar en la coordenada con el torpedo "<<std::endl;
 		}
 
+		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
+		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_BARCO));
+
 }
 
 void BatallaDigital::ubicarAvion(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador) {
@@ -1120,6 +1123,9 @@ void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
 		else	{
 			std::cout<<"No se pudo ubicar el avion en el casillero "<<objetivo->toString()<<std::endl;
 		}
+
+		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
+		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_AVION_RADAR));
 }
 
 void BatallaDigital::ubicarSubmarino(unsigned int x, unsigned int y, unsigned int z, Jugador *jugador) {
@@ -1278,18 +1284,25 @@ void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 	CartaBatallaDigital * cartaTrinchera=new CartaBatallaDigital(CARTA_TRINCHERA);
 
 	//Se agregan las cartas al mazo repitiendolas segun su atributo de cantidad de repeticiones
-	this->mazoJuego->agregarCarta(cartaAvion,cartaAvion->getCantidadRepeticiones()*cantidadCartas/100);
-	this->mazoJuego->agregarCarta(cartaBarco,cartaBarco->getCantidadRepeticiones()*cantidadCartas/100);
-	this->mazoJuego->agregarCarta(cartaSubmarino,cartaSubmarino->getCantidadRepeticiones()*cantidadCartas/100);
-	this->mazoJuego->agregarCarta(cartaAtaqueQuimico,cartaAtaqueQuimico->getCantidadRepeticiones()*cantidadCartas/100);
-	this->mazoJuego->agregarCarta(cartaRefuerzos,cartaRefuerzos->getCantidadRepeticiones()*cantidadCartas/100);
-	this->mazoJuego->agregarCarta(cartaTrinchera,cartaTrinchera->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaAvion,cartaAvion->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaBarco,cartaBarco->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaSubmarino,cartaSubmarino->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaAtaqueQuimico,cartaAtaqueQuimico->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaRefuerzos,cartaRefuerzos->getCantidadRepeticiones()*cantidadCartas/100);
+	this->cartasDisponibles->agregarCarta(cartaTrinchera,cartaTrinchera->getCantidadRepeticiones()*cantidadCartas/100);
 
 	//Se rellena con cartas de refuerzos
-	while(this->mazoJuego->contarCartas()<cantidadCartas){
-		this->mazoJuego->agregarCarta(cartaRefuerzos);
+	while(this->cartasDisponibles->contarCartas()<cantidadCartas){
+		this->cartasDisponibles->agregarCarta(cartaRefuerzos);
 	}
 
-	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->mazoJuego->contarCartas()<<std::endl;
+	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->cartasDisponibles->contarCartas()<<std::endl;
 
 }	
+
+
+void BatallaDigital::reiniciarMazo(void){
+	this->cartasDisponibles=this->cartasJugadas;
+	this->cartasJugadas=NULL;
+	return;
+}

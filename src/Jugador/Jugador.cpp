@@ -99,6 +99,19 @@ CartaBatallaDigital * Jugador::obtenerCarta(int pos) {
     return this->Cartas->getCarta(pos);
 }
 
+CartaBatallaDigital * Jugador::obtenerCarta(carta_t tipo) {
+    Cartas->reiniciarCursor();
+    int pos=1;
+    while(Cartas->avanzarCursor()){
+        if(Cartas->getCursor()->getTipo()==tipo){
+           return  Cartas->getCarta(pos);
+        }
+        pos++;
+    }
+    return NULL;
+}
+
+
 void Jugador::mostrarCartas()   {
     std::cout<<"Cartas Disponibles:"<<std::endl;//DEBUG
 

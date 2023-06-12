@@ -82,8 +82,10 @@ class BatallaDigital
         // Puntero a la instancia de logica de bitmap
         BitmapBatallaDigital *bitmap;
 
-        //Mazo del juego
-        Mazo<CartaBatallaDigital *> * mazoJuego;
+        //MazoS del juego
+        Mazo<CartaBatallaDigital *> * cartasDisponibles;
+        Mazo<CartaBatallaDigital *> * cartasJugadas;
+
 
         // Pre: -
         // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
@@ -296,9 +298,13 @@ class BatallaDigital
         
 
 
-        //Pre: recibe como parametro el id del jugador que va a jugar la carta
-        //Pos: juega la carta trinchera, atrinchera un soldado
+        //Pre: recibe la cantidad de cartas con las que se jugara
+        //Pos:construye un mazo con esa cantidad de cartas
         void construirMazo(unsigned int cantidadCartas);
+
+        //Intercambia el mazo de cartas jugadas por el mazo de cartas disponibles
+        void reiniciarMazo(void);
+
 
 };
 
