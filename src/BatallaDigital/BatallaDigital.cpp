@@ -1285,10 +1285,11 @@ void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 	this->mazoJuego->agregarCarta(cartaRefuerzos,cartaRefuerzos->getCantidadRepeticiones()*cantidadCartas/100);
 	this->mazoJuego->agregarCarta(cartaTrinchera,cartaTrinchera->getCantidadRepeticiones()*cantidadCartas/100);
 
-	if(this->mazoJuego->contarCartas()<cantidadCartas){
+	//Se rellena con cartas de refuerzos
+	while(this->mazoJuego->contarCartas()<cantidadCartas){
 		this->mazoJuego->agregarCarta(cartaRefuerzos);
 	}
-	
+
 	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->mazoJuego->contarCartas()<<std::endl;
 
 }	
