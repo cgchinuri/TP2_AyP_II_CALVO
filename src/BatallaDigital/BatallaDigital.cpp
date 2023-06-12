@@ -827,13 +827,17 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		//mostrarTablero(0);
 
+		//Se verifica que haya cartas en el mazo principal
 		if(this->cartasDisponibles->contarCartas()==0){
+			std::cout<<"Ya no quedan cartas por sacar. Mezclando mazo... "<<std::endl;
 			reiniciarMazo();
 		}
 
+		//Se obtiene una carta aleatoria del mazo principal y se la asigna al jugador
 		CartaBatallaDigital * cartaObtenida=this->cartasDisponibles->pop();
 		jugador->agregarCarta(cartaObtenida);
 		
+		//Se juega la carta, o no.
 		jugarCarta = jugadorQuiereUsarCarta();
 		if(jugarCarta==true)
 		{
@@ -841,17 +845,14 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			//POSIBLES EVENTOS SEGUN LA CARTA USADA
 			//ataqueQuimico();
 			//avionDeCombate();
-			std::cout<<"Jugando carta:"<<std::endl;
-
-			std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
-						std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
-
 			this->cartasJugadas->agregarCarta(cartaObtenida);//en realidad esto deberia hacerlo la funcion que juega la carta
-						std::cout<<"Se jugó la carta"<<cartaObtenida->getNombre()<<std::endl;
-
-
-
+			std::cout<<"Se jugó la carta "<<cartaObtenida->getNombre()<<std::endl;
+			std::cout<<"Mazo de cartas jugadas: "<<this->cartasJugadas->contarCartas()<<std::endl;
+			std::cout<<"Mazo de cartas disponibles: "<<this->cartasDisponibles->contarCartas()<<std::endl;
 		}
+		
+		//Se le muestran las cartas pertenecientes al jugador
+		jugador->mostrarCartas();
 		// SI SE USO CARTA GESTIONO EVENTOS
 
 
