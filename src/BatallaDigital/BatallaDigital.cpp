@@ -15,6 +15,10 @@ BatallaDigital::BatallaDigital()
 	// Se imprime por consola el mensaje de bienvenida
 	imprimirMensajeBienvenida();
 
+	//se crea el mazo de cartas con una cantidad definida en la configuracion del juego
+	construirMazo(CANTIDAD_CARTAS_MAZO);
+
+
 	// Se solicita la cantidad de jugadores
 	ingresarNumeroJugadores();
 
@@ -1267,7 +1271,24 @@ void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
 void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 
 	CartaBatallaDigital * cartaAvion=new CartaBatallaDigital(CARTA_AVION_RADAR);
+	CartaBatallaDigital * cartaBarco=new CartaBatallaDigital(CARTA_BARCO);
+	CartaBatallaDigital * cartaSubmarino=new CartaBatallaDigital(CARTA_SUBMARINO);
+	CartaBatallaDigital * cartaAtaqueQuimico=new CartaBatallaDigital(CARTA_ATAQUE_QUIMICO);
+	CartaBatallaDigital * cartaRefuerzos=new CartaBatallaDigital(CARTA_REFUERZOS);
+	CartaBatallaDigital * cartaTrinchera=new CartaBatallaDigital(CARTA_TRINCHERA);
 
+	//Se agregan las cartas al mazo repitiendolas segun su atributo de cantidad de repeticiones
+	this->mazoJuego->agregarCarta(cartaAvion,cartaAvion->getCantidadRepeticiones()*cantidadCartas/100);
+	this->mazoJuego->agregarCarta(cartaBarco,cartaBarco->getCantidadRepeticiones()*cantidadCartas/100);
+	this->mazoJuego->agregarCarta(cartaSubmarino,cartaSubmarino->getCantidadRepeticiones()*cantidadCartas/100);
+	this->mazoJuego->agregarCarta(cartaAtaqueQuimico,cartaAtaqueQuimico->getCantidadRepeticiones()*cantidadCartas/100);
+	this->mazoJuego->agregarCarta(cartaRefuerzos,cartaRefuerzos->getCantidadRepeticiones()*cantidadCartas/100);
+	this->mazoJuego->agregarCarta(cartaTrinchera,cartaTrinchera->getCantidadRepeticiones()*cantidadCartas/100);
 
+	if(this->mazoJuego->contarCartas()<cantidadCartas){
+		this->mazoJuego->agregarCarta(cartaRefuerzos);
+	}
+	
+	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->mazoJuego->contarCartas()<<std::endl;
 
 }	

@@ -24,13 +24,13 @@ CartaBatallaDigital::CartaBatallaDigital(carta_t tipo)
         this->nombre = "Trinchera";
         this->descripcion = "Trinchera le permite convertir un soldado en una trinchera por -- turnos, la cual eliminara soldados enemigos. "
         "El soldado queda imovil pero es inmune a soldados enemigos[TIERRA PROFUNDIDAD]";
-        this->cantidadRepeticiones = 40;
+        this->cantidadRepeticiones = 15;
         break;
     case CARTA_BARCO:
         this->nombre = "Barco";
         this->descripcion = "Arega una unidad a la armada del jugador capaz de lanzar misiles y "
         "torpedos anti-submarinos [SUPERFICIE DE AGUA]";
-        this->cantidadRepeticiones = 30;
+        this->cantidadRepeticiones = 10;
         break;
     case CARTA_ATAQUE_QUIMICO:
         this->nombre = "Ataque Quimico";
@@ -41,7 +41,7 @@ CartaBatallaDigital::CartaBatallaDigital(carta_t tipo)
     case CARTA_REFUERZOS:
         this->nombre = "Refuerzos";
         this->descripcion = "Agrega un soldado al ejercito del jugador [SUPERFICIE DE TIERRA]";
-        this->cantidadRepeticiones = 50;
+        this->cantidadRepeticiones = 25;
         break;
     
     default:
