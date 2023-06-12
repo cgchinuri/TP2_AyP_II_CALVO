@@ -158,51 +158,12 @@ void Jugador::retirarFichas(void)   {
 
 }
 
-int Jugador::cantidadFichasBarco() {
-    this->Fichas->reiniciarCursor();
-    int cantidadBarcos=0;
-    while(Fichas->avanzarCursor())
-    {
-        Ficha* fichaCursor=Fichas->getCursor();
-            if (fichaCursor->obtenerTipo()==FICHA_BARCO)
-            {
-                cantidadBarcos++;
-            }
-    }
-    return cantidadBarcos;
-}
 
-int Jugador::cantidadFichasAvion() {
-    this->Fichas->reiniciarCursor();
-    int cantidadAviones=0;
-    while(Fichas->avanzarCursor())
-    {
-        Ficha* fichaCursor=Fichas->getCursor();
-            if (fichaCursor->obtenerTipo()==FICHA_AVION)
-            {
-                cantidadAviones++;
-            }
-    }
-    return cantidadAviones;
-}
 
 void Jugador::setEnemigosDetectados(Lista<Casillero *> * enemigos) {
     this->enemigosDetectados=enemigos;
 }
 
-int Jugador::cantidadFichasSubmarino() {
-    this->Fichas->reiniciarCursor();
-    int cantidadSubmarinos=0;
-    while(Fichas->avanzarCursor())
-    {
-        Ficha* fichaCursor=Fichas->getCursor();
-            if (fichaCursor->obtenerTipo()==FICHA_SUBMARINO)
-            {
-                cantidadSubmarinos++;
-            }
-    }
-    return cantidadSubmarinos;
-}
 
 bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, unsigned int z) {
     this->Fichas->reiniciarCursor();
@@ -215,4 +176,60 @@ bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, 
             }
     }
     return false;
+}
+
+int Jugador::cantidadCartasBarco() {
+    this->Cartas->reiniciarCursor();
+    int cantidadCartasBarco=0;
+    while(Cartas->avanzarCursor())
+    {
+        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
+            if (cartaCursor->getTipo()==BARCO)
+            {
+                cantidadCartasBarco++;
+            }
+    }
+    return cantidadCartasBarco;
+}
+
+int Jugador::cantidadCartasAvion() {
+    this->Cartas->reiniciarCursor();
+    int cantidadCartasAvion=0;
+    while(Cartas->avanzarCursor())
+    {
+        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
+            if (cartaCursor->getTipo()==AVION_RADAR)
+            {
+                cantidadCartasAvion++;
+            }
+    }
+    return cantidadCartasAvion;
+}
+
+int Jugador::cantidadCartasSubmarino() {
+    this->Cartas->reiniciarCursor();
+    int cantidadCartasSubmarino=0;
+    while(Cartas->avanzarCursor())
+    {
+        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
+            if (cartaCursor->getTipo()==SUBMARINO)
+            {
+                cantidadCartasSubmarino++;
+            }
+    }
+    return cantidadCartasSubmarino;
+}
+
+int Jugador::cantidadCartasRefuerzos() {
+    this->Cartas->reiniciarCursor();
+    int cantidadCartasRefuerzos=0;
+    while(Cartas->avanzarCursor())
+    {
+        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
+            if (cartaCursor->getTipo()==REFUERZOS)
+            {
+                cantidadCartasRefuerzos++;
+            }
+    }
+    return cantidadCartasRefuerzos;
 }
