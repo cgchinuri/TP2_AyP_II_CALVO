@@ -8,6 +8,9 @@ BatallaDigital::BatallaDigital()
 	this->cantidadJugadores = 0;
 
 	this->listaDeJugadores = NULL;
+	
+	this->mazoJuego=new Mazo<CartaBatallaDigital *>();
+
 
 	// Se imprime por consola el mensaje de bienvenida
 	imprimirMensajeBienvenida();
@@ -38,6 +41,10 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 	this->cantidadJugadores=cantidadJugadores;
 	this->tableroJuego=new Tablero(dimX,dimY,dimZ);
 	this->listaDeJugadores=new Lista<Jugador*>();
+	this->mazoJuego=new Mazo<CartaBatallaDigital *>();
+
+
+
 
 	//Esto, construir la lista de jugadores, puede ir en una funcion privada.
 	for(size_t i=0;	i<cantidadJugadores;i++){
@@ -51,6 +58,8 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 
 	// Se crea la instancia de logica de bitmap
 	this->bitmap = new BitmapBatallaDigital(dimX, dimY);
+
+
 }
 
 int BatallaDigital::ingresoNumeroEnteroPositivoConsola(std::string oracionPedido)
@@ -1209,7 +1218,7 @@ void BatallaDigital::ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsig
 	}
 }
 
-	void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
+void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
 		Jugador *jugador = obtenerJugadorNumero(idJugador);
 		if (jugador->cantidadCartasRefuerzos() == 0) {
 				throw "El jugador no tiene cartas de tipo refuerzos";
@@ -1253,3 +1262,12 @@ void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
 		}
 		
 }
+
+
+void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
+
+	CartaBatallaDigital * cartaAvion=new CartaBatallaDigital(CARTA_AVION_RADAR);
+
+
+
+}	

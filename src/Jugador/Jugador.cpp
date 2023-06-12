@@ -184,7 +184,7 @@ int Jugador::cantidadCartasBarco() {
     while(Cartas->avanzarCursor())
     {
         CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==BARCO)
+            if (cartaCursor->getTipo()==CARTA_BARCO)
             {
                 cantidadCartasBarco++;
             }
@@ -198,7 +198,7 @@ int Jugador::cantidadCartasAvion() {
     while(Cartas->avanzarCursor())
     {
         CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==AVION_RADAR)
+            if (cartaCursor->getTipo()==CARTA_AVION_RADAR)
             {
                 cantidadCartasAvion++;
             }
@@ -212,7 +212,7 @@ int Jugador::cantidadCartasSubmarino() {
     while(Cartas->avanzarCursor())
     {
         CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==SUBMARINO)
+            if (cartaCursor->getTipo()==CARTA_SUBMARINO)
             {
                 cantidadCartasSubmarino++;
             }
@@ -226,7 +226,7 @@ int Jugador::cantidadCartasRefuerzos() {
     while(Cartas->avanzarCursor())
     {
         CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==REFUERZOS)
+            if (cartaCursor->getTipo()==CARTA_REFUERZOS)
             {
                 cantidadCartasRefuerzos++;
             }

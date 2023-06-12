@@ -60,6 +60,9 @@
 #define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO 4
 #define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINAS 5
 
+
+#define CANTIDAD_CARTAS_MAZO 50
+
 class BatallaDigital
 {
     private:
@@ -78,6 +81,9 @@ class BatallaDigital
 
         // Puntero a la instancia de logica de bitmap
         BitmapBatallaDigital *bitmap;
+
+        //Mazo del juego
+        Mazo<CartaBatallaDigital *> * mazoJuego;
 
         // Pre: -
         // Pos: crea una lista con la cantidad de jugadores especificadas y la deja apuntada con el atributo de la clasee
@@ -287,6 +293,12 @@ class BatallaDigital
         //Pre: recibe como parametro el id del jugador que va a jugar la carta
         //Pos: juega la carta trinchera, atrinchera un soldado
         void jugarCartaTrinchera(unsigned int idJugador);
+        
+
+
+        //Pre: recibe como parametro el id del jugador que va a jugar la carta
+        //Pos: juega la carta trinchera, atrinchera un soldado
+        void construirMazo(unsigned int cantidadCartas);
 
 };
 
