@@ -1208,6 +1208,8 @@ void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
 	}
 
 
+		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
+		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_SUBMARINO));
 	
 }
 
@@ -1263,6 +1265,10 @@ void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
 		else	{
 			std::cout<<"No se pudo ubicar el soldado en el casillero "<<objetivo->toString()<<std::endl;
 		}
+
+		
+		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
+		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_REFUERZOS));
 	}
 
 void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
@@ -1282,6 +1288,9 @@ void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
 			std::cout<<"No hay soldado en la coordenada ingresada "<<objetivo->toString()<<std::endl;
 		}
 		
+		
+		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
+		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_TRINCHERA));
 }
 
 
