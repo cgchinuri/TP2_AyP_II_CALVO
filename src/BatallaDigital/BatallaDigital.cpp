@@ -18,7 +18,6 @@ BatallaDigital::BatallaDigital()
 	//se crea el mazo de cartas con una cantidad definida en la configuracion del juego
 	construirMazo(CANTIDAD_CARTAS_MAZO);
 
-
 	// Se solicita la cantidad de jugadores
 	ingresarNumeroJugadores();
 
@@ -30,6 +29,9 @@ BatallaDigital::BatallaDigital()
 
 	// Se crea el tablero
 	crearTablero();
+
+	// Debugging
+	//this->tableroJuego->imprimirTablero();
 
 	// Se crea la instancia de logica de bitmap
 	this->bitmap = new BitmapBatallaDigital(this->dimensionesTablero[0], this->dimensionesTablero[1]);
@@ -92,8 +94,6 @@ int BatallaDigital::ingresoNumeroEnteroPositivoConsola(std::string oracionPedido
 
 	// Retorno valor leido
 	return num;
-
-
 }
 
 
@@ -310,6 +310,9 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	Casillero * casilleroDestino = this->tableroJuego->navegarTablero(casilleroInicio, tipoMovimiento, cantCasilleros);
 
 
+	//std::cout << "Navegar tablero retornó el casillero en"<<casilleroDestino->getCoordenada()->toString() << std::endl ;
+
+
 	if(!casilleroDestino)
 	{
 		// Si el casillero destino es null entonces me fui del mapa
@@ -330,8 +333,7 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	}
 	else if(casilleroDestino->estaOcupado())
 	{
-		// Si habia ocupación genero una explosión
-		Ficha * fichaOcupante = NULL;
+		Ficha * fichaOcupante = casilleroDestino->getFichaCasillero();
 
 		if(fichaOcupante->obtenerTipo()==FICHA_MINA)
 		{
@@ -551,7 +553,6 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 		throw "Error radio explosión invalido";
 	}
 
-
 	std::cout << "Se generó una explosión de radio " << radioExplosion << " con epicentro en el casillero " << casilleroCentral->getCoordenada()->toString() << std::endl;
 
 	desactivarCasillero(casilleroCentral , turnosInactividadEpicentro);
@@ -574,7 +575,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroSigX)
 		{
-			casilleroSigX = casilleroSigX->getAntX();
+			casilleroSigX = casilleroSigX->getSigX();
 			if(casilleroSigX)
 			{
 				desactivarCasillero(casilleroSigX , turnosInactividadEpicentro - i);
@@ -584,7 +585,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroAntY)
 		{
-			casilleroAntY = casilleroAntY->getAntX();
+			casilleroAntY = casilleroAntY->getAntY();
 			if(casilleroAntY)
 			{
 				desactivarCasillero(casilleroAntY , turnosInactividadEpicentro - i);
@@ -593,7 +594,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroSigY)
 		{
-			casilleroSigY = casilleroSigY->getAntX();
+			casilleroSigY = casilleroSigY->getSigY();
 			if(casilleroSigY)
 			{
 				desactivarCasillero(casilleroSigY , turnosInactividadEpicentro - i);
