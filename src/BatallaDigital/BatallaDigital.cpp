@@ -836,24 +836,30 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		//Se obtiene una carta aleatoria del mazo principal y se la asigna al jugador
 		CartaBatallaDigital * cartaObtenida=this->cartasDisponibles->pop();
+		std::cout<<"Carta Obtenida:"<<cartaObtenida->getNombre()<<std::endl;
 		jugador->agregarCarta(cartaObtenida);
 		
 		//Se juega la carta, o no.
 		jugarCarta = jugadorQuiereUsarCarta();
 		if(jugarCarta==true)
-		{
+		{	int opcionElegida;
+			CartaBatallaDigital * cartaJugada;
 
-			//POSIBLES EVENTOS SEGUN LA CARTA USADA
-			//ataqueQuimico();
-			//avionDeCombate();
-			this->cartasJugadas->agregarCarta(cartaObtenida);//en realidad esto deberia hacerlo la funcion que juega la carta
-			std::cout<<"Se jugó la carta "<<cartaObtenida->getNombre()<<std::endl;
+			jugador->mostrarCartas();
+			std::cin>>opcionElegida;
+			cartaJugada=jugador->obtenerCarta(opcionElegida);//Se saca la carta de la mano del jugador
+			
+			//Se juega la carta
+			JugarCarta(jugador,cartaJugada);
+
+			//Se añade la carta al mazo de las cartas utilizadas
+			this->cartasJugadas->agregarCarta(cartaJugada);//en realidad esto deberia hacerlo la funcion que juega la carta
+			std::cout<<"Se jugó la carta "<<cartaJugada->getNombre()<<std::endl;
 			std::cout<<"Mazo de cartas jugadas: "<<this->cartasJugadas->contarCartas()<<std::endl;
 			std::cout<<"Mazo de cartas disponibles: "<<this->cartasDisponibles->contarCartas()<<std::endl;
 		}
-		
-		//Se le muestran las cartas pertenecientes al jugador
-		jugador->mostrarCartas();
+					jugador->mostrarCartas();
+
 		// SI SE USO CARTA GESTIONO EVENTOS
 
 
@@ -863,6 +869,43 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		//tableroJuego->decrementarInactividadCasilleros();	
 }
 
+void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
+
+	if(jugador==NULL||carta==NULL)	{
+		throw "Error:Puntero nulo";
+	}
+
+
+	switch(carta->getTipo()){
+		case CARTA_BARCO:
+			std::cout<<"DEBUG:JUGANDO CARTA BARCO"<<std::endl;//FALLA
+			jugarCartaBarco(jugador);
+		break;
+
+		case CARTA_ATAQUE_QUIMICO:
+			std::cout<<"Un horrible ataque químico ha caído sobre el terreno de batalla!"<<std::endl;
+		break;
+
+		case CARTA_AVION_RADAR:
+			std::cout<<"DEBUG:JUGANDO CARTA_AVION_RADAR"<<std::endl;
+			jugarCartaAvion(jugador);
+		break;
+		case CARTA_REFUERZOS:
+			std::cout<<"DEBUG:JUGANDO CARTA_REFUERZOS"<<std::endl;
+			jugarCartaRefuerzoSoldado(jugador);
+		break;
+
+		case CARTA_SUBMARINO:
+			std::cout<<"DEBUG:JUGANDO CARTA_SUBMARINO "<<std::endl;
+			jugarCartaSubmarino(jugador);
+		break;
+
+		case CARTA_TRINCHERA:
+			std::cout<<"DEBUG:JUGANDO CARTA_TRINCHERA "<<std::endl;
+			jugarCartaTrinchera(jugador);
+		break;
+	}
+}
 
 
 Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * avionRadar)	{
@@ -1014,11 +1057,7 @@ void BatallaDigital::ubicarBarco(unsigned int x, unsigned int y, unsigned int z,
 
 }
 
-void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
-		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadCartasBarco() == 0) {
-				throw "El jugador no tiene cartas de tipo barco";
-		}
+void BatallaDigital::jugarCartaBarco(Jugador *jugador) {
 		std::cout << "Ubicar barco : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1037,46 +1076,54 @@ void BatallaDigital::jugarCartaBarco(unsigned int idJugador) {
 			Coordenada<int> * destinoMisil;
 			std::cout<<"Destino del misil:"<<std::endl;
 			validarCoordenada(destinoMisil);
+			
+
 			std::cout<<"Casillero a atacar con misil "<<destinoMisil->toString()<<std::endl;
-			if(this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_SOLDADO){
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->desactivarFicha();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->vaciarCasillero();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->desactivar();
-				std::cout<<"Soldado eliminado"<<std::endl;
-			}	
-			else if(this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_AVION){
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->desactivarFicha();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->vaciarCasillero();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->desactivar();
-				std::cout<<"Avion eliminado"<<std::endl;
+			Casillero * casilleroObjetivoMisil=this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ());
+
+			if(!casilleroObjetivoMisil->estaOcupado()){
+				std::cout<<"No habia objetivos a eliminar en la coordenada con el misil "<<std::endl;//Se desactiva un casillero desocupado que se ataca con un misil?
+			} else{
+				switch(casilleroObjetivoMisil->getFichaCasillero()->getTipoFicha())	{
+				case FICHA_SOLDADO:
+					std::cout<<"Soldado eliminado"<<std::endl;
+					break;
+			
+				case FICHA_AVION:
+					std::cout<<"Avion eliminado"<<std::endl;
+					break;
+				case FICHA_BARCO:
+					std::cout<<"Barco eliminado"<<std::endl;
+					break;
+				default:
+					break;
 			}
-			else if(this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_BARCO){
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->getFichaCasillero()->desactivarFicha();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->vaciarCasillero();
-				this->tableroJuego->obtenerCasillero(destinoMisil->obtenerX(),destinoMisil->obtenerY(),destinoMisil->obtenerZ())->desactivar();
-				std::cout<<"Barco eliminado"<<std::endl;
-			} else	{
-				std::cout<<"No habia objetivos a eliminar en la coordenada con el misil "<<std::endl;
+				explosionEnTablero(casilleroObjetivoMisil,5,1);
 			}
 		}	else	{
 			std::cout<<"No se pudo ubicar el barco en el casillero "<<objetivo->toString()<<std::endl;
-		}
+			}
 
 		Coordenada<int> * destinoTorpedo;
 		std::cout<<"Destino del torpedo:"<<std::endl;
 		validarCoordenada(destinoTorpedo);
 		std::cout<<"Casillero a atacar con torpedo "<<destinoTorpedo->toString()<<std::endl;
-		if(this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->obtenerTipo()==FICHA_SUBMARINO){
-			this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->getFichaCasillero()->desactivarFicha();
-			this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->vaciarCasillero();
-			this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ())->desactivar();
-			std::cout<<"Submarino eliminado"<<std::endl;
-		}	else	{
-			std::cout<<"No habia objetivos a eliminar en la coordenada con el torpedo "<<std::endl;
-		}
 
-		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
-		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_BARCO));
+		Casillero * casilleroObjetivoTorpedo=this->tableroJuego->obtenerCasillero(destinoTorpedo->obtenerX(),
+		destinoTorpedo->obtenerY(),destinoTorpedo->obtenerZ());
+
+		if(!casilleroObjetivoTorpedo->estaOcupado()){
+				//Se desactiva un casillero desocupado que se ataca con un misil?
+				std::cout<<"No habia objetivos a eliminar en la coordenada con el torpedo "<<std::endl;
+			} else 
+				if(casilleroObjetivoTorpedo->getFichaCasillero()->obtenerTipo()==FICHA_SUBMARINO){
+				casilleroObjetivoTorpedo->getFichaCasillero()->desactivarFicha();
+				casilleroObjetivoTorpedo->vaciarCasillero();
+				casilleroObjetivoTorpedo->desactivar();
+				std::cout<<"Submarino eliminado"<<std::endl;
+		}	else{
+			std::cout<<"Solo puede eliinar submarinos"<<std::endl;
+		}	
 
 }
 
@@ -1108,11 +1155,7 @@ void BatallaDigital::ubicarAvion(unsigned int x, unsigned int y, unsigned int z,
 	
 }
 
-void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
-		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadCartasAvion() == 0) {
-				throw "El jugador no tiene cartas de tipo avion";
-		} 
+void BatallaDigital::jugarCartaAvion(Jugador * jugador) {
 		std::cout << "Ubicar avion : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1136,8 +1179,6 @@ void BatallaDigital::jugarCartaAvion(unsigned int idJugador) {
 			std::cout<<"No se pudo ubicar el avion en el casillero "<<objetivo->toString()<<std::endl;
 		}
 
-		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
-		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_AVION_RADAR));
 }
 
 void BatallaDigital::ubicarSubmarino(unsigned int x, unsigned int y, unsigned int z, Jugador *jugador) {
@@ -1168,11 +1209,7 @@ void BatallaDigital::ubicarSubmarino(unsigned int x, unsigned int y, unsigned in
 	
 }
 
-void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
-		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadCartasSubmarino() == 0) {
-				throw "El jugador no tiene cartas de tipo submarino";
-		}
+void BatallaDigital::jugarCartaSubmarino(Jugador * jugador) {
 		std::cout << "Ubicar submarino : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1184,6 +1221,7 @@ void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
 			ubicarSubmarino(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ(),jugador);
 			}
 		catch(...){
+			std::cerr<<"Fallo al ubicar submarino"<<std::endl;
 		}
 		// Si pudo ubicar correctamente el submarino
 		if(this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->estaOcupado()){
@@ -1209,8 +1247,6 @@ void BatallaDigital::jugarCartaSubmarino(unsigned int idJugador) {
 	}
 
 
-		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
-		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_SUBMARINO));
 	
 }
 
@@ -1242,11 +1278,7 @@ void BatallaDigital::ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsig
 	}
 }
 
-void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
-		Jugador *jugador = obtenerJugadorNumero(idJugador);
-		if (jugador->cantidadCartasRefuerzos() == 0) {
-				throw "El jugador no tiene cartas de tipo refuerzos";
-		}
+void BatallaDigital::jugarCartaRefuerzoSoldado(Jugador * jugador) {
 		std::cout << "Ubicar soldado : " << std::endl;
 		Coordenada<int> *objetivo;
 		validarCoordenada(objetivo);
@@ -1267,13 +1299,9 @@ void BatallaDigital::jugarCartaRefuerzoSoldado(unsigned int idJugador) {
 			std::cout<<"No se pudo ubicar el soldado en el casillero "<<objetivo->toString()<<std::endl;
 		}
 
-		
-		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
-		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_REFUERZOS));
 	}
 
-void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
-		Jugador *jugador = obtenerJugadorNumero(idJugador);
+void BatallaDigital::jugarCartaTrinchera(Jugador * jugador) {
 		if (jugador->cantidadFichasSoldado() == 0) {
 				throw "El jugador no tiene soldados a atrincherar";
 		}
@@ -1288,11 +1316,9 @@ void BatallaDigital::jugarCartaTrinchera(unsigned int idJugador) {
 		else	{
 			std::cout<<"No hay soldado en la coordenada ingresada "<<objetivo->toString()<<std::endl;
 		}
-		
-		
-		//Si la carta se jugó correctamente, se la retira del mazo del jugador y se la agrega a el mazo de las cartas ya jugadas
-		this->cartasJugadas->agregarCarta(jugador->obtenerCarta(CARTA_TRINCHERA));
 }
+
+
 
 
 void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{

@@ -264,7 +264,7 @@ class BatallaDigital
         //Pos: juega la carta barco, puede disparar un misil o un torpedo
         //     misil puede eliminar un aviones, barcos o soldados esten atrincherados o no
         //     torpedo puede eliminar solo submarinos
-        void jugarCartaBarco(unsigned int idJugador);
+        void jugarCartaBarco(Jugador * jugador);
 
         //Recibe un puntero al jugador que ubica el avion, y una posicion en coordenadas x,y,z
         //Si la posicion es valida entonces coloca el avion. Una posicion es valida si el casillero esta activo
@@ -275,7 +275,7 @@ class BatallaDigital
         //Pos: juega la carta avion, puede disparar un misil o un torpedo
         //     misil puede eliminar un aviones, barcos o soldados esten atrincherados o no
         //     torpedo puede eliminar solo submarinos
-        void jugarCartaAvion(unsigned int idJugador);
+        void jugarCartaAvion(Jugador * jugador);
 
         //Recibe un puntero al jugador que ubica el submarino, y una posicion en coordenadas x,y,z
         //Si la posicion es valida entonces coloca el submarino. Una posicion es valida si el casillero esta activo
@@ -285,24 +285,27 @@ class BatallaDigital
         //Pre: recibe como parametro el id del jugador que va a jugar la carta
         //Pos: juega la carta submarino, puede disparar un torpedo
         //     torpedo puede eliminar solo submarinos o barcos
-        void jugarCartaSubmarino(unsigned int idJugador);
+        void jugarCartaSubmarino(Jugador * jugador);
 
         //Recibe un puntero al jugador que ubica el refuerzo, y una posicion en coordenadas x,y,z
         //Si la posicion es valida entonces coloca el refuerzo. Una posicion es valida si el casillero esta activo
         //y el terreno es tierra
         void ubicarRefuerzoSoldado(unsigned int x, unsigned int y, unsigned int z,Jugador * jugador);
 
-        //Pre: recibe como parametro el id del jugador que va a jugar la carta
-        //Pos: juega la carta refuerzo, agrega un refuerzo al jugador
-        void jugarCartaRefuerzoSoldado(unsigned int idJugador);
+        //Pre: recibe como parametro  jugador que va a jugar la carta
+        //Pos: juega la carta refuerzo, agrega un refuerzo al jugador        (ANDA)
+        void jugarCartaRefuerzoSoldado(Jugador * jugador);
 
         //Pre: recibe como parametro el id del jugador que va a jugar la carta
         //Pos: juega la carta trinchera, atrinchera un soldado
-        void jugarCartaTrinchera(unsigned int idJugador);
+        void jugarCartaTrinchera(Jugador * jugador);
+
+
+        //Metodo que selecciona el metodo apropiado segun la carta pasada como parametro    
+        void JugarCarta(Jugador * jugador, CartaBatallaDigital * carta);
         
 
-
-        //Pre: recibe la cantidad de cartas con las que se jugara
+        //Pre: recibe la cantidad de cartas con las  que se jugara
         //Pos:construye un mazo con esa cantidad de cartas
         void construirMazo(unsigned int cantidadCartas);
 

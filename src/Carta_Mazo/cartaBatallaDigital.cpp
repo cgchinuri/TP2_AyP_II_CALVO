@@ -18,7 +18,7 @@ CartaBatallaDigital::CartaBatallaDigital(carta_t tipo)
         this->nombre = "Avion Radar";
         this->descripcion = "Avion Radar le agrega una unidad a la fuerza aérea del jugador, capaz de detectar unidades enemigas en la superficie. "
         "No tiene capacidades ofensivas o defensivas. [AIRE ALTURA MINIMA]";
-        this->cantidadRepeticiones = 25;
+        this->cantidadRepeticiones = 15;
         break;
     case CARTA_TRINCHERA:
         this->nombre = "Trinchera";
@@ -30,7 +30,7 @@ CartaBatallaDigital::CartaBatallaDigital(carta_t tipo)
         this->nombre = "Barco";
         this->descripcion = "Arega una unidad a la armada del jugador capaz de lanzar misiles y "
         "torpedos anti-submarinos [SUPERFICIE DE AGUA]";
-        this->cantidadRepeticiones = 10;
+        this->cantidadRepeticiones = 20;
         break;
     case CARTA_ATAQUE_QUIMICO:
         this->nombre = "Ataque Quimico";
