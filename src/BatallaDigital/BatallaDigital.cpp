@@ -46,6 +46,7 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 	this->tableroJuego=new Tablero(dimX,dimY,dimZ);
 	this->listaDeJugadores=new Lista<Jugador*>();
 	this->cartasDisponibles=new Mazo<CartaBatallaDigital *>();
+	this->cartasJugadas=new Mazo<CartaBatallaDigital *>();
 
 
 

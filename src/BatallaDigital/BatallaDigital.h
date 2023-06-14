@@ -8,6 +8,10 @@
 #include "../Jugador/Jugador.h"
 #include "../Utils/TipoMovimiento.h"
 #include "../Utils/Bitmap/BitmapBatallaDigital.h"
+#include "../Carta_Mazo/cartaBatallaDigital.h"
+#include "../Carta_Mazo/mazo.h"
+
+
 
 #define CANT_INICIAL_SOLDADOS_POR_JUGADOR 1
 
