@@ -21,8 +21,6 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	this->listaCasillerosInactivos = NULL;
 
 	Casillero* casilleroNuevo = NULL;
-	Lista<Lista<Casillero*>* >* pisos=NULL;
-	Lista<Casillero*>* columnas=NULL;
 	tipoCasillero_t tipoCasillero=tierra;
 	int nivelDelMar = NIVEL_MAXIMO_TIERRA;
 
@@ -69,25 +67,32 @@ unsigned int Tablero::getDimZ() {
 }
 
 void Tablero::imprimirTablero()
-
-
 {
 	Casillero* casilleroImprimir = NULL;
 	Lista<Lista<Casillero*>* >* pisosRecorrer=NULL;
 	Lista<Casillero*>* columnasRecorrer=NULL;
-	for(int z = 1 ; z <= this->dimZ ; z++)
+
+	this->tableroJuego->reiniciarCursor();
+
+	while(this->tableroJuego->avanzarCursor())
 	{
-		pisosRecorrer=this->tableroJuego->get(z);
-		for(int y = 1 ; y <= this->dimY ; y++)
+		pisosRecorrer = this->tableroJuego->getCursor();
+
+		pisosRecorrer->reiniciarCursor();
+
+		while(pisosRecorrer->avanzarCursor())
 		{
-			columnasRecorrer=pisosRecorrer->get(y);
-			for(int x = 1 ; x <= this->dimX ; x++)
+			columnasRecorrer = pisosRecorrer->getCursor();
+
+			columnasRecorrer->reiniciarCursor();
+
+			while(columnasRecorrer->avanzarCursor())
 			{
-				casilleroImprimir=columnasRecorrer->get(x);
+				casilleroImprimir=columnasRecorrer->getCursor();
 				casilleroImprimir->imprimirPos();
 			}
 		}
-	}	
+	}
 }
 
 void Tablero::imprimirGeografia()
@@ -305,7 +310,7 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 	// Tipo de terreno inicial
 	tipoCasillero_t tipoCasilleroInicio = casilleroInicio->getTipoCasillero();
 
-	for(int i = 0 ; i < cantidadCasilleros ; i ++)
+	for(unsigned int i = 0 ; i < cantidadCasilleros ; i ++)
 	{
 		switch(tipoMovimiento)
 		{
@@ -372,7 +377,6 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 //		
 void Tablero::generarAguaEnTablero() 
 {
-    tipoCasillero_t tipoCasillero = tierra;
     int nivelDelMar = NIVEL_MAXIMO_TIERRA;
     
     // Generar una semilla aleatoria para generar números aleatorios
