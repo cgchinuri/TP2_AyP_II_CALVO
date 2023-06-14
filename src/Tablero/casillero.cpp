@@ -68,7 +68,7 @@ void Casillero::setTipoCasillero(tipoCasillero_t tipo)
 
 void Casillero::imprimirTipo()
 {
-	this->tipoCasillero;
+	//this->tipoCasillero; ¿?
 }
 
 void Casillero::setSigX(Casillero * casillero)

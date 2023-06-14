@@ -717,21 +717,13 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		//El jugador tiene soldados activos?
 		if(jugador->cantidadFichasSoldado() < 1)
 		{
-			//Si el jugador no tiene soldados activos => el jugador ya no puede seguir jugando. ¿Que hago con sus minas?
-			//Opcion A: Salto el turno, las minas siguen activas en el tablero pero el jugador no puede participar
-			//Opcion B: Remuevo todas las fichas del tablero con la primitiva de la ficha desvincularFichaDeCasillero
-			//Opcion C: Mismo de opcion B pero desactivando el casillero ademas
-			//jugador->retirarFichas();//opcion C
-			//this->eliminarJugador();
 			return;
 		}
 
 
 		//Comienzo preguntando dónde quiere minar el jugador
-		std::string stringCoordenada,restoBuffer;
-
-		//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
-		getline(std::cin,restoBuffer);
+		std::string stringCoordenada;
+		std::cin.clear();
 
 		//Lectura y validacion de coordenada (si la coordenada esta en rango)
 		Coordenada<int> * objetivo;
@@ -827,8 +819,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			}
 		}
 
-		//mostrarTablero(0);
-
 		//Se verifica que haya cartas en el mazo principal
 		if(this->cartasDisponibles->contarCartas()==0){
 			std::cout<<"Ya no quedan cartas por sacar. Mezclando mazo... "<<std::endl;
@@ -845,7 +835,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		if(jugarCarta==true)
 		{	int opcionElegida;
 			CartaBatallaDigital * cartaJugada;
-
+			std::cout<<"Seleccioná la carta a utilizar"<<std::endl;
 			jugador->mostrarCartas();
 			std::cin>>opcionElegida;
 			cartaJugada=jugador->obtenerCarta(opcionElegida);//Se saca la carta de la mano del jugador
@@ -859,11 +849,8 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			std::cout<<"Mazo de cartas jugadas: "<<this->cartasJugadas->contarCartas()<<std::endl;
 			std::cout<<"Mazo de cartas disponibles: "<<this->cartasDisponibles->contarCartas()<<std::endl;
 		}
-					jugador->mostrarCartas();
 
 		// SI SE USO CARTA GESTIONO EVENTOS
-
-
 
 		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
 		//actualizarTablero();
@@ -879,7 +866,7 @@ void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
 
 	switch(carta->getTipo()){
 		case CARTA_BARCO:
-			std::cout<<"DEBUG:JUGANDO CARTA BARCO"<<std::endl;//FALLA
+			std::cout<<"DEBUG:JUGANDO CARTA BARCO"<<std::endl;
 			jugarCartaBarco(jugador);
 		break;
 
@@ -918,8 +905,6 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 	x=avionRadar->obtenerCoordenada()->obtenerX();
 	y=avionRadar->obtenerCoordenada()->obtenerY();
 	z=5;//Altura maxima del terreno
-
-
 
 	if(avionRadar->obtenerTipo()!=FICHA_AVION){
 		throw "El mapa solo puede ser escaneado por un avion radar";

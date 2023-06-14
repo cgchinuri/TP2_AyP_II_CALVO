@@ -37,6 +37,11 @@ std::string Ficha::toStringTipo(void) {
         case FICHA_MINA:
             s="Mina";
             break;
+        case FICHA_SUBMARINO:
+            s="Mina";
+            break;
+        default:
+            break;
     }
     return s;
 }
