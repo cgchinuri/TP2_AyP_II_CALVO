@@ -544,7 +544,6 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 	{
 		throw "Error puntero a casillero nulo";
 	}
-	/*
 	else if(turnosInactividadEpicentro < 3)
 	{
 		throw "Error turnos inactividad invalidos";
@@ -553,7 +552,6 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 	{
 		throw "Error radio explosión invalido";
 	}
-	 */
 
 	std::cout << "Se generó una explosión de radio " << radioExplosion << " con epicentro en el casillero " << casilleroCentral->getCoordenada()->toString() << std::endl;
 
@@ -577,7 +575,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroSigX)
 		{
-			casilleroSigX = casilleroSigX->getAntX();
+			casilleroSigX = casilleroSigX->getSigX();
 			if(casilleroSigX)
 			{
 				desactivarCasillero(casilleroSigX , turnosInactividadEpicentro - i);
@@ -587,7 +585,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroAntY)
 		{
-			casilleroAntY = casilleroAntY->getAntX();
+			casilleroAntY = casilleroAntY->getAntY();
 			if(casilleroAntY)
 			{
 				desactivarCasillero(casilleroAntY , turnosInactividadEpicentro - i);
@@ -596,7 +594,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 		if(casilleroSigY)
 		{
-			casilleroSigY = casilleroSigY->getAntX();
+			casilleroSigY = casilleroSigY->getSigY();
 			if(casilleroSigY)
 			{
 				desactivarCasillero(casilleroSigY , turnosInactividadEpicentro - i);
