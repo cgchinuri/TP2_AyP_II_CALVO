@@ -41,6 +41,9 @@ class Casillero
 		// Turnos de inactividad restantes
 		int turnosInactivoRestantes;
 
+		// Turnos con contaminación restantes
+		int turnosContaminadoRestantes;
+
 		// Puntero a la ficha que va a estar ocupando el casillero
 		Ficha * fichaOcupa ;
 
@@ -164,6 +167,18 @@ class Casillero
 		// Pre: recibe como argumento la cantidad de turnos por los cuales debe ser desactivado el casillero
 		//Pos: Desactiva el casillero por la cantidad de turnos que se indican
 		void desactivar(int cantidadTurnosInactividad);
+
+		// Pre: recibe la cantidad de turnos a sumar
+		// Pos: suma turnosContaminacion a su atributo turnosContaminadoRestantes
+		void sumarTurnosContaminacion(int turnosContaminacion);
+
+		// Pre: si atributo turnosContaminadoRestantes debe ser al menos 1
+		// Pos: decrementa el atributo turnosContaminadoRestantes en uno
+		void restarTurnoContaminacion();
+
+		// Pre: -
+		// Pos: retorna true si está contaminado, false en caso contrario
+		bool estaContaminado();
 
 		// Destructor
 		~Casillero();

@@ -367,6 +367,11 @@ Casillero * Tablero::navegarTablero(Casillero * casilleroInicio, tipoMovimiento_
 			// Si el casillero está inactivo, lo retorno y finalizo el movimiento
 			return casilleroRetorno;
 		}
+		else if(casilleroRetorno->estaContaminado())
+		{
+			// Si el casillero está contaminado lo retorno y finalizo el movimiento
+			return casilleroRetorno;
+		}
 	}
 
 	return casilleroRetorno;

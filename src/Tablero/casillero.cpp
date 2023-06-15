@@ -24,6 +24,8 @@ Casillero::Casillero(int x, int y, int z, tipoCasillero_t tipoCasillero)
 
 	this->turnosInactivoRestantes = 0;
 
+	this->turnosContaminadoRestantes = 0;
+
 	// Puntero a la ficha que lo ocupa
 	this->fichaOcupa = NULL;
 }
@@ -217,4 +219,28 @@ void Casillero::decrementarInactividad(void)	{
 void Casillero::desactivar(int cantidadTurnosInactividad)
 {
 	this->turnosInactivoRestantes=cantidadTurnosInactividad;
+}
+
+void Casillero::sumarTurnosContaminacion(int turnosContaminacion)
+{
+	this->turnosContaminadoRestantes += turnosContaminacion;
+}
+
+
+void Casillero::restarTurnoContaminacion()
+{
+	if(this->turnosContaminadoRestantes > 0)
+	{
+		this->turnosContaminadoRestantes--;
+	}
+	else
+	{
+		this->turnosContaminadoRestantes = 0;
+	}
+}
+
+
+bool Casillero::estaContaminado()
+{
+	return (this->turnosContaminadoRestantes > 0);
 }

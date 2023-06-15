@@ -339,12 +339,13 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 	}
 	else if(casilleroDestino->estaOcupado())
 	{
+		// Si el casillero estaba ocupado se provoca una explosión de algún tipo
 		Ficha * fichaOcupante = casilleroDestino->getFichaCasillero();
 
 		if(fichaOcupante->obtenerTipo()==FICHA_MINA)
 		{
 			explosionEnTablero ( casilleroDestino , TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO , RADIO_EXPLOSION_POR_CHOQUE_MINA_SOLDADO );
-		}		
+		}
 		else
 		{
 			explosionEnTablero ( casilleroDestino , TURNOS_INACTIVIDAD_POR_EXPLOSION_SOLDADOS , RADIO_EXPLOSION_POR_CHOQUE_SOLDADOS );
@@ -352,11 +353,19 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 		fichaMover->desactivarFicha();
 	}
+	else if(casilleroDestino->estaContaminado())
+	{
+		// Si el casillero estaba contaminado
+		std::cout << "¡Pasaste por el casillero en " <<  casilleroDestino->getCoordenada()->toString() << "que se encontraba ENVENENADO!" << std::endl;
+
+		// Desactivo la ficha que se intentó mover
+		fichaMover->desactivarFicha();
+	}
 	else
 	{
 		// Si no se cumplen las condiciones anteriores entonces puedo mover la ficha
 		std::cout << "Muevo la ficha de " << fichaMover->getCasilleroFicha()->getCoordenada()->toString() ;
-		std::cout << " hasta " << casilleroDestino->getCoordenada()->toString();
+		std::cout << " hasta " << casilleroDestino->getCoordenada()->toString() << std::endl;
 
 
 		// Desvinculo ficha y casillero anterior
@@ -365,8 +374,6 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 		// Vinculo ficha y casillero destino
 		vincularFichaYCasillero(casilleroDestino, fichaMover);
-
-		std::cout << "Y termina en " << fichaMover->getCasilleroFicha()->getCoordenada()->toString() ;
 	}
 
 	return true;
@@ -1351,7 +1358,6 @@ void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 	this->cartasDisponibles->mezclar();
 
 	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->cartasDisponibles->contarCartas()<<std::endl;
-
 }	
 
 

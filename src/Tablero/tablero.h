@@ -96,9 +96,10 @@ class Tablero
 		//		vertical horizontal o diagonal, y una cantidad de casilleros a desplazar
 		// Pos: el algoritmo navega por el tablero pasando por los casilleros de su trayectoria.
 		//		Si el trayecto fue ideal (sin obstáculos y sin cambiar de terreno) devuelve el casillero final
-		//		Si encontró un obstáculo en el medio, devuelve el casillero con el obstáculo, sin terminar la trayectoria
-		//		Si encontró un cambio de terreno, devuelve dicho casillero, sin terminar la trayectoria
-		//		Si encontró un casillero vacío en el recorrido, devuelve el mismo, sin terminar la trayectoria
+		//		Si encontró un obstáculo en el medio, devuelve el casillero que lo contiene
+		//		Si encontró un cambio de terreno, devuelve dicho casillero
+		//		Si encontró un casillero vacío en el recorrido, lo retorna
+		//		Si encontró un casillero contaminado, lo devuelve
 		// 		Si el mapa se acabó, devuelve null.
 		Casillero * navegarTablero(Casillero * casilleroInicio, tipoMovimiento_t tipoMovimiento, unsigned int cantidadCasilleros);
 
