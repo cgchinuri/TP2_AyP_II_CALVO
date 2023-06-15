@@ -139,7 +139,7 @@ int Jugador::cantidadFichasSoldado()
     while(Fichas->avanzarCursor())
     {
         Ficha* fichaCursor=Fichas->getCursor();
-            if (fichaCursor->obtenerTipo()==FICHA_SOLDADO)
+            if (fichaCursor->obtenerTipo()==FICHA_SOLDADO && fichaCursor->estaActiva())
             {
                 cantidadSoldados++;
             }
