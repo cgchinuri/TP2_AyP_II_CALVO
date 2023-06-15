@@ -124,6 +124,10 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
         dibujarTransparente(posX, posY, this->imagenFuego, altoTablero);
     }
 
+    if(casillero->estaContaminado()) {
+        dibujarTransparente(posX, posY, this->imagenQuimicos, altoTablero);
+    }
+
     // Si no esta ocupado no se hace nada mas
     if(!casillero->estaOcupado()) return;
     
@@ -132,7 +136,7 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
     if(jugador != NULL) {   // Si hay una ficha verifico que le pertenezca al jugador del turno
         if (jugador->obtenerFicha(*(casillero->getCoordenada())) == NULL) {
             fichaPropia = false; // No es del jugador. Prosigo a verificar que sea una ficha enemiga detectada
-            if (jugador->fichaEnemigaDetectada(*casillero->getCoordenada())==false) {
+            if (!(jugador->fichaEnemigaDetectada(*(casillero->getCoordenada())))) {
                 return; // Si no es del jugador ni esta detectada return porque no la grafico
             }
         }
