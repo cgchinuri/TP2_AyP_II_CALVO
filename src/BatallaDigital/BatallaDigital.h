@@ -51,6 +51,9 @@
 
 #define STRING_INGRESO_MINA_ERROR_CAS_INACTIVO "El casillero que se intentó minar se encuentra inactivo."
 
+#define STRING_JUGADOR_GANADOR_A "El juego ha terminado, el jugador "
+#define STRING_JUGADOR_GANADOR_B " es el ganador. "
+
 
 
 #define STRING_TURNO_DE_P1 " - - - - - - - - - - - Es el turno de: "
@@ -99,48 +102,20 @@ class BatallaDigital
         // Pos: crea un tablero con dimensiones especificadas y lo deja apuntado con el atributo de la clase
         void crearTablero();
 
-    public:
-        // Constructor
-        // Pre: -
-        // Pos: pregunta cantidad y genera una lista con la cantidad de jugadores
-        //      pregunta dimensiones y genera un tablero y deja su puntero apuntando a él
-        BatallaDigital();
-
-        //Otro constructor
-        // Pre: recibe cantidad de jugadores y dimensiones del tablero
-        // Pos: genera lista con jugadores con la cantidad recibida y un tablero con las dimensiones especificadas
-        BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ);
+        //Pre: Recibe una coordenada x y z
+        //Post:Si la coordenada es valida para las dimensiones del tablero retorna true
+        //MetodoPrivado
+        bool _esPosicionValida(int x,int y, int z);
 
         // Pre: recibe una  frase para imprimir por consola
         // Pos: imprime la frase por consola y recibe una entrada por cin
-        //		devuelve -1 si es errónea o el numero entero positivo si está ok
+        //      devuelve -1 si es errónea o el numero entero positivo si está ok
         int ingresoNumeroEnteroPositivoConsola(std::string oracionPedido);
 
-        // Pre: -
-        // Pos: imprime un mensaje de bienvenida
-        void imprimirMensajeBienvenida();
-
-        // Pre: se debe ingresar por consola el numero de jugadores que jugaran
-        //		minimo y maximo en macros
-        // Pos: carga el atributo de la clase
-        void ingresarNumeroJugadores();
-
-        // Pre: debe haber una lista de jugadores creada
-        // Pos: devuelve el primer elemento de la lista
-        Jugador * obtenerPrimerJugador();
-
-        // Pre: debe haber una lista de jugadores creada
-        // Pos: devuelve el elemento siguiente relativo al ID que se envió, o el primero si estaba en el último
-        Jugador * obtenerSiguienteJugador(int identificadorJugadorAnterior);
-
         // Pre: se deben ingresar por consola las dimensiones del tablero
-        // 		minimo en macros
+        //      minimo en macros
         // Pos: carga el atributo de la clase
         void ingresarDimensionesTablero();
-
-        // Pre: -
-        // Pos: muestra la geografía del tablero
-        void mostrarGeografiaTablero();
 
         // Pre: recibe como argumento un puntero a un casillero y un puntero a una ficha
         //      ambos deben estar apuntando a null
@@ -164,40 +139,10 @@ class BatallaDigital
         // Pos: crea una ficha del tipo solicitado y la vincula con la posicion especificada del tablero
         Ficha * crearFicha(t_ficha tipoFicha, int x, int y, int z, Jugador * jugador);
 
-
-        // Pre: recibe como argumentos una ficha, un tipo de movimiento y una cantidad de casilleros a mover
-        // Pos: si la trayectoria es limpia la mueve
-        //		si la trayectoria cae fuera del mapa avisa
-        // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
-        // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
-        //      devuelve true si se pudo hacer el movimiento y false si se dio alguno de los casos anteriores
-        bool moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , unsigned int cantCasilleros);
-
-        // Pre: debe haber una lista de jugadores con sus respectivas fichas
-        // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
-        bool hayGanador();
-
-        // Pre: -
-        // Pos: pregunta por las fichas iniciales de los jugadores y las posiciona en el mapa
-        void colocarFichasIniciales();
-
         // Pre: necesita un tipo de casillero para pedir en la coordenada
         // Pos: le pide al jugador una coordenada (X e Y) y valida que sea del tipo buscado
-        //		retorna la coordenada que el jugador ingrese completando en Z con el nivel max de tierra
+        //      retorna la coordenada que el jugador ingrese completando en Z con el nivel max de tierra
         Coordenada<int> pedirXYJugador(tipoCasillero_t tipoCasillero);
-
-        // Pre: debe existir un juego iniciado con un tablero y la geografía que éste posea
-        //      recibe el jugador que puede ver el tablero o toma por defecto que se muestra todo
-        // Pos: genera un bitmap por cada nivel del tablero mostrando las fichas y geografía del jugador que corresponda o todo el tablero
-        void mostrarTablero(Jugador *jugador);
-
-        // Pre: debe existir un juego iniciado con una cantidad dada de jugadores
-        // Pos: devuelve la cantidad de jugadores del juego
-        unsigned int cantidadDeJugadores();
-
-        // Pre: debe existir un juego iniciado y una lista de jugadores
-        // Pos: devuelve el número del jugador correspondiente en dicha lista
-        Jugador * obtenerJugadorNumero(unsigned int jugador);
 
         // Pre: recibe el casillero a desactivar y los turnos de inactividad para configurar
         // Pos: desactiva el casillero con los turnos que se pasan como parametro, ademas si tuviera alguna ficha en el la desactiva
@@ -216,7 +161,6 @@ class BatallaDigital
         // Coloca la mina si el casillero estaba vacio o genera una explosión si había algo en él
         void minarCasillero(Casillero * casillero ,Jugador * jugador);
 
-
         // Pre: -
         // Post: devuelve true si el jugador ingreso por consola una respuesta afirmativa, de lo contrario devuelve false
         bool jugadorQuiereMover();
@@ -233,19 +177,9 @@ class BatallaDigital
         // Pos: pregunta al usuario la cantidad de casilleros a mover, devolvíendolo si el input es válido
         int obtenerCantidadCasilleros();
 
-        //Pre: El jugador no puede ser nulo
-        //Post:Se ejecuta un turno en el juego
-        void avanzarTurno(Jugador * jugador);
-
-
         //Pre: Jugador y avionRadar no pueden ser nulos
         //Post:Retorna una lista de casilleros donde se detectaron enemigos
         Lista<Casillero *> * EscanearTerreno(Jugador * jugador,Ficha * avionRadar);
-
-        //Pre: Recibe una coordenada x y z
-        //Post:Si la coordenada es valida para las dimensiones del tablero retorna true
-        //MetodoPrivado
-        bool _esPosicionValida(int x,int y, int z);
 
         //Pre: -
         //Pos: valida la coordena a ingresar por el usuario
@@ -312,7 +246,77 @@ class BatallaDigital
         //Intercambia el mazo de cartas jugadas por el mazo de cartas disponibles
         void reiniciarMazo(void);
 
+    public:
+        // Constructor
+        // Pre: -
+        // Pos: pregunta cantidad y genera una lista con la cantidad de jugadores
+        //      pregunta dimensiones y genera un tablero y deja su puntero apuntando a él
+        BatallaDigital();
 
+        //Otro constructor
+        // Pre: recibe cantidad de jugadores y dimensiones del tablero
+        // Pos: genera lista con jugadores con la cantidad recibida y un tablero con las dimensiones especificadas
+        BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,unsigned int dimY,unsigned int dimZ);
+
+        // Pre: -
+        // Pos: imprime un mensaje de bienvenida
+        void imprimirMensajeBienvenida();
+
+        // Pre: se debe ingresar por consola el numero de jugadores que jugaran
+        //		minimo y maximo en macros
+        // Pos: carga el atributo de la clase
+        void ingresarNumeroJugadores();
+
+        // Pre: debe haber una lista de jugadores creada
+        // Pos: devuelve el primer elemento de la lista
+        Jugador * obtenerPrimerJugador();
+
+        // Pre: debe haber una lista de jugadores creada
+        // Pos: devuelve el elemento siguiente relativo al ID que se envió, o el primero si estaba en el último
+        Jugador * obtenerSiguienteJugador(int identificadorJugadorAnterior);
+
+        // Pre: -
+        // Pos: muestra la geografía del tablero
+        void mostrarGeografiaTablero();
+
+        // Pre: recibe como argumentos una ficha, un tipo de movimiento y una cantidad de casilleros a mover
+        // Pos: si la trayectoria es limpia la mueve
+        //		si la trayectoria cae fuera del mapa avisa
+        // 		si la trayectoria pasa por un tipo de terreno incompatible, avisa
+        // 		si la trayectoria cruza por un campo con obstaculos, realiza alguna accion (explosion o lo que fuere)
+        //      devuelve true si se pudo hacer el movimiento y false si se dio alguno de los casos anteriores
+        bool moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimiento , unsigned int cantCasilleros);
+
+        // Pre: debe haber una lista de jugadores con sus respectivas fichas
+        //      recibe un puntero al jugador que eventualmente será editado con el jugador ganador
+        // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
+        bool hayGanador(Jugador** jugadorGanador);
+
+        // Pre: debe haber una lista de jugadores con sus respectivas fichas
+        //      recibe un puntero al jugador que eventualmente será editado con el jugador ganador
+        // Pos: devuelve true si hay solo un jugador con al menos una ficha 'soldado' activa.
+        void imprimirGanador(Jugador* jugadorGanador);
+
+        // Pre: -
+        // Pos: pregunta por las fichas iniciales de los jugadores y las posiciona en el mapa
+        void colocarFichasIniciales();
+
+        // Pre: debe existir un juego iniciado con un tablero y la geografía que éste posea
+        //      recibe el jugador que puede ver el tablero o toma por defecto que se muestra todo
+        // Pos: genera un bitmap por cada nivel del tablero mostrando las fichas y geografía del jugador que corresponda o todo el tablero
+        void mostrarTablero(Jugador *jugador);
+
+        // Pre: debe existir un juego iniciado con una cantidad dada de jugadores
+        // Pos: devuelve la cantidad de jugadores del juego
+        unsigned int cantidadDeJugadores();
+
+        // Pre: debe existir un juego iniciado y una lista de jugadores
+        // Pos: devuelve el número del jugador correspondiente en dicha lista
+        Jugador * obtenerJugadorNumero(unsigned int jugador);
+
+        //Pre: El jugador no puede ser nulo
+        //Post:Se ejecuta un turno en el juego
+        void avanzarTurno(Jugador * jugador);
 };
 
 

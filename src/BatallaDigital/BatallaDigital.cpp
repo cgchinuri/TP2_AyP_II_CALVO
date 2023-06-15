@@ -368,24 +368,35 @@ bool BatallaDigital::moverFicha(Ficha * fichaMover , tipoMovimiento_t tipoMovimi
 
 
 
-bool BatallaDigital::hayGanador()
+bool BatallaDigital::hayGanador(Jugador** jugadorGanador)
 {
 	this->listaDeJugadores->reiniciarCursor();
 	int jugadoresConSoldados=0;
+	Jugador * jugadorGanadorTemp = NULL;
 	while(listaDeJugadores->avanzarCursor())
 	{
-		Jugador * Jugador = listaDeJugadores->getCursor();
-		if (Jugador->cantidadFichasSoldado()>0)
+		Jugador * jugador = listaDeJugadores->getCursor();
+		if (jugador->cantidadFichasSoldado()>0)
 		{
+			//Cuando encuentro un jugador con soldados lo guardo en un puntero auxiliar
+			jugadorGanadorTemp = jugador;
 			jugadoresConSoldados++;
 		}
 	}
 
 	if (jugadoresConSoldados==1)
 	{
+		//Cuando quede sólo un jugador con soldados, temp quedará apuntando a éste y ahi edito el puntero pasado como argumento
+		*jugadorGanador = jugadorGanadorTemp;
 		return true;
 	}
 	return false;
+}
+
+
+void BatallaDigital::imprimirGanador(Jugador* jugadorGanador)
+{
+	std::cout << STRING_JUGADOR_GANADOR_A << jugadorGanador->getNombre() << STRING_JUGADOR_GANADOR_B << std::endl << std::endl;
 }
 
 void BatallaDigital::mostrarGeografiaTablero()

@@ -29,13 +29,16 @@ int main()
 	// Obtengo el primer jugador de la lista
 	Jugador *jugadorTurnoActual = batallaDigital->obtenerPrimerJugador();
 
+	// Creo el puntero al jugador que será el ganador del juego
+	Jugador *jugadorGanador = NULL;
+
 	// Variables para gestionar los turnos de los jugadores
 	int idJugadorTurno = jugadorTurnoActual->getIdentificador();
 	int idJugadorTurnoAnterior = 0;
 
 	// Ciclo del juego
 	// Se jugará hasta que haya un ganador
-	while(!batallaDigital->hayGanador())
+	while(!batallaDigital->hayGanador(&jugadorGanador))
 	{	
 		batallaDigital->mostrarTablero(jugadorTurnoActual);
 
@@ -53,8 +56,7 @@ int main()
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego
-
-	//batallaDigital->imprimirQuienGano();
+	batallaDigital->imprimirGanador(jugadorGanador);
 
 	cout << "====..... Fin .....====" << endl;
 	return 0;
