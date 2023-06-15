@@ -27,6 +27,9 @@ public:
     //post: crea una ficha con el tipo y coordenadas indicadas
     Ficha(t_ficha tipo,int x, int y, int z);
 
+    //Destructor
+    ~Ficha();
+
     //pre: -
     //post: devuelve el tipo de la ficha
     t_ficha obtenerTipo(void)const;

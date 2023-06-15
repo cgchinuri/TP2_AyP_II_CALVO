@@ -25,6 +25,7 @@ private:
 
 public:
     Jugador(int id, const std::string s);
+    ~Jugador();
     std::string & getNombre(void);
     int getIdentificador(void);
     

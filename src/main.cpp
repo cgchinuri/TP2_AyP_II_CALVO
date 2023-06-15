@@ -58,6 +58,8 @@ int main()
 	//Si hay ganador, notifico cuál es y termino el juego
 	batallaDigital->imprimirGanador(jugadorGanador);
 
+	delete batallaDigital;
+
 	cout << "====..... Fin .....====" << endl;
 	return 0;
 }

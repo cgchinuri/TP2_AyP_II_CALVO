@@ -4,11 +4,8 @@
 BatallaDigital::BatallaDigital()
 {
 	this->tableroJuego = NULL;
-	//this->dimensionesTablero = {0, 0, 0};
 	this->cantidadJugadores = 0;
-
 	this->listaDeJugadores = NULL;
-	
 	this->cartasDisponibles=new Mazo<CartaBatallaDigital *>();
 	this->cartasJugadas=new Mazo<CartaBatallaDigital *>();
 
@@ -35,6 +32,15 @@ BatallaDigital::BatallaDigital()
 
 	// Se crea la instancia de logica de bitmap
 	this->bitmap = new BitmapBatallaDigital(this->dimensionesTablero[0], this->dimensionesTablero[1]);
+}
+
+BatallaDigital::~BatallaDigital(void)
+{
+	delete this->tableroJuego;
+	delete this->listaDeJugadores;
+	delete this->cartasDisponibles;
+	delete this->cartasJugadas;
+	delete this->bitmap;
 }
 
 //Constructor de batalla digital con parametros

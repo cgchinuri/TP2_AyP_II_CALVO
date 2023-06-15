@@ -8,7 +8,14 @@ Jugador::Jugador(int id,const std::string s)
     this->Fichas= new Lista <Ficha *>();
     this->Cartas=new Mazo<CartaBatallaDigital*>();
     this->enemigosDetectados=new Lista<Casillero*>();
-}  
+}
+Jugador::~Jugador()   
+{
+    delete this->nombre;
+    delete this->Fichas;
+    delete this->Cartas;
+    delete this->enemigosDetectados;
+}    
 
 
 std::string & Jugador::getNombre(void)  {

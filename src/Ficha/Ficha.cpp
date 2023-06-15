@@ -13,6 +13,10 @@ Ficha::Ficha(t_ficha tipo,int x, int y, int z)  {
     this->activo=true;
     this->casillero = NULL;
 }
+Ficha::~Ficha()
+{
+    delete this->coordenada;
+}
 
 t_ficha Ficha::obtenerTipo(void)const  {
         return this->tipo;

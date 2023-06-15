@@ -253,6 +253,9 @@ class BatallaDigital
         //      pregunta dimensiones y genera un tablero y deja su puntero apuntando a él
         BatallaDigital();
 
+        // Destructor
+        ~BatallaDigital(void);
+
         //Otro constructor
         // Pre: recibe cantidad de jugadores y dimensiones del tablero
         // Pos: genera lista con jugadores con la cantidad recibida y un tablero con las dimensiones especificadas

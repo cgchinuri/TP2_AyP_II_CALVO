@@ -188,7 +188,6 @@ int Casillero::casillerosAguaAdyacentes(Casillero* casilleroActual)
 
 Casillero::~Casillero()
 {
-	//std::cout << "destructor casillero" << std::endl;
 	// Libero la memoria del TDA coordenada
 	delete this->coordenada;
 
