@@ -111,6 +111,18 @@ CartaBatallaDigital * Jugador::obtenerCarta(carta_t tipo) {
     return NULL;
 }
 
+bool Jugador::fichaEnemigaDetectada(Coordenada<int> & pos){
+    this->enemigosDetectados->reiniciarCursor();
+    while(this->enemigosDetectados->avanzarCursor()){
+       Coordenada<int> *coordenada=this->enemigosDetectados->getCursor()->getCoordenada();
+
+       if(coordenada->iguales(pos)){
+        return true;
+       }
+    }
+
+    return false;
+}
 
 void Jugador::mostrarCartas()   {
     std::cout<<"Cartas Disponibles:"<<std::endl;//DEBUG
@@ -174,8 +186,17 @@ void Jugador::retirarFichas(void)   {
 
 
 void Jugador::setEnemigosDetectados(Lista<Casillero *> * enemigos) {
-    this->enemigosDetectados=enemigos;
+   
+   enemigos->reiniciarCursor();
+   while(enemigos->avanzarCursor()){
+    this->enemigosDetectados->add(enemigos->getCursor());
+   }
 }
+
+Lista<Casillero *> * Jugador::getEnemigosDetectados(void){
+    return this->enemigosDetectados;
+}
+
 
 
 bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, unsigned int z) {

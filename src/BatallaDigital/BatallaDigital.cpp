@@ -1154,11 +1154,13 @@ void BatallaDigital::jugarCartaAvion(Jugador * jugador) {
 			}
 		catch(...){
 		}
+
+		Casillero * casilleroAvion=this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ());
 		// Si pudo ubicar correctamente el avion
-		if(this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->estaOcupado()){
+		if(casilleroAvion->estaOcupado()){
 			std::cout<<"Avion ubicado en el casillero "<<objetivo->toString()<<std::endl;
 			std::cout<<"Escaneando terreno..."<<std::endl;
-			jugador->setEnemigosDetectados(this->EscanearTerreno(jugador,this->tableroJuego->obtenerCasillero(objetivo->obtenerX(),objetivo->obtenerY(),objetivo->obtenerZ())->getFichaCasillero()));
+			jugador->setEnemigosDetectados(this->EscanearTerreno(jugador,casilleroAvion->getFichaCasillero()));
 			std::cout<<"...terreno escaneado"<<std::endl;
 		}
 		else	{

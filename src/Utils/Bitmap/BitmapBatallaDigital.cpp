@@ -128,12 +128,13 @@ void BitmapBatallaDigital::dibujarCasillero(Casillero *casillero, Jugador *jugad
     if(!casillero->estaOcupado()) return;
     
     bool fichaPropia = true;
+
     if(jugador != NULL) {   // Si hay una ficha verifico que le pertenezca al jugador del turno
         if (jugador->obtenerFicha(*(casillero->getCoordenada())) == NULL) {
             fichaPropia = false; // No es del jugador. Prosigo a verificar que sea una ficha enemiga detectada
-            //if (jugador->obtenerFichaDetectada(*(casillero->getCoordenada())) == NULL) {
+            if (jugador->fichaEnemigaDetectada(*casillero->getCoordenada())==false) {
                 return; // Si no es del jugador ni esta detectada return porque no la grafico
-            //}
+            }
         }
     }
 

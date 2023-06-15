@@ -37,7 +37,7 @@ int main()
 	// Se jugará hasta que haya un ganador
 	while(!batallaDigital->hayGanador())
 	{	
-		batallaDigital->mostrarTablero(NULL);
+		batallaDigital->mostrarTablero(jugadorTurnoActual);
 
 		// Turno del jugador actual
 		batallaDigital->avanzarTurno(jugadorTurnoActual);
