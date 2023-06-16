@@ -59,17 +59,15 @@ BatallaDigital::BatallaDigital(unsigned int cantidadJugadores,unsigned int dimX,
 
 
 
-	//Esto, construir la lista de jugadores, puede ir en una funcion privada.
 	for(size_t i=0;	i<cantidadJugadores;i++){
 		std::ostringstream oss;
-		oss<<"Jugador"<<i+1;	//HARDCODEO
+		oss<<"Jugador"<<i+1;
 		std::string aux=oss.str();
 		Jugador * nuevoJugador=new Jugador(i+1,aux);
 		this->listaDeJugadores->add(nuevoJugador);
 		oss.clear();
 	}
 
-	// Se crea la instancia de logica de bitmap
 	this->bitmap = new BitmapBatallaDigital(dimX, dimY);
 
 
@@ -815,7 +813,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 		//Se remueven las fichas del jugador que podrian haberse desactivado en otro turno.
 		jugador->removerFichasInactivas();
 
-		//El jugador tiene soldados activos?
 		if(jugador->cantidadFichasSoldado() < 1)
 		{
 			return;
@@ -945,17 +942,10 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			JugarCarta(jugador,cartaJugada);
 
 			//Se añade la carta al mazo de las cartas utilizadas
-			this->cartasJugadas->agregarCarta(cartaJugada);//en realidad esto deberia hacerlo la funcion que juega la carta
+			this->cartasJugadas->agregarCarta(cartaJugada);
 			std::cout<<"Se jugó la carta "<<cartaJugada->getNombre()<<std::endl;
-			std::cout<<"Mazo de cartas jugadas: "<<this->cartasJugadas->contarCartas()<<std::endl;
-			std::cout<<"Mazo de cartas disponibles: "<<this->cartasDisponibles->contarCartas()<<std::endl;
 		}
 
-		// SI SE USO CARTA GESTIONO EVENTOS
-
-		//UNA VEZ PASA TODO ESTO, ACTUALIZO EL TABLERO y FICHAS
-		//actualizarTablero();
-		//tableroJuego->decrementarInactividadCasilleros();	
 }
 
 void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
@@ -967,7 +957,6 @@ void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
 
 	switch(carta->getTipo()){
 		case CARTA_BARCO:
-			std::cout<<"DEBUG:JUGANDO CARTA BARCO"<<std::endl;
 			jugarCartaBarco(jugador);
 		break;
 
@@ -976,21 +965,17 @@ void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
 		break;
 
 		case CARTA_AVION_RADAR:
-			std::cout<<"DEBUG:JUGANDO CARTA_AVION_RADAR"<<std::endl;
 			jugarCartaAvion(jugador);
 		break;
 		case CARTA_REFUERZOS:
-			std::cout<<"DEBUG:JUGANDO CARTA_REFUERZOS"<<std::endl;
 			jugarCartaRefuerzoSoldado(jugador);
 		break;
 
 		case CARTA_SUBMARINO:
-			std::cout<<"DEBUG:JUGANDO CARTA_SUBMARINO "<<std::endl;
 			jugarCartaSubmarino(jugador);
 		break;
 
 		case CARTA_TRINCHERA:
-			std::cout<<"DEBUG:JUGANDO CARTA_TRINCHERA "<<std::endl;
 			jugarCartaTrinchera(jugador);
 		break;
 	}
@@ -1011,7 +996,6 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 		throw "El mapa solo puede ser escaneado por un avion radar";
 	}
 
-	//Doble ciclo para visitar los casilleros a escanear
 	for(int i=-cantidadCasillerosAdyacentes;	i<cantidadCasillerosAdyacentes+1;i++)	{
 		for(int j=-cantidadCasillerosAdyacentes;	j<cantidadCasillerosAdyacentes+1;j++)	{
 
@@ -1034,7 +1018,7 @@ Lista<Casillero *> * BatallaDigital::EscanearTerreno(Jugador * jugador,Ficha * a
 }
 
 
-bool BatallaDigital::_esPosicionValida(int x,int y, int z){
+bool BatallaDigital::_esPosicionValida(unsigned int x,unsigned int y, unsigned int z){
 	
 	if(((x>0&&x<this->tableroJuego->getDimX())&&(y>0&&y<this->tableroJuego->getDimY()))&&(z>0&&z<this->tableroJuego->getDimZ()))
 	{
@@ -1049,9 +1033,8 @@ bool BatallaDigital::_esPosicionValida(int x,int y, int z){
 // Ejemplo de uso: se puede reemplazar desde la linea 635 hasta la 650 por esto:
 // validarCoordenada(objetivo);
 void BatallaDigital::validarCoordenada(Coordenada<int>* &objetivo) {
-	std::string stringCoordenada,restoBuffer;
-	getline(std::cin,restoBuffer);//Linea para limpiar el buffer, ya que sino getline() se ejecuta sola: Buscar otra forma de limpiarlo
-
+	std::string stringCoordenada;
+	std::cin.clear();
 	//Lectura y validacion de coordenada (si la coordenada esta en rango)
 	bool esCoordenadaValida=false;		
 	while(!esCoordenadaValida)	{
@@ -1406,8 +1389,6 @@ void BatallaDigital::jugarCartaTrinchera(Jugador * jugador) {
 			std::cout<<"No hay soldado en la coordenada ingresada "<<objetivo->toString()<<std::endl;
 		}
 }
-
-
 
 
 void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{

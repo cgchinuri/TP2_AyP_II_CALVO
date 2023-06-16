@@ -109,7 +109,7 @@ class BatallaDigital
         //Pre: Recibe una coordenada x y z
         //Post:Si la coordenada es valida para las dimensiones del tablero retorna true
         //MetodoPrivado
-        bool _esPosicionValida(int x,int y, int z);
+        bool _esPosicionValida(unsigned int x,unsigned int y, unsigned int z);
 
         // Pre: recibe una  frase para imprimir por consola
         // Pos: imprime la frase por consola y recibe una entrada por cin

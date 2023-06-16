@@ -1,5 +1,4 @@
 #include "Jugador.h"
-#include <stdexcept>
  
 Jugador::Jugador(int id,const std::string s)   
 {
@@ -46,7 +45,7 @@ Ficha * Jugador::obtenerFicha(Coordenada<int> & pos) {
 
 Ficha * Jugador::obtenerFicha(unsigned int indice) {
     if(indice>this->Fichas->contarElementos()){
-        throw std::invalid_argument("Opcion invalida");
+       throw "opcion invalida";
     }
 
     return this->Fichas->get(indice);
@@ -65,16 +64,11 @@ unsigned int Jugador::mostrarFichas()   {
 
 	while(Fichas->avanzarCursor())
 	{
-		// Incremento el indicador de posición
 		indiceFicha++;
 
-		// Imprimo indice de ficha
 		std::cout<<'['<<indiceFicha<<']'<<" - ";
-		// Imprimo tipo de ficha
-		std::cout << Fichas->getCursor()->toStringTipo()  ;
-		// Imprimo posición de la ficha
-		std::cout << " en "<< Fichas->getCursor()->getCasilleroFicha()->getCoordenada()->toString()  ;
-		// Salto de linea
+		std::cout << Fichas->getCursor()->toStringTipo();
+		std::cout << " en "<< Fichas->getCursor()->getCasilleroFicha()->getCoordenada()->toString();
 		std::cout << std::endl;
 	}
 
@@ -132,7 +126,6 @@ bool Jugador::fichaEnemigaDetectada(Coordenada<int> & pos){
 }
 
 void Jugador::mostrarCartas()   {
-    std::cout<<"Cartas Disponibles:"<<std::endl;//DEBUG
 
     for(size_t i=1; Cartas->avanzarCursor();i++)    {
         std::cout<<'['<<i<<']'<<Cartas->getCursor()->getNombre()<<std::endl;
@@ -171,27 +164,6 @@ void Jugador::removerFichasInactivas(void)    {
 
 }
 
-//Esta funcion recorre la lista de fichas del jugador, para cada ficha obtiene el casillero asociado, lo inactiva (si la ficha a retirar es una mina) y vacia el casillero
-
-void Jugador::retirarFichas(void)   {
-    this->Fichas->reiniciarCursor();
-
-    while(this->Fichas->avanzarCursor()){
-        Ficha * fichaRetirada=this->Fichas->getCursor();
-        fichaRetirada->getCasilleroFicha()->vaciarCasillero();
-        fichaRetirada->desactivarFicha();
-        if(fichaRetirada->obtenerTipo()==FICHA_MINA)    {
-            fichaRetirada->getCasilleroFicha()->desactivar();
-        }
-    }
-    //En este punto ya todas las fichas restantes estan desvinculadas en el tablero
-    //Deberia entonces destruirse la lista de fichas.
-    this->removerFichasInactivas();
-
-}
-
-
-
 void Jugador::setEnemigosDetectados(Lista<Casillero *> * enemigos) {
    
    enemigos->reiniciarCursor();
@@ -205,7 +177,6 @@ Lista<Casillero *> * Jugador::getEnemigosDetectados(void){
 }
 
 
-
 bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, unsigned int z) {
     this->Fichas->reiniciarCursor();
     while(Fichas->avanzarCursor())
@@ -217,60 +188,4 @@ bool Jugador::hayTipoEnCoordenada(t_ficha tipo, unsigned int x, unsigned int y, 
             }
     }
     return false;
-}
-
-int Jugador::cantidadCartasBarco() {
-    this->Cartas->reiniciarCursor();
-    int cantidadCartasBarco=0;
-    while(Cartas->avanzarCursor())
-    {
-        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==CARTA_BARCO)
-            {
-                cantidadCartasBarco++;
-            }
-    }
-    return cantidadCartasBarco;
-}
-
-int Jugador::cantidadCartasAvion() {
-    this->Cartas->reiniciarCursor();
-    int cantidadCartasAvion=0;
-    while(Cartas->avanzarCursor())
-    {
-        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==CARTA_AVION_RADAR)
-            {
-                cantidadCartasAvion++;
-            }
-    }
-    return cantidadCartasAvion;
-}
-
-int Jugador::cantidadCartasSubmarino() {
-    this->Cartas->reiniciarCursor();
-    int cantidadCartasSubmarino=0;
-    while(Cartas->avanzarCursor())
-    {
-        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==CARTA_SUBMARINO)
-            {
-                cantidadCartasSubmarino++;
-            }
-    }
-    return cantidadCartasSubmarino;
-}
-
-int Jugador::cantidadCartasRefuerzos() {
-    this->Cartas->reiniciarCursor();
-    int cantidadCartasRefuerzos=0;
-    while(Cartas->avanzarCursor())
-    {
-        CartaBatallaDigital* cartaCursor=Cartas->getCursor();
-            if (cartaCursor->getTipo()==CARTA_REFUERZOS)
-            {
-                cantidadCartasRefuerzos++;
-            }
-    }
-    return cantidadCartasRefuerzos;
 }
