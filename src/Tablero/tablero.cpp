@@ -18,10 +18,10 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	this->dimZ = dimZ;
 
 	// Lista de casilleros inactivos comienza vacia
-	this->listaCasillerosInactivos = NULL;
+	this->listaCasillerosInactivos = new Lista<Casillero*>();
 
 	// Lista de casilleros contaminados comienza vacia
-	this->listaCasillerosContaminados = NULL;
+	this->listaCasillerosContaminados = new Lista<Casillero*>();
 
 	Casillero* casilleroNuevo = NULL;
 	tipoCasillero_t tipoCasillero=tierra;
@@ -273,10 +273,6 @@ void Tablero::agregarCasilleroInactivo(Casillero * casilleroInactivoNuevo)
 
 void Tablero::decrementarInactividadCasilleros()
 {
-	if(!this->listaCasillerosInactivos)
-	{
-		return ;
-	}
 
 	// Variable aux para tener control de la posición de los elementos
 	unsigned int i = 1;
@@ -330,11 +326,6 @@ void Tablero::agregarCasilleroContaminado(Casillero * casilleroContaminadoNuevo)
 
 void Tablero::decrementarTurnosContaminacionCasilleros()
 {
-	if(!this->listaCasillerosContaminados)
-	{
-		return ;
-	}
-
 	// Variable aux para tener control de la posición de los elementos
 	unsigned int i = 1;
 
