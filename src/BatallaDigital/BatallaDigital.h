@@ -247,10 +247,12 @@ class BatallaDigital
         //Pos: juega la carta trinchera, atrinchera un soldado
         void jugarCartaTrinchera(Jugador * jugador);
 
+        // Pre: -
+        // Pos: juega la carta ataque quimico
+        void jugarCartaAtaqueQuimico();
 
         //Metodo que selecciona el metodo apropiado segun la carta pasada como parametro    
         void JugarCarta(Jugador * jugador, CartaBatallaDigital * carta);
-        
 
         //Pre: recibe la cantidad de cartas con las  que se jugara
         //Pos:construye un mazo con esa cantidad de cartas
@@ -333,6 +335,10 @@ class BatallaDigital
         //Pre: El jugador no puede ser nulo
         //Post:Se ejecuta un turno en el juego
         void avanzarTurno(Jugador * jugador);
+
+        // Pre: -
+        // Pos: invoca a las funciones de decrementar inactividad y contaminación
+        void comienzaNuevaRonda();
 };
 
 
