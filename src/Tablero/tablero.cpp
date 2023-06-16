@@ -20,6 +20,9 @@ Tablero::Tablero(int dimX, int dimY, int dimZ)
 	// Lista de casilleros inactivos comienza vacia
 	this->listaCasillerosInactivos = NULL;
 
+	// Lista de casilleros contaminados comienza vacia
+	this->listaCasillerosContaminados = NULL;
+
 	Casillero* casilleroNuevo = NULL;
 	tipoCasillero_t tipoCasillero=tierra;
 	int nivelDelMar = NIVEL_MAXIMO_TIERRA;
@@ -244,8 +247,27 @@ bool Tablero::chequearVinculosPisosTablero()
 
 void Tablero::agregarCasilleroInactivo(Casillero * casilleroInactivoNuevo)
 {
-	// Agrego el casillero inactivo a la lista
-	this->listaCasillerosInactivos->add(casilleroInactivoNuevo);
+	bool casilleroEstaEnLista = false;
+
+	//inicializo la lista
+	this->listaCasillerosInactivos->reiniciarCursor();
+
+	// Recorro la lista buscando si el casillero ya estaba en la lista
+	while(this->listaCasillerosInactivos->avanzarCursor())
+	{
+		if(casilleroInactivoNuevo == this->listaCasillerosInactivos->getCursor())
+		{
+			casilleroEstaEnLista = true;
+
+			break;
+		}
+	}
+
+	if(!casilleroEstaEnLista)
+	{
+		// Agrego el casillero inactivo a la lista
+		this->listaCasillerosInactivos->add(casilleroInactivoNuevo);
+	}
 }
 
 
@@ -267,6 +289,58 @@ void Tablero::decrementarInactividadCasilleros()
 		if(this->listaCasillerosInactivos->getCursor()->estaActivo())
 		{
 			this->listaCasillerosInactivos->remover(i);
+			i--;
+		}
+
+		i++;
+	}
+}
+
+void Tablero::agregarCasilleroContaminado(Casillero * casilleroContaminadoNuevo)
+{
+
+	bool casilleroEstaEnLista = false;
+
+	//inicializo la lista
+	this->listaCasillerosContaminados->reiniciarCursor();
+
+	// Recorro la lista buscando si el casillero ya estaba en la lista
+	while(this->listaCasillerosContaminados->avanzarCursor())
+	{
+		if(casilleroContaminadoNuevo == this->listaCasillerosContaminados->getCursor())
+		{
+			casilleroEstaEnLista = true;
+
+			break;
+		}
+	}
+
+	if(!casilleroEstaEnLista)
+	{
+		// Agrego el casillero contaminado a la lista
+		this->listaCasillerosContaminados->add(casilleroContaminadoNuevo);
+	}
+}
+
+
+void Tablero::decrementarTurnosContaminacionCasilleros()
+{
+	// Variable aux para tener control de la posición de los elementos
+	unsigned int i = 1;
+
+	// Reinicio el cursor para comenzar a recorrer la lista
+	this->listaCasillerosContaminados->reiniciarCursor();
+
+	// Recorro la lista hasta el final
+	while (this->listaCasillerosContaminados->avanzarCursor())
+	{
+		// Decremento turnos en cada casillero
+		this->listaCasillerosContaminados->getCursor()->restarTurnoContaminacion();
+
+		// Si luego de decrementar queda contaminado tengo que sacarlo de la lista
+		if(!this->listaCasillerosContaminados->getCursor()->estaContaminado())
+		{
+			this->listaCasillerosContaminados->remover(i);
 			i--;
 		}
 
@@ -450,3 +524,5 @@ Tablero::~Tablero()
     }
     delete tableroJuego;
 }
+
+

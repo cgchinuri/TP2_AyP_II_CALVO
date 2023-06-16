@@ -25,6 +25,9 @@ class Tablero
 		// Lista de casilleros inactivos
 		Lista<Casillero*>* listaCasillerosInactivos;
 
+		// Lista de casilleros contaminados
+		Lista<Casillero*>* listaCasillerosContaminados;
+
 		// Dimensiones del tablero
 		int dimX;
 		int dimY;
@@ -74,13 +77,24 @@ class Tablero
 		void imprimirGeografia();
 
 		// Pre: enviar como argumento un puntero a un casillero
-		// Pos: agrega un casillero a la lista de casilleros inactivos
+		// Pos: chequea si el casillero ya estaba en la lista de casilleros inactivos
+		//		lo  agrega a la lista en caso de no estar
 		void agregarCasilleroInactivo(Casillero * casilleroInactivoNuevo);
 
 		// Pre: -
 		// Pos: recorre la lista de casilleros inactivos y les resta uno a todos
 		//		saca un casillero de la lista si vuelve a estar activo
 		void decrementarInactividadCasilleros();
+
+		// Pre: enviar como argumento un puntero a un casillero
+		// Pos: chequea si el casillero ya estaba en la lista de casilleros contaminados
+		//		lo  agrega a la lista en caso de no estar
+		void agregarCasilleroContaminado(Casillero * casilleroContaminadoNuevo);
+
+		// Pre: -
+		// Pos: recorre la lista de casilleros contaminados y le resta uno a todos
+		//		saca un casillero de la lista si terminan los turnos de contaminacion
+		void decrementarTurnosContaminacionCasilleros();
 
 		// Pre: insertar por argumentos las coordenadas del casillero buscado
 		// Pos: devuelve un puntero a un casillero si está dentro de las dimensiones del tablero

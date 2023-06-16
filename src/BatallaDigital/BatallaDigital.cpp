@@ -560,6 +560,42 @@ void BatallaDigital::desactivarCasillero(Casillero * casillero , int turnosInact
 	// Desactiva el casillero con los turnos que se recibieron como parámetro
 	casillero->desactivar(turnosInactividad);
 
+	// Agrego el casillero a la lista de casilleros inactivos
+	this->tableroJuego->agregarCasilleroInactivo(casillero);
+
+}
+
+void BatallaDigital::contaminarCasillero(Casillero * casillero , int turnosContaminacion)
+{
+	Ficha * fichaAux = NULL ;
+
+	fichaAux = casillero->getFichaCasillero();
+
+	// Si el casillero estaba ocupado
+	if(fichaAux)
+	{
+		// Si estaba ocupado por un soldado
+		if(fichaAux->getTipoFicha() == FICHA_SOLDADO)
+		{
+			std::cout << "El soldado ubicado en " << fichaAux->getCasilleroFicha()->getCoordenada()->toString() << " fue eliminado por envenenamiento." << std::endl;
+
+			// Desvinculo la ficha del casillero
+			fichaAux->desvincularFichaDeCasillero();
+
+			// Desactivo la ficha
+			fichaAux->desactivarFicha();
+		}
+
+	}
+	// Vacío el casillero
+	casillero->vaciarCasillero();
+
+	// Contamino el casillero
+	casillero->sumarTurnosContaminacion(turnosContaminacion);
+
+	// Agrego el casillero contaminado a la lista de casilleros contaminados
+	this->tableroJuego->agregarCasilleroContaminado(casillero);
+
 }
 
 void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion )
@@ -628,6 +664,47 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 	}
 
+}
+
+void BatallaDigital::lanzarAtaqueQuimico(Casillero * casillero)
+{
+	if(!casillero)
+	{
+		throw("Error puntero a casillero nulo");
+	}
+
+	int multiplicador = 0;
+
+	Casillero * casilleroIteracion = NULL;
+
+	int xCentro = casillero->getPosX();
+	int yCentro = casillero->getPosY();
+	int zCentro	= casillero->getPosZ();
+
+	for (int z = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); z<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; z++)
+	{
+		for (int y = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); y<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; y++ )
+		{
+			for (int x = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); x<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; x++ )
+			{
+
+				casilleroIteracion = this->tableroJuego->obtenerCasillero(xCentro+x, yCentro+y, zCentro+z);
+				if(casilleroIteracion)
+				{
+					multiplicador = abs(x);
+					if(abs(y)>multiplicador)
+					{
+						multiplicador = abs(y);
+					}
+					if(abs(z)> multiplicador)
+					{
+						multiplicador = abs(z);
+					}
+					contaminarCasillero(casilleroIteracion, TURNOS_CONTAMINACION_EPICENTRO_POR_ATAQUE_QUIMICO - RADIO_EXPLOSION_ATAQUE_QUIMICO * multiplicador);
+				}
+			}
+		}
+	}
 }
 
 void BatallaDigital::mostrarTablero(Jugador *jugador)

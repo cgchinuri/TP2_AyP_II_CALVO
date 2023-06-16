@@ -2,6 +2,7 @@
 #define BATALLA_DIGITAL_H_
 
 #include <cstddef>
+#include <math.h>
 #include "../Tablero/tablero.h"
 #include "../Ficha/Ficha.h"
 #include "../Utils/LinkedList_T.h"
@@ -67,6 +68,9 @@
 #define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINA_SOLDADO 4
 #define TURNOS_INACTIVIDAD_POR_EXPLOSION_MINAS 5
 
+#define TURNOS_CONTAMINACION_EPICENTRO_POR_ATAQUE_QUIMICO 10
+#define TURNOS_RESTA_CAPA_SIGUIENTE_ATAQUE_QUIMICO 2
+#define RADIO_EXPLOSION_ATAQUE_QUIMICO 2
 
 #define CANTIDAD_CARTAS_MAZO 50
 
@@ -147,6 +151,15 @@ class BatallaDigital
         // Pre: recibe el casillero a desactivar y los turnos de inactividad para configurar
         // Pos: desactiva el casillero con los turnos que se pasan como parametro, ademas si tuviera alguna ficha en el la desactiva
         void desactivarCasillero(Casillero * casillero , int turnosInactividad);
+
+        // Pre: recibe un puntero a un casillero y una cantidad de turnos para añadir contaminación en él
+        // Pos: si había un soldado ocupando el casillero, lo elimina
+        //		le agrega la cantidad de turnos de contaminación recibida al atributo del casillero
+        void contaminarCasillero(Casillero * casillero , int turnosContaminacion);
+
+        // Pre: recibe como argumento un puntero a casillero
+        // Pos: genera una contaminación química en un cubo de 5x5 con epicentro en el casillero recibido
+        void lanzarAtaqueQuimico(Casillero * casillero);
 
         // Pre: recibe como argumentos un puntero a un casillero, una cantidad de turnos inactivo para el casillero central (min 3)
         //      y el radio que tendrá la explosión (entre 1 y 3)
