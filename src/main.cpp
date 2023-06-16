@@ -53,6 +53,12 @@ int main()
 
 		// Guardo el ID en la variable
 		idJugadorTurno = jugadorTurnoActual->getIdentificador();
+
+		// Quiere decir que di la vuelta
+		if(idJugadorTurno < idJugadorTurnoAnterior)
+		{
+			batallaDigital->comienzaNuevaRonda();
+		}
 	}
 
 	//Si hay ganador, notifico cuál es y termino el juego

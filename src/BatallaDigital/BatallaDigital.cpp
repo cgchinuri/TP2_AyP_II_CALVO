@@ -596,6 +596,30 @@ void BatallaDigital::contaminarCasillero(Casillero * casillero , int turnosConta
 
 }
 
+void BatallaDigital::jugarCartaAtaqueQuimico() {
+
+		Casillero * casilleroAtaque = NULL;
+
+		std::cout << "Ingresar coordenada central ataque químico: " << std::endl;
+
+		Coordenada<int> *objetivo;
+		while(!casilleroAtaque)
+		{
+			validarCoordenada(objetivo);
+
+			casilleroAtaque = this->tableroJuego->obtenerCasillero(objetivo);
+
+			if(!casilleroAtaque)
+			{
+				std::cout << "La coordenada ingresada no corresponde a un casillero. " << std::endl;
+			}
+		}
+
+
+		lanzarAtaqueQuimico(casilleroAtaque);
+}
+
+
 void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turnosInactividadEpicentro , int radioExplosion )
 {
 	if(!casilleroCentral)
@@ -664,46 +688,7 @@ void BatallaDigital::explosionEnTablero (Casillero * casilleroCentral , int turn
 
 }
 
-void BatallaDigital::lanzarAtaqueQuimico(Casillero * casillero)
-{
-	if(!casillero)
-	{
-		throw("Error puntero a casillero nulo");
-	}
 
-	int multiplicador = 0;
-
-	Casillero * casilleroIteracion = NULL;
-
-	int xCentro = casillero->getPosX();
-	int yCentro = casillero->getPosY();
-	int zCentro	= casillero->getPosZ();
-
-	for (int z = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); z<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; z++)
-	{
-		for (int y = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); y<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; y++ )
-		{
-			for (int x = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); x<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; x++ )
-			{
-
-				casilleroIteracion = this->tableroJuego->obtenerCasillero(xCentro+x, yCentro+y, zCentro+z);
-				if(casilleroIteracion)
-				{
-					multiplicador = abs(x);
-					if(abs(y)>multiplicador)
-					{
-						multiplicador = abs(y);
-					}
-					if(abs(z)> multiplicador)
-					{
-						multiplicador = abs(z);
-					}
-					contaminarCasillero(casilleroIteracion, TURNOS_CONTAMINACION_EPICENTRO_POR_ATAQUE_QUIMICO - RADIO_EXPLOSION_ATAQUE_QUIMICO * multiplicador);
-				}
-			}
-		}
-	}
-}
 
 void BatallaDigital::mostrarTablero(Jugador *jugador)
 {
@@ -961,6 +946,7 @@ void BatallaDigital::JugarCarta(Jugador * jugador, CartaBatallaDigital * carta){
 		break;
 
 		case CARTA_ATAQUE_QUIMICO:
+			jugarCartaAtaqueQuimico();
 			std::cout<<"Un horrible ataque químico ha caído sobre el terreno de batalla!"<<std::endl;
 		break;
 
@@ -1417,6 +1403,53 @@ void BatallaDigital::construirMazo(unsigned int cantidadCartas)	{
 
 	std::cout<<"Mazo creado. Cantidad de cartas:"<<this->cartasDisponibles->contarCartas()<<std::endl;
 }	
+
+void BatallaDigital::lanzarAtaqueQuimico(Casillero * casillero)
+{
+	if(!casillero)
+	{
+		throw("Error puntero a casillero nulo");
+	}
+
+	int multiplicador = 0;
+
+	Casillero * casilleroIteracion = NULL;
+
+	int xCentro = casillero->getPosX();
+	int yCentro = casillero->getPosY();
+	int zCentro	= casillero->getPosZ();
+
+	for (int z = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); z<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; z++)
+	{
+		for (int y = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); y<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; y++ )
+		{
+			for (int x = (-RADIO_EXPLOSION_ATAQUE_QUIMICO); x<=RADIO_EXPLOSION_ATAQUE_QUIMICO ; x++ )
+			{
+
+				casilleroIteracion = this->tableroJuego->obtenerCasillero(xCentro+x, yCentro+y, zCentro+z);
+				if(casilleroIteracion)
+				{
+					multiplicador = abs(x);
+					if(abs(y)>multiplicador)
+					{
+						multiplicador = abs(y);
+					}
+					if(abs(z)> multiplicador)
+					{
+						multiplicador = abs(z);
+					}
+					contaminarCasillero(casilleroIteracion, TURNOS_CONTAMINACION_EPICENTRO_POR_ATAQUE_QUIMICO - RADIO_EXPLOSION_ATAQUE_QUIMICO * multiplicador);
+				}
+			}
+		}
+	}
+}
+
+void BatallaDigital::comienzaNuevaRonda()
+{
+	this->tableroJuego->decrementarInactividadCasilleros();
+	this->tableroJuego->decrementarTurnosContaminacionCasilleros();
+}
 
 
 void BatallaDigital::reiniciarMazo(void){
