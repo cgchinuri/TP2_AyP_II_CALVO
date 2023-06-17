@@ -418,7 +418,7 @@ void BatallaDigital::mostrarGeografiaTablero()
 Coordenada<int> BatallaDigital::pedirXYJugador(tipoCasillero_t tipoCasillero)
 {
 	// Coordenadas X e Y
-	int x, y = 0;
+	unsigned int x, y = 0;
 
 	bool coordenadaOK = false;
 	bool casilleroOK = false;
@@ -789,7 +789,6 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 
 		//Variables para el turno
 		bool mover,jugarCarta=false;
-		int seleccion=1;
 		Casillero * casilleroMinar = NULL;
 		
 		// Imprimo de quién es el turno
@@ -868,7 +867,7 @@ void BatallaDigital::avanzarTurno(Jugador * jugador)
 			unsigned int indiceMax = jugador->mostrarFichas();
 
 			//LE PREGUNTO CUAL QUIERE MOVER
-			int seleccion = 0;
+			unsigned int seleccion = 0;
 
 			while (seleccion < 1 || seleccion > indiceMax)
 			{
